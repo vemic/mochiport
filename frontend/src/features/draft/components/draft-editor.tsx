@@ -38,20 +38,27 @@ export function DraftEditor({ draft, onClose, onSave, onPublish }: DraftEditorPr
       }
     }
   }, [debouncedContent, debouncedTitle])
-
   const handleAutoSave = async () => {
     if (!draft || !debouncedTitle.trim()) return
 
     setAutoSaving(true)
+    
     try {
-      const updatedDraft = {
-        ...draft,
+      const updateData = {
         title: debouncedTitle.trim(),
         content: debouncedContent,
-        updatedAt: new Date(),
       }
       
-      await updateDraft.mutateAsync(updatedDraft)
+      await updateDraft.mutateAsync({
+        id: draft.id,
+        data: updateData
+      })
+      
+      const updatedDraft = {
+        ...draft,
+        ...updateData,
+        updatedAt: new Date(),
+      }
       onSave?.(updatedDraft)
     } catch (error) {
       console.error("Auto-save failed:", error)
@@ -59,21 +66,27 @@ export function DraftEditor({ draft, onClose, onSave, onPublish }: DraftEditorPr
       setAutoSaving(false)
     }
   }
-
   const handleSave = async () => {
     if (!formData.title.trim()) return
 
     try {
       if (draft) {
         // Update existing draft
-        const updatedDraft = {
-          ...draft,
+        const updateData = {
           title: formData.title.trim(),
           content: formData.content,
-          updatedAt: new Date(),
         }
         
-        await updateDraft.mutateAsync(updatedDraft)
+        await updateDraft.mutateAsync({
+          id: draft.id,
+          data: updateData
+        })
+        
+        const updatedDraft = {
+          ...draft,
+          ...updateData,
+          updatedAt: new Date(),
+        }
         onSave?.(updatedDraft)
       } else {
         // Create new draft
@@ -81,16 +94,18 @@ export function DraftEditor({ draft, onClose, onSave, onPublish }: DraftEditorPr
           conversationId: "default", // TODO: Get from context
           title: formData.title.trim(),
           content: formData.content,
+          type: 'note' // Add required type property
         }
         
-        const newDraft = await createDraft.mutateAsync(newDraftData)
+        const response = await createDraft.mutateAsync(newDraftData)
+        // Extract the draft data from API response
+        const newDraft = response.data || response
         onSave?.(newDraft)
       }
     } catch (error) {
       console.error("Failed to save draft:", error)
     }
   }
-
   const handlePublish = async () => {
     if (!formData.title.trim() || !formData.content.trim()) return
 
@@ -98,25 +113,34 @@ export function DraftEditor({ draft, onClose, onSave, onPublish }: DraftEditorPr
       let draftToPublish: Draft
 
       if (draft) {
-        // Update and publish existing draft
-        draftToPublish = {
-          ...draft,
+        // Update existing draft first
+        const updateData = {
           title: formData.title.trim(),
           content: formData.content,
-          status: "published",
-          updatedAt: new Date(),
+          status: "published" as const,
         }
         
-        await updateDraft.mutateAsync(draftToPublish)
+        await updateDraft.mutateAsync({
+          id: draft.id,
+          data: updateData
+        })
+        
+        draftToPublish = {
+          ...draft,
+          ...updateData,
+          updatedAt: new Date(),
+        }
       } else {
-        // Create and publish new draft
+        // Create new draft
         const newDraftData: CreateDraftData = {
           conversationId: "default", // TODO: Get from context
           title: formData.title.trim(),
           content: formData.content,
+          type: 'note' // Add required type property
         }
         
-        draftToPublish = await createDraft.mutateAsync(newDraftData)
+        const response = await createDraft.mutateAsync(newDraftData)
+        draftToPublish = response.data || response
       }
       
       onPublish?.(draftToPublish)

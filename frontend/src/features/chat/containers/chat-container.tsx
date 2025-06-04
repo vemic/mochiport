@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ConversationCard } from './conversation-card';
-import { ChatWindow } from './chat-window';
+import { ConversationCard } from '../components/conversation-card';
+import { ChatWindow } from '../components/chat-window';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -48,12 +48,10 @@ export function ChatContainer({ className }: ChatContainerProps) {
       store.actions.setConversations(conversationsData.data);
     }
   }, [conversationsData, store.actions]);
-
   const handleCreateConversation = async () => {
     try {
       await createMutation.mutateAsync({
-        title: '新しい会話',
-        messages: []
+        title: '新しい会話'
       });
     } catch (error) {
       console.error('Failed to create conversation:', error);

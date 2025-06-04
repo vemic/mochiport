@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MessageSquare, Archive, Trash2, MoreHorizontal } from 'lucide-react';
 import { Conversation } from '@ai-chat/shared';
 import { cn } from '@/lib/utils';
-import { formatDate } from '@ai-chat/shared/utils';
+import { formatDate } from '@ai-chat/shared';
 
 interface ConversationCardProps {
   conversation: Conversation;

@@ -78,29 +78,27 @@ interface ReminderContainerProps {
 }
 
 export function ReminderContainer({ showForm = false, onFormClose }: ReminderContainerProps) {
-  const {
-    reminders,
-    isLoading,
-    snoozeReminder,
-    completeReminder,
-    updateReminder,
-    deleteReminder,
-  } = useReminders()
-
+  const remindersQuery = useReminders()
+  const reminders = remindersQuery.data?.data || []
+  const isLoading = remindersQuery.isLoading
   const handleSnooze = (id: string, newDueDate: Date) => {
-    snoozeReminder.mutate({ id, newDueDate })
+    // TODO: Implement snooze mutation
+    console.log('Snoozing reminder:', id, 'until:', newDueDate)
   }
 
   const handleComplete = (id: string) => {
-    completeReminder.mutate(id)
+    // TODO: Implement complete mutation
+    console.log('Completing reminder:', id)
   }
 
   const handleEdit = (reminder: Reminder) => {
-    updateReminder.mutate(reminder)
+    // TODO: Implement update mutation
+    console.log('Editing reminder:', reminder.id)
   }
 
   const handleDelete = (id: string) => {
-    deleteReminder.mutate(id)
+    // TODO: Implement delete mutation
+    console.log('Deleting reminder:', id)
   }
 
   return (

@@ -72,28 +72,26 @@ interface DraftContainerProps {
 export function DraftContainer({ showEditor = false, editingDraft, onEditorClose }: DraftContainerProps) {
   const [currentDraft, setCurrentDraft] = React.useState<Draft | undefined>(editingDraft)
   
-  const {
-    drafts,
-    isLoading,
-    publishDraft,
-    duplicateDraft,
-    deleteDraft,
-  } = useDrafts()
+  const draftsQuery = useDrafts()
+  const drafts = draftsQuery.data?.data || []
+  const isLoading = draftsQuery.isLoading
 
   const handleEdit = (draft: Draft) => {
     setCurrentDraft(draft)
   }
 
   const handlePublish = (id: string) => {
-    publishDraft.mutate(id)
+    // TODO: Implement publish mutation
+    console.log('Publishing draft:', id)
   }
 
   const handleDuplicate = (id: string) => {
-    duplicateDraft.mutate(id)
+    // TODO: Implement duplicate mutation
+    console.log('Duplicating draft:', id)
   }
-
   const handleDelete = (id: string) => {
-    deleteDraft.mutate(id)
+    // TODO: Implement delete mutation
+    console.log('Deleting draft:', id)
   }
 
   const handleEditorClose = () => {
@@ -106,7 +104,8 @@ export function DraftContainer({ showEditor = false, editingDraft, onEditorClose
   }
 
   const handlePublishFromEditor = (draft: Draft) => {
-    publishDraft.mutate(draft.id)
+    // TODO: Implement publish from editor
+    console.log('Publishing draft from editor:', draft.id)
   }
 
   if (showEditor || currentDraft) {

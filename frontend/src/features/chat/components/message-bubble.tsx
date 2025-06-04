@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Message } from '@ai-chat/shared';
 import { cn } from '@/lib/utils';
-import { formatDate } from '@ai-chat/shared/utils';
+import { formatDate } from '@ai-chat/shared';
 import { User, Bot, Copy, Edit } from 'lucide-react';
 
 interface MessageBubbleProps {
