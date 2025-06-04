@@ -1,11 +1,18 @@
-import { BaseService } from "./BaseService"
-import { IReminder, CreateReminderRequest, UpdateReminderRequest, GetRemindersFilters, PaginatedResponse } from "@ai-chat/shared"
-import { IReminderRepository } from "../repositories/interfaces/reminder"
-import { ReminderRepository } from "../repositories/ReminderRepository"
-import { NotFoundError, ValidationError } from "../utils/errors"
-import { addMinutes } from "date-fns"
+import type { 
+  Reminder, 
+  CreateReminderData, 
+  UpdateReminderData, 
+  ReminderFilters, 
+  PaginatedResponse,
+  ValidationError as SharedValidationError,
+  ReminderStatus
+} from '@ai-chat/shared'
+import type { ReminderRepository as IReminderRepository } from '../repositories/interfaces/reminder'
+import { ReminderRepository } from '../repositories/ReminderRepository'
+import { BaseService } from './BaseService'
+import { ValidationError } from '../utils/errors'
 
-export class ReminderService extends BaseService<IReminder> {
+export class ReminderService extends BaseService<Reminder, CreateReminderData, UpdateReminderData> {
   private reminderRepository: IReminderRepository
 
   constructor() {
@@ -13,149 +20,141 @@ export class ReminderService extends BaseService<IReminder> {
     this.reminderRepository = new ReminderRepository()
   }
 
-  async getReminders(filters: GetRemindersFilters): Promise<PaginatedResponse<IReminder>> {
+  async findById(id: string): Promise<Reminder | null> {
+    try {
+      return await this.reminderRepository.findById(id)
+    } catch (error) {
+      this.handleError(error as Error, `Failed to find reminder ${id}`)
+      return null
+    }
+  }
+
+  async findMany(filters: ReminderFilters): Promise<PaginatedResponse<Reminder>> {
     try {
       return await this.reminderRepository.findMany(filters)
     } catch (error) {
-      this.handleError(error, 'Failed to get reminders')
+      this.handleError(error as Error, 'Failed to find reminders')
       throw error
     }
   }
 
-  async getReminderById(id: string): Promise<IReminder> {
+  async create(data: CreateReminderData): Promise<Reminder> {
     try {
-      const reminder = await this.reminderRepository.findById(id)
-      
-      if (!reminder) {
-        throw new NotFoundError(`Reminder with ID ${id} not found`)
+      const validation = this.validate(data)
+      if (!validation.success) {
+        throw new ValidationError('Validation failed', validation.errors)
       }
-      
-      return reminder
+
+      return await this.reminderRepository.create(data)
     } catch (error) {
-      this.handleError(error, `Failed to get reminder ${id}`)
+      this.handleError(error as Error, 'Failed to create reminder')
       throw error
     }
   }
 
-  async createReminder(data: CreateReminderRequest): Promise<IReminder> {
+  async update(id: string, data: UpdateReminderData): Promise<Reminder | null> {
     try {
-      // Validate due date is in the future
-      if (new Date(data.dueDate) <= new Date()) {
-        throw new ValidationError('Due date must be in the future')
+      const validation = this.validate(data)
+      if (!validation.success) {
+        throw new ValidationError('Validation failed', validation.errors)
       }
 
-      const newReminder: Omit<IReminder, 'id' | 'createdAt' | 'updatedAt'> = {
-        title: data.title,
-        description: data.description,
-        dueDate: new Date(data.dueDate),
-        priority: data.priority || 'medium',
-        type: data.type || 'general',
-        status: 'pending',
-        conversationId: data.conversationId,
-        metadata: data.metadata || {}
-      }
-
-      return await this.reminderRepository.create(newReminder)
+      return await this.reminderRepository.update(id, data)
     } catch (error) {
-      this.handleError(error, 'Failed to create reminder')
+      this.handleError(error as Error, `Failed to update reminder ${id}`)
       throw error
     }
   }
 
-  async updateReminder(id: string, data: UpdateReminderRequest): Promise<IReminder> {
+  async delete(id: string): Promise<void> {
     try {
-      const existingReminder = await this.getReminderById(id)
-      
-      // Validate due date if provided
-      if (data.dueDate && new Date(data.dueDate) <= new Date()) {
-        throw new ValidationError('Due date must be in the future')
-      }
-
-      const updates: Partial<IReminder> = {
-        ...data,
-        updatedAt: new Date()
-      }
-
-      // Convert dueDate string to Date if provided
-      if (data.dueDate) {
-        updates.dueDate = new Date(data.dueDate)
-      }
-
-      return await this.reminderRepository.update(id, updates)
-    } catch (error) {
-      this.handleError(error, `Failed to update reminder ${id}`)
-      throw error
-    }
-  }
-
-  async deleteReminder(id: string): Promise<void> {
-    try {
-      const existingReminder = await this.getReminderById(id)
       await this.reminderRepository.delete(id)
     } catch (error) {
-      this.handleError(error, `Failed to delete reminder ${id}`)
+      this.handleError(error as Error, `Failed to delete reminder ${id}`)
       throw error
     }
   }
 
-  async snoozeReminder(id: string, minutes: number): Promise<IReminder> {
+  async snooze(id: string, snoozeUntil: Date): Promise<Reminder | null> {
     try {
-      const reminder = await this.getReminderById(id)
-      
-      if (reminder.status === 'completed') {
-        throw new ValidationError('Cannot snooze a completed reminder')
-      }
-
-      if (minutes <= 0) {
-        throw new ValidationError('Snooze duration must be positive')
-      }
-
-      const newDueDate = addMinutes(reminder.dueDate, minutes)
-      
       return await this.reminderRepository.update(id, {
-        dueDate: newDueDate,
         status: 'snoozed',
-        updatedAt: new Date()
+        snoozeUntil: snoozeUntil.toISOString()
       })
     } catch (error) {
-      this.handleError(error, `Failed to snooze reminder ${id}`)
+      this.handleError(error as Error, `Failed to snooze reminder ${id}`)
       throw error
     }
   }
 
-  async markAsCompleted(id: string): Promise<IReminder> {
+  async markCompleted(id: string): Promise<Reminder | null> {
     try {
-      const reminder = await this.getReminderById(id)
-      
       return await this.reminderRepository.update(id, {
-        status: 'completed',
-        updatedAt: new Date()
+        status: 'completed'
       })
     } catch (error) {
-      this.handleError(error, `Failed to mark reminder ${id} as completed`)
+      this.handleError(error as Error, `Failed to mark reminder ${id} as completed`)
       throw error
     }
   }
 
-  async getUpcomingReminders(minutesAhead: number = 60): Promise<IReminder[]> {
+  async findUpcoming(limit: number = 10): Promise<Reminder[]> {
     try {
-      const now = new Date()
-      const futureTime = addMinutes(now, minutesAhead)
-      
-      return await this.reminderRepository.findUpcoming(now, futureTime)
+      return await this.reminderRepository.findUpcoming(limit)
     } catch (error) {
-      this.handleError(error, 'Failed to get upcoming reminders')
+      this.handleError(error as Error, 'Failed to find upcoming reminders')
       throw error
     }
   }
 
-  async getOverdueReminders(): Promise<IReminder[]> {
+  async findOverdue(): Promise<Reminder[]> {
     try {
-      const now = new Date()
-      return await this.reminderRepository.findOverdue(now)
+      return await this.reminderRepository.findOverdue()
     } catch (error) {
-      this.handleError(error, 'Failed to get overdue reminders')
+      this.handleError(error as Error, 'Failed to find overdue reminders')
       throw error
+    }
+  }
+
+  async findByStatus(status: ReminderStatus[]): Promise<Reminder[]> {
+    try {
+      return await this.reminderRepository.findByStatus(status)
+    } catch (error) {
+      this.handleError(error as Error, `Failed to find reminders by status`)
+      throw error
+    }
+  }  protected validate(data: CreateReminderData | UpdateReminderData): { success: boolean; errors: any[] } {
+    const errors: any[] = []
+
+    if ('title' in data && data.title !== undefined) {
+      if (!data.title || data.title.trim().length === 0) {
+        errors.push({ field: 'title', message: 'Title is required', code: 'REQUIRED' })
+      } else if (data.title.length > 200) {
+        errors.push({ field: 'title', message: 'Title must be less than 200 characters', code: 'TOO_LONG' })
+      }
+    }
+
+    if ('scheduledAt' in data && data.scheduledAt !== undefined) {
+      if (!data.scheduledAt) {
+        errors.push({ field: 'scheduledAt', message: 'Scheduled date is required', code: 'REQUIRED' })
+      } else {
+        const scheduledDate = new Date(data.scheduledAt)
+        if (isNaN(scheduledDate.getTime())) {
+          errors.push({ field: 'scheduledAt', message: 'Invalid scheduled date format', code: 'INVALID_FORMAT' })
+        }
+      }
+    }
+
+    if ('metadata' in data && data.metadata !== undefined && data.metadata.priority !== undefined) {
+      const validPriorities = ['low', 'medium', 'high', 'urgent']
+      if (!validPriorities.includes(data.metadata.priority as string)) {
+        errors.push({ field: 'priority', message: 'Invalid priority value', code: 'INVALID_VALUE' })
+      }
+    }
+
+    return {
+      success: errors.length === 0,
+      errors
     }
   }
 }

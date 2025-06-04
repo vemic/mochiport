@@ -1,7 +1,7 @@
-import { IConversation, IMessage, IReminder, IDraft } from "@ai-chat/shared"
+import { Conversation, Message, Reminder, Draft } from "@ai-chat/shared"
 
 // Mock conversations for development
-export const mockConversations: IConversation[] = [
+export const mockConversations: Conversation[] = [
   {
     id: "conversation_1",
     title: "AI アシスタントとの初回対話",
@@ -86,14 +86,15 @@ export const mockConversations: IConversation[] = [
 ]
 
 // Mock reminders for development
-export const mockReminders: IReminder[] = [
+export const mockReminders: Reminder[] = [
   {
     id: "reminder_1",
     title: "TypeScript 学習の続き",
     description: "React との組み合わせでのパフォーマンス最適化について調べる",
     dueDate: new Date("2024-01-05T10:00:00Z"),
+    scheduledAt: new Date("2024-01-05T09:30:00Z"),
     priority: "high",
-    type: "followup",
+    type: "follow_up",
     status: "pending",
     conversationId: "conversation_2",
     createdAt: new Date("2024-01-02T14:35:00Z"),
@@ -108,6 +109,7 @@ export const mockReminders: IReminder[] = [
     title: "データベース設計の回答を確認",
     description: "AI からの回答が来たら内容を確認し、実装に反映する",
     dueDate: new Date("2024-01-04T16:00:00Z"),
+    scheduledAt: new Date("2024-01-04T15:30:00Z"),
     priority: "medium",
     type: "task",
     status: "pending",
@@ -123,24 +125,27 @@ export const mockReminders: IReminder[] = [
     title: "週次レビューミーティング",
     description: "チーム全体での進捗確認と次週の計画を立てる",
     dueDate: new Date("2024-01-06T14:00:00Z"),
+    scheduledAt: new Date("2024-01-06T13:45:00Z"),
     priority: "medium",
     type: "meeting",
     status: "pending",
+    conversationId: "conversation_1",
     createdAt: new Date("2024-01-01T08:00:00Z"),
     updatedAt: new Date("2024-01-01T08:00:00Z"),
     metadata: {
       recurring: "weekly",
       attendees: ["team_lead", "developers"]
     }
-  },
-  {
+  },  {
     id: "reminder_4",
     title: "完了済みのタスク例",
     description: "この説明は完了済みのリマインダーの例です",
     dueDate: new Date("2024-01-01T12:00:00Z"),
+    scheduledAt: new Date("2024-01-01T11:45:00Z"),
     priority: "low",
     type: "general",
     status: "completed",
+    conversationId: "conversation_1",
     createdAt: new Date("2023-12-30T10:00:00Z"),
     updatedAt: new Date("2024-01-01T12:30:00Z"),
     metadata: {
@@ -150,12 +155,13 @@ export const mockReminders: IReminder[] = [
 ]
 
 // Mock drafts for development
-export const mockDrafts: IDraft[] = [
+export const mockDrafts: Draft[] = [
   {
     id: "draft_1",
     title: "React Query の実装案",
     content: "```typescript\n// React Query の基本設定\nimport { QueryClient, QueryClientProvider } from '@tanstack/react-query'\n\nconst queryClient = new QueryClient({\n  defaultOptions: {\n    queries: {\n      staleTime: 1000 * 60 * 5, // 5分\n      cacheTime: 1000 * 60 * 30, // 30分\n    },\n  },\n})\n\n// カスタムフック例\nexport const useConversations = () => {\n  return useQuery({\n    queryKey: ['conversations'],\n    queryFn: () => conversationApi.getConversations(),\n  })\n}\n```\n\nこの実装では、データのキャッシュ戦略を適切に設定し...",
     status: "draft",
+    type: "analysis",
     conversationId: "conversation_2",
     createdAt: new Date("2024-01-02T15:00:00Z"),
     updatedAt: new Date("2024-01-02T15:45:00Z"),
@@ -169,18 +175,19 @@ export const mockDrafts: IDraft[] = [
     title: "UI コンポーネントの改善提案",
     content: "# UI コンポーネントの改善提案\n\n## 現在の課題\n1. コンポーネントの再利用性が低い\n2. 一貫性のないデザインシステム\n3. パフォーマンスの問題\n\n## 提案する解決策\n\n### 1. デザインシステムの統一\n- shadcn/ui ベースのコンポーネントライブラリを構築\n- 色、タイポグラフィ、スペーシングの標準化\n\n### 2. パフォーマンス最適化\n- React.memo() の適用\n- 必要な箇所での useMemo(), useCallback() の使用\n\n### 3. アクセシビリティの向上\n- ARIA ラベルの追加\n- キーボードナビゲーションの改善\n\n## 実装スケジュール\n- Week 1: デザインシステムの定義\n- Week 2-3: 基本コンポーネントの実装\n- Week 4: 既存コンポーネントの移行",
     status: "draft",
+    type: "summary",
     createdAt: new Date("2024-01-03T11:30:00Z"),
     updatedAt: new Date("2024-01-03T16:20:00Z"),
     metadata: {
       autoSaveCount: 8,
       wordCount: 234
     }
-  },
-  {
+  },  {
     id: "draft_3",
     title: "アーカイブされたドラフト例",
     content: "これは古いアイデアのドラフトです。現在は使用していませんが、参考として保存されています。",
     status: "archived",
+    type: "note",
     createdAt: new Date("2023-12-15T09:00:00Z"),
     updatedAt: new Date("2023-12-20T14:00:00Z"),
     metadata: {

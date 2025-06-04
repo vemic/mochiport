@@ -2,12 +2,11 @@ import { ValidationResult } from '@ai-chat/shared';
 import { ValidationError } from '../utils/errors';
 
 export abstract class BaseService<T, TCreate, TUpdate> {
-  abstract validate(data: Partial<T>): Promise<ValidationResult>;
-  
-  protected async validateAndThrow(data: Partial<T>): Promise<void> {
-    const validation = await this.validate(data);
-    if (!validation.isValid) {
-      throw new ValidationError('Validation failed', { errors: validation.errors });
+  protected abstract validate(data: TCreate | TUpdate): { success: boolean; errors: any[] };
+    protected validateAndThrow(data: TCreate | TUpdate): void {
+    const validation = this.validate(data);
+    if (!validation.success) {
+      throw new ValidationError('Validation failed', validation.errors);
     }
   }
   
@@ -17,5 +16,10 @@ export abstract class BaseService<T, TCreate, TUpdate> {
   
   protected getCurrentTimestamp(): Date {
     return new Date();
+  }
+
+  protected handleError(error: Error, message: string): void {
+    console.error(`${message}:`, error);
+    // 追加のエラーハンドリングロジックをここに追加可能
   }
 }

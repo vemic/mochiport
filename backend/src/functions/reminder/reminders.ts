@@ -1,305 +1,217 @@
-import { app, HttpRequest, HttpResponse, InvocationContext } from "@azure/functions"
-import { ReminderService } from "../../services/ReminderService"
-import { ValidationError, NotFoundError } from "../../utils/errors"
-import { HTTP_STATUS } from "@ai-chat/shared"
-import { CreateReminderSchema, UpdateReminderSchema } from "@ai-chat/shared/validation/schemas"
+import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
+import { ReminderService } from '../../services/ReminderService'
+import type { ReminderFilters, CreateReminderData, UpdateReminderData } from '@ai-chat/shared'
 
 const reminderService = new ReminderService()
 
-export async function getReminders(request: HttpRequest, context: InvocationContext): Promise<HttpResponse> {
+export async function getReminders(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   try {
-    context.log('Getting reminders')
-    
-    const page = parseInt(request.query.get('page') || '1')
-    const limit = parseInt(request.query.get('limit') || '10')
-    const status = request.query.get('status') || undefined
-    const priority = request.query.get('priority') || undefined
-    
-    const result = await reminderService.getReminders({ 
-      page, 
-      limit, 
-      status: status as any,
-      priority: priority as any
-    })
-    
+    const filters: ReminderFilters = {
+      page: Number(request.query.get('page')) || 1,
+      limit: Number(request.query.get('limit')) || 10,
+      status: request.query.get('status') as any,
+      priority: request.query.get('priority') as any,
+      conversationId: request.query.get('conversationId') || undefined,
+      title: request.query.get('title') || undefined,
+      description: request.query.get('description') || undefined
+    }
+
+    const result = await reminderService.findMany(filters)
+
     return {
-      status: HTTP_STATUS.OK,
-      jsonBody: {
-        success: true,
-        data: result.data,
-        pagination: result.pagination
-      }
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(result)
     }
   } catch (error) {
     context.error('Error getting reminders:', error)
-    
     return {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      jsonBody: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         success: false,
-        error: 'Failed to get reminders'
-      }
+        message: 'Internal server error',
+        timestamp: new Date().toISOString()
+      })
     }
   }
 }
 
-export async function getReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponse> {
+export async function getReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   try {
     const id = request.params.id
-    
     if (!id) {
-      throw new ValidationError('Reminder ID is required')
-    }
-    
-    const reminder = await reminderService.getReminderById(id)
-    
-    return {
-      status: HTTP_STATUS.OK,
-      jsonBody: {
-        success: true,
-        data: reminder
+      return {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: false,
+          message: 'Reminder ID is required',
+          timestamp: new Date().toISOString()
+        })
       }
+    }
+
+    const reminder = await reminderService.findById(id)
+    if (!reminder) {
+      return {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: false,
+          message: 'Reminder not found',
+          timestamp: new Date().toISOString()
+        })
+      }
+    }
+
+    return {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        data: reminder,
+        timestamp: new Date().toISOString()
+      })
     }
   } catch (error) {
     context.error('Error getting reminder:', error)
-    
-    if (error instanceof NotFoundError) {
-      return {
-        status: HTTP_STATUS.NOT_FOUND,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
-    if (error instanceof ValidationError) {
-      return {
-        status: HTTP_STATUS.BAD_REQUEST,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
     return {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      jsonBody: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         success: false,
-        error: 'Failed to get reminder'
-      }
+        message: 'Internal server error',
+        timestamp: new Date().toISOString()
+      })
     }
   }
 }
 
-export async function createReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponse> {
+export async function createReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   try {
-    const body = await request.json()
-    
-    // Validate request body
-    const validationResult = CreateReminderSchema.safeParse(body)
-    if (!validationResult.success) {
-      throw new ValidationError('Invalid request body: ' + validationResult.error.message)
-    }
-    
-    const reminder = await reminderService.createReminder(validationResult.data)
-    
+    const body = await request.text()
+    const data: CreateReminderData = JSON.parse(body)
+
+    const reminder = await reminderService.create(data)
+
     return {
-      status: HTTP_STATUS.CREATED,
-      jsonBody: {
+      status: 201,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         success: true,
-        data: reminder
-      }
+        data: reminder,
+        timestamp: new Date().toISOString()
+      })
     }
   } catch (error) {
     context.error('Error creating reminder:', error)
-    
-    if (error instanceof ValidationError) {
-      return {
-        status: HTTP_STATUS.BAD_REQUEST,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
     return {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      jsonBody: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         success: false,
-        error: 'Failed to create reminder'
-      }
+        message: 'Internal server error',
+        timestamp: new Date().toISOString()
+      })
     }
   }
 }
 
-export async function updateReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponse> {
+export async function updateReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   try {
     const id = request.params.id
-    
     if (!id) {
-      throw new ValidationError('Reminder ID is required')
-    }
-    
-    const body = await request.json()
-    
-    // Validate request body
-    const validationResult = UpdateReminderSchema.safeParse(body)
-    if (!validationResult.success) {
-      throw new ValidationError('Invalid request body: ' + validationResult.error.message)
-    }
-    
-    const reminder = await reminderService.updateReminder(id, validationResult.data)
-    
-    return {
-      status: HTTP_STATUS.OK,
-      jsonBody: {
-        success: true,
-        data: reminder
+      return {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: false,
+          message: 'Reminder ID is required',
+          timestamp: new Date().toISOString()
+        })
       }
+    }
+
+    const body = await request.text()
+    const data: UpdateReminderData = JSON.parse(body)
+
+    const reminder = await reminderService.update(id, data)
+    if (!reminder) {
+      return {
+        status: 404,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: false,
+          message: 'Reminder not found',
+          timestamp: new Date().toISOString()
+        })
+      }
+    }
+
+    return {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        data: reminder,
+        timestamp: new Date().toISOString()
+      })
     }
   } catch (error) {
     context.error('Error updating reminder:', error)
-    
-    if (error instanceof NotFoundError) {
-      return {
-        status: HTTP_STATUS.NOT_FOUND,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
-    if (error instanceof ValidationError) {
-      return {
-        status: HTTP_STATUS.BAD_REQUEST,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
     return {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      jsonBody: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         success: false,
-        error: 'Failed to update reminder'
-      }
+        message: 'Internal server error',
+        timestamp: new Date().toISOString()
+      })
     }
   }
 }
 
-export async function deleteReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponse> {
+export async function deleteReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   try {
     const id = request.params.id
-    
     if (!id) {
-      throw new ValidationError('Reminder ID is required')
-    }
-    
-    await reminderService.deleteReminder(id)
-    
-    return {
-      status: HTTP_STATUS.NO_CONTENT,
-      jsonBody: {
-        success: true
+      return {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: false,
+          message: 'Reminder ID is required',
+          timestamp: new Date().toISOString()
+        })
       }
+    }
+
+    await reminderService.delete(id)
+
+    return {
+      status: 204,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        success: true,
+        timestamp: new Date().toISOString()
+      })
     }
   } catch (error) {
     context.error('Error deleting reminder:', error)
-    
-    if (error instanceof NotFoundError) {
-      return {
-        status: HTTP_STATUS.NOT_FOUND,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
-    if (error instanceof ValidationError) {
-      return {
-        status: HTTP_STATUS.BAD_REQUEST,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
     return {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      jsonBody: {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         success: false,
-        error: 'Failed to delete reminder'
-      }
+        message: 'Internal server error',
+        timestamp: new Date().toISOString()
+      })
     }
   }
 }
 
-export async function snoozeReminder(request: HttpRequest, context: InvocationContext): Promise<HttpResponse> {
-  try {
-    const id = request.params.id
-    
-    if (!id) {
-      throw new ValidationError('Reminder ID is required')
-    }
-    
-    const body = await request.json()
-    const { minutes } = body
-    
-    if (!minutes || typeof minutes !== 'number') {
-      throw new ValidationError('Snooze minutes is required and must be a number')
-    }
-    
-    const reminder = await reminderService.snoozeReminder(id, minutes)
-    
-    return {
-      status: HTTP_STATUS.OK,
-      jsonBody: {
-        success: true,
-        data: reminder
-      }
-    }
-  } catch (error) {
-    context.error('Error snoozing reminder:', error)
-    
-    if (error instanceof NotFoundError) {
-      return {
-        status: HTTP_STATUS.NOT_FOUND,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
-    if (error instanceof ValidationError) {
-      return {
-        status: HTTP_STATUS.BAD_REQUEST,
-        jsonBody: {
-          success: false,
-          error: error.message
-        }
-      }
-    }
-    
-    return {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      jsonBody: {
-        success: false,
-        error: 'Failed to snooze reminder'
-      }
-    }
-  }
-}
-
-// Azure Functions app registration
+// Register Azure Functions
 app.http('getReminders', {
   methods: ['GET'],
   route: 'reminders',
@@ -333,11 +245,4 @@ app.http('deleteReminder', {
   route: 'reminders/{id}',
   authLevel: 'anonymous',
   handler: deleteReminder
-})
-
-app.http('snoozeReminder', {
-  methods: ['POST'],
-  route: 'reminders/{id}/snooze',
-  authLevel: 'anonymous',
-  handler: snoozeReminder
 })

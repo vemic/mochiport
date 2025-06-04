@@ -12,8 +12,8 @@ export class ApplicationError extends Error {
 }
 
 export class ValidationError extends ApplicationError {
-  constructor(message: string, details?: Record<string, unknown>) {
-    super(message, 'VALIDATION_ERROR', 400, details);
+  constructor(message: string, errors?: any[]) {
+    super(message, 'VALIDATION_ERROR', 400, errors ? { errors } : undefined);
     this.name = 'ValidationError';
   }
 }

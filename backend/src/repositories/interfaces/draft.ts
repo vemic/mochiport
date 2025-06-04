@@ -1,34 +1,34 @@
-import { IBaseRepository } from "./base"
-import { IDraft, GetDraftsFilters, PaginatedResponse } from "@ai-chat/shared"
+import { BaseRepository } from "./base"
+import { Draft, DraftFilters, PaginatedResponse, CreateDraftData, UpdateDraftData } from "@ai-chat/shared"
 
-export interface IDraftRepository extends IBaseRepository<IDraft> {
+export interface DraftRepository extends BaseRepository<Draft, CreateDraftData, UpdateDraftData, DraftFilters> {
   /**
    * Find drafts with filters and pagination
    */
-  findMany(filters: GetDraftsFilters): Promise<PaginatedResponse<IDraft>>
+  findMany(filters: DraftFilters): Promise<PaginatedResponse<Draft>>
 
   /**
    * Find drafts by conversation ID
    */
-  findByConversationId(conversationId: string): Promise<IDraft[]>
+  findByConversationId(conversationId: string): Promise<Draft[]>
 
   /**
    * Find drafts by status
    */
-  findByStatus(status: IDraft['status']): Promise<IDraft[]>
+  findByStatus(status: Draft['status']): Promise<Draft[]>
 
   /**
    * Find recent drafts
    */
-  findRecent(limit: number): Promise<IDraft[]>
+  findRecent(limit: number): Promise<Draft[]>
 
   /**
    * Search drafts by content or title
    */
-  search(query: string): Promise<IDraft[]>
+  search(query: string): Promise<Draft[]>
 
   /**
    * Count total drafts
    */
-  count(filters?: Partial<GetDraftsFilters>): Promise<number>
+  count(filters?: Partial<DraftFilters>): Promise<number>
 }

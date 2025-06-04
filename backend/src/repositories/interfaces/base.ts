@@ -2,12 +2,12 @@ import { PaginationParams, PaginatedResponse } from '@ai-chat/shared';
 
 // ベースリポジトリインターフェース
 export interface BaseRepository<T, TCreate, TUpdate, TFilters = Record<string, unknown>> {
-  getById(id: string): Promise<T | null>;
-  getAll(filters?: TFilters): Promise<PaginatedResponse<T>>;
+  findById(id: string): Promise<T | null>;
+  findMany(filters: TFilters): Promise<PaginatedResponse<T>>;
   create(data: TCreate): Promise<T>;
-  update(id: string, data: TUpdate): Promise<T>;
+  update(id: string, data: TUpdate): Promise<T | null>;
   delete(id: string): Promise<void>;
-  exists(id: string): Promise<boolean>;
+  count(filters?: Partial<TFilters>): Promise<number>;
 }
 
 // 検索機能付きリポジトリ

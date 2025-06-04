@@ -1,16 +1,22 @@
-import { IConversationRepository } from "./interfaces/conversation"
-import { IConversation, GetConversationsFilters, PaginatedResponse } from "@ai-chat/shared"
+import { ConversationRepository as IConversationRepository } from "./interfaces/conversation"
+import { 
+  Conversation, 
+  ConversationFilters, 
+  PaginatedResponse,
+  CreateConversationData,
+  UpdateConversationData 
+} from "@ai-chat/shared"
 
 export class ConversationRepository implements IConversationRepository {
   // In-memory storage for development - replace with actual database
-  private conversations: IConversation[] = []
+  private conversations: Conversation[] = []
   private nextId = 1
 
-  async findById(id: string): Promise<IConversation | null> {
+  async findById(id: string): Promise<Conversation | null> {
     return this.conversations.find(conversation => conversation.id === id) || null
   }
 
-  async findMany(filters: GetConversationsFilters): Promise<PaginatedResponse<IConversation>> {
+  async findMany(filters: ConversationFilters): Promise<PaginatedResponse<Conversation>> {
     let filteredConversations = [...this.conversations]
 
     // Apply status filter
@@ -40,23 +46,24 @@ export class ConversationRepository implements IConversationRepository {
     const paginatedConversations = filteredConversations.slice(offset, offset + limit)
     const total = filteredConversations.length
     const totalPages = Math.ceil(total / limit)
-
-    return {
+      return {
       data: paginatedConversations,
       pagination: {
-        currentPage: page,
+        page,
+        limit,
+        total,
         totalPages,
-        totalItems: total,
-        itemsPerPage: limit,
         hasNext: page < totalPages,
-        hasPrev: page > 1
-      }
+        hasPrevious: page > 1
+      },
+      success: true,
+      timestamp: new Date().toISOString()
     }
   }
 
-  async create(data: Omit<IConversation, 'id' | 'createdAt' | 'updatedAt'>): Promise<IConversation> {
+  async create(data: Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'>): Promise<Conversation> {
     const now = new Date()
-    const newConversation: IConversation = {
+    const newConversation: Conversation = {
       ...data,
       id: `conversation_${this.nextId++}`,
       createdAt: now,
@@ -67,7 +74,7 @@ export class ConversationRepository implements IConversationRepository {
     return newConversation
   }
 
-  async update(id: string, data: Partial<IConversation>): Promise<IConversation> {
+  async update(id: string, data: Partial<Conversation>): Promise<Conversation> {
     const index = this.conversations.findIndex(conversation => conversation.id === id)
     if (index === -1) {
       throw new Error(`Conversation with ID ${id} not found`)
@@ -92,17 +99,25 @@ export class ConversationRepository implements IConversationRepository {
     this.conversations.splice(index, 1)
   }
 
-  async findByStatus(status: IConversation['status']): Promise<IConversation[]> {
+  async getByStatus(status: Conversation['status']): Promise<Conversation[]> {
     return this.conversations.filter(conversation => conversation.status === status)
   }
 
-  async findRecent(limit: number): Promise<IConversation[]> {
+  async getRecentConversations(limit = 10): Promise<Conversation[]> {
     return this.conversations
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
       .slice(0, limit)
   }
 
-  async search(query: string): Promise<IConversation[]> {
+  async archiveConversation(id: string): Promise<Conversation> {
+    return this.update(id, { status: 'archived' })
+  }
+
+  async restoreConversation(id: string): Promise<Conversation> {
+    return this.update(id, { status: 'active' })
+  }
+
+  async search(query: string): Promise<Conversation[]> {
     const searchLower = query.toLowerCase()
     return this.conversations.filter(conversation => 
       conversation.title.toLowerCase().includes(searchLower) ||
@@ -112,7 +127,7 @@ export class ConversationRepository implements IConversationRepository {
     )
   }
 
-  async count(filters?: Partial<GetConversationsFilters>): Promise<number> {
+  async count(filters?: Partial<ConversationFilters>): Promise<number> {
     if (!filters) {
       return this.conversations.length
     }
@@ -134,5 +149,19 @@ export class ConversationRepository implements IConversationRepository {
     }
 
     return filteredConversations.length
+  }
+
+  // BaseRepositoryインターフェース用メソッド
+  async getById(id: string): Promise<Conversation | null> {
+    return this.findById(id)
+  }
+
+  async getAll(filters?: ConversationFilters): Promise<PaginatedResponse<Conversation>> {
+    return this.findMany(filters || {})
+  }
+
+  async exists(id: string): Promise<boolean> {
+    const conversation = await this.findById(id)
+    return conversation !== null
   }
 }

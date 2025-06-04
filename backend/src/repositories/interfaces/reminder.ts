@@ -1,44 +1,12 @@
-import { IBaseRepository } from "./base"
-import { IReminder, GetRemindersFilters, PaginatedResponse } from "@ai-chat/shared"
+import type { Reminder, CreateReminderData, UpdateReminderData, ReminderFilters, ReminderStatus } from '@ai-chat/shared'
+import type { BaseRepository } from './base'
 
-export interface IReminderRepository extends IBaseRepository<IReminder> {
-  /**
-   * Find reminders with filters and pagination
-   */
-  findMany(filters: GetRemindersFilters): Promise<PaginatedResponse<IReminder>>
-
-  /**
-   * Find upcoming reminders within a time range
-   */
-  findUpcoming(startDate: Date, endDate: Date): Promise<IReminder[]>
-
-  /**
-   * Find overdue reminders
-   */
-  findOverdue(currentDate: Date): Promise<IReminder[]>
-
-  /**
-   * Find reminders by conversation ID
-   */
-  findByConversationId(conversationId: string): Promise<IReminder[]>
-
-  /**
-   * Find reminders by status
-   */
-  findByStatus(status: IReminder['status']): Promise<IReminder[]>
-
-  /**
-   * Find reminders by priority
-   */
-  findByPriority(priority: IReminder['priority']): Promise<IReminder[]>
-
-  /**
-   * Find reminders by type
-   */
-  findByType(type: IReminder['type']): Promise<IReminder[]>
-
-  /**
-   * Count total reminders
-   */
-  count(filters?: Partial<GetRemindersFilters>): Promise<number>
+export interface ReminderRepository extends BaseRepository<Reminder, CreateReminderData, UpdateReminderData, ReminderFilters> {
+  findByStatus(status: ReminderStatus[]): Promise<Reminder[]>
+  findByConversation(conversationId: string): Promise<Reminder[]>
+  findUpcoming(limit?: number): Promise<Reminder[]>
+  findOverdue(): Promise<Reminder[]>
+  search(query: string, filters?: Partial<ReminderFilters>): Promise<Reminder[]>
+  markAsCompleted(id: string): Promise<Reminder>
+  snooze(id: string, minutes: number): Promise<Reminder>
 }
