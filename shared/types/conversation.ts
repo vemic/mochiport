@@ -11,7 +11,6 @@ export interface Conversation {
 
 export interface Message {
   id: string;
-  conversationId: string;
   content: string;
   role: MessageRole;
   timestamp: Date;
@@ -27,6 +26,8 @@ export interface ConversationMetadata {
   priority?: 'low' | 'medium' | 'high';
   category?: string;
   aiModel?: string;
+  topic?: string;
+  publishedFromDraft?: string;
 }
 
 export interface MessageMetadata {
@@ -46,6 +47,7 @@ export interface UpdateConversationData {
   title?: string;
   status?: ConversationStatus;
   metadata?: Partial<ConversationMetadata>;
+  messages?: Message[];
 }
 
 export interface CreateMessageData {
@@ -53,4 +55,30 @@ export interface CreateMessageData {
   content: string;
   role: MessageRole;
   metadata?: Partial<MessageMetadata>;
+}
+
+// フィルター用の型
+export interface ConversationFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: ConversationStatus;
+  tags?: string[];
+  category?: string;
+  priority?: 'low' | 'medium' | 'high';
+  dateFrom?: Date;
+  dateTo?: Date;
+}
+
+// ページネーション応答の型
+export interface PaginatedResponse<T> {
+  data: T[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+  };
 }

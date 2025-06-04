@@ -17,7 +17,7 @@ export interface Reminder {
 
 export type ReminderStatus = 'pending' | 'completed' | 'cancelled' | 'overdue' | 'snoozed';
 
-export type ReminderType = 'follow_up' | 'deadline' | 'meeting' | 'custom';
+export type ReminderType = 'follow_up' | 'deadline' | 'meeting' | 'custom' | 'task' | 'general';
 
 export type ReminderPriority = 'low' | 'medium' | 'high';
 
@@ -26,6 +26,11 @@ export interface ReminderMetadata {
   category?: string;
   tags?: string[];
   notificationSettings?: NotificationSettings;
+  source?: string;
+  estimatedDuration?: number;
+  recurring?: string;
+  attendees?: string[];
+  completedBy?: string;
 }
 
 export interface NotificationSettings {
@@ -50,5 +55,25 @@ export interface UpdateReminderData {
   scheduledAt?: Date;
   status?: ReminderStatus;
   type?: ReminderType;
+  snoozeUntil?: string;
   metadata?: Partial<ReminderMetadata>;
+}
+
+// リマインダーフィルター用の型
+export interface ReminderFilters {
+  page?: number;
+  limit?: number;
+  offset?: number;
+  status?: ReminderStatus | ReminderStatus[];
+  type?: ReminderType | ReminderType[];
+  priority?: ReminderPriority | ReminderPriority[];
+  conversationId?: string;
+  title?: string;
+  description?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  createdAfter?: Date;
+  createdBefore?: Date;
+  scheduledAfter?: Date;
+  scheduledBefore?: Date;
 }

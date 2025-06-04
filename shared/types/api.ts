@@ -1,4 +1,8 @@
 // API関連の型定義
+import type { ConversationStatus } from './conversation';
+import type { ReminderStatus, ReminderType } from './reminder';
+import type { DraftStatus, DraftType } from './draft';
+
 export interface ApiResponse<T = unknown> {
   data: T;
   success: boolean;
@@ -33,8 +37,7 @@ export interface PaginationInfo {
 export interface PaginationParams {
   page?: number;
   limit?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  offset?: number;
 }
 
 // フィルタリング用の型
@@ -47,32 +50,20 @@ export interface ConversationFilters extends PaginationParams {
   search?: string;
 }
 
-export interface ReminderFilters extends PaginationParams {
-  status?: ReminderStatus;
-  type?: ReminderType;
-  dateFrom?: string;
-  dateTo?: string;
-  conversationId?: string;
-}
-
-export interface DraftFilters extends PaginationParams {
-  status?: DraftStatus;
-  type?: DraftType;
-  conversationId?: string;
-  author?: string;
-  tags?: string[];
-}
+// Note: Extended filter interfaces are defined in their respective type files
+// and re-exported below for consistency
 
 // バリデーション結果の型
+export interface ValidationError {
+  field: string;
+  message: string;
+  code?: string;
+}
+
 export interface ValidationResult {
   isValid: boolean;
   errors: ValidationError[];
-}
-
-export interface ValidationError {
-  field: string;
-  code: string;
-  message: string;
+  warnings?: string[];
 }
 
 // re-export from other type files

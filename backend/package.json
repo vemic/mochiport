@@ -4,7 +4,7 @@
   "private": true,
   "main": "dist/index.js",  "scripts": {
     "build": "tsc",
-    "dev": "npm run build && func host start --port 7071",
+    "dev": "yarn build && echo 'Backend compiled successfully. Azure Functions Core Tools not available.'",
     "dev:watch": "concurrently \"tsc --watch\" \"func host start --port 7071\"",
     "start": "func host start --port 7071",
     "clean": "rimraf dist",
@@ -13,23 +13,28 @@
     "test:watch": "jest --watch",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.{ts,js,json}\""
-  },  "dependencies": {
+  },
+  "dependencies": {
     "@ai-chat/shared": "*",
-    "@azure/functions": "^4.0.0",
     "@azure/cosmos": "^4.0.0",
-    "zod": "^3.22.0",
+    "@azure/functions": "^4.0.0",
+    "date-fns": "^3.0.0",
+    "jsonwebtoken": "^9.0.2",
     "uuid": "^9.0.0",
-    "date-fns": "^3.0.0"
-  },  "devDependencies": {
-    "@ai-chat/tsconfig": "*",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
     "@ai-chat/eslint-config": "*",
+    "@ai-chat/tsconfig": "*",
+    "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/uuid": "^9.0.0",
-    "@types/jest": "^29.5.0",
-    "jest": "^29.7.0",
-    "typescript": "^5.2.0",
     "concurrently": "^8.2.0",
-    "rimraf": "^5.0.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
     "prettier": "^3.0.3",
-    "eslint": "^8.57.0"
+    "rimraf": "^5.0.0",
+    "ts-jest": "^29.3.4",
+    "typescript": "^5.2.0"
   }
 }

@@ -1,5 +1,4 @@
 {
-  "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
@@ -23,7 +22,6 @@
   },
   "globalDependencies": [
     "package.json",
-    "pnpm-workspace.yaml",
     "turbo.json",
     ".env",
     ".env.local"

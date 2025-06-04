@@ -59,16 +59,16 @@ export const pick = <T extends Record<string, unknown>, K extends keyof T>(
   return result;
 };
 
-export const isEmpty = (value: unknown): boolean => {
-  if (value === null || value === undefined) return true;
-  if (typeof value === 'string') return value.length === 0;
-  if (Array.isArray(value)) return value.length === 0;
-  if (typeof value === 'object') return Object.keys(value).length === 0;
-  return false;
-};
-
 export const isObject = (value: unknown): value is Record<string, unknown> => {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
+};
+
+export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (!isObject(value)) return false;
+  
+  // 純粋なオブジェクト（{}またはnew Object()で作成）かチェック
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === null || prototype === Object.prototype;
 };
 
 // ネストされたオブジェクトプロパティの取得
@@ -107,9 +107,9 @@ export const set = (obj: Record<string, unknown>, path: string, value: unknown):
 // オブジェクトのマージ
 export const merge = <T extends Record<string, unknown>>(
   target: T,
-  ...sources: Partial<T>[]
+  ...sources: Array<Partial<T>>
 ): T => {
-  const result = { ...target };
+  const result = { ...target } as Record<string, unknown>;
   
   for (const source of sources) {
     for (const key in source) {
@@ -118,13 +118,16 @@ export const merge = <T extends Record<string, unknown>>(
         const targetValue = result[key];
         
         if (isObject(sourceValue) && isObject(targetValue)) {
-          result[key] = merge(targetValue, sourceValue) as T[Extract<keyof T, string>];
+          const mergedValue = merge(
+            targetValue as Record<string, unknown>, 
+            sourceValue as Record<string, unknown>
+          );
+          result[key] = mergedValue;
         } else {
-          result[key] = sourceValue as T[Extract<keyof T, string>];
+          result[key] = sourceValue;
         }
       }
-    }
-  }
+    }  }
   
-  return result;
+  return result as T;
 };

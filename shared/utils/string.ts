@@ -1,12 +1,21 @@
 // 文字列関連のユーティリティ
 export const truncate = (text: string, maxLength: number, suffix: string = '...'): string => {
   if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength - suffix.length) + suffix;
+  
+  // 単語境界を考慮して切り詰める
+  const truncated = text.substring(0, maxLength - suffix.length);
+  const lastSpaceIndex = truncated.lastIndexOf(' ');
+  
+  if (lastSpaceIndex > 0) {
+    return truncated.substring(0, lastSpaceIndex) + suffix;
+  }
+  
+  return truncated + suffix;
 };
 
 export const capitalize = (text: string): string => {
   if (!text) return text;
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  return text.charAt(0).toUpperCase() + text.slice(1);
 };
 
 export const camelCase = (text: string): string => {
@@ -65,6 +74,9 @@ export const isValidEmail = (email: string): boolean => {
   return regex.test(email);
 };
 
+// エイリアス
+export const isEmail = isValidEmail;
+
 export const extractEmails = (text: string): string[] => {
   const regex = /[^\s@]+@[^\s@]+\.[^\s@]+/g;
   return text.match(regex) || [];
@@ -78,4 +90,8 @@ export const wordCount = (text: string): number => {
 export const readingTime = (text: string, wordsPerMinute: number = 200): number => {
   const words = wordCount(text);
   return Math.ceil(words / wordsPerMinute);
+};
+
+export const isEmpty = (text: string): boolean => {
+  return !text || text.trim().length === 0;
 };

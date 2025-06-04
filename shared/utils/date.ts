@@ -1,12 +1,43 @@
 // 日付関連のユーティリティ
-export const formatDate = (date: Date, format: 'short' | 'medium' | 'long' = 'medium'): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    short: { year: '2-digit', month: 'numeric', day: 'numeric' },
-    medium: { year: 'numeric', month: 'short', day: 'numeric' },
-    long: { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' },
-  }[format];
+export const formatDate = (date: Date | string | null | undefined, format?: string): string => {
+  // null, undefinedの処理
+  if (!date) {
+    return 'Invalid Date';
+  }
 
-  return new Intl.DateTimeFormat('ja-JP', options).format(date);
+  // 文字列の場合はDateオブジェクトに変換
+  let dateObj: Date;
+  if (typeof date === 'string') {
+    dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) {
+      return 'Invalid Date';
+    }
+  } else {
+    dateObj = date;
+    if (isNaN(dateObj.getTime())) {
+      return 'Invalid Date';
+    }
+  }
+
+  // カスタム形式が指定された場合
+  if (format) {
+    // 簡単な形式変換（より複雑な形式は date-fns などを使用することを推奨）
+    if (format === 'yyyy-MM-dd') {
+      return dateObj.toISOString().split('T')[0];
+    }
+    if (format === 'yyyy-MM-dd HH:mm') {
+      return dateObj.toISOString().slice(0, 16).replace('T', ' ');
+    }
+    if (format === 'yyyy/MM/dd') {
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      return `${year}/${month}/${day}`;
+    }
+  }
+
+  // デフォルト形式 (yyyy-MM-dd)
+  return dateObj.toISOString().split('T')[0];
 };
 
 export const formatDateTime = (date: Date): string => {
@@ -42,13 +73,27 @@ export const formatRelativeTime = (date: Date): string => {
   return rtf.format(0, 'second');
 };
 
-export const isValidDate = (date: unknown): date is Date => {
-  return date instanceof Date && !isNaN(date.getTime());
+export const isValidDate = (dateString: string): boolean => {
+  if (typeof dateString !== 'string') return false;
+  const parsed = new Date(dateString);
+  return !isNaN(parsed.getTime());
 };
 
-export const parseDate = (dateString: string): Date | null => {
-  const parsed = new Date(dateString);
-  return isValidDate(parsed) ? parsed : null;
+export const parseDate = (input: string | Date | null | undefined): Date | null => {
+  if (!input) {
+    return null;
+  }
+  
+  if (input instanceof Date) {
+    return input;
+  }
+  
+  if (typeof input === 'string') {
+    const parsed = new Date(input);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  
+  return null;
 };
 
 // 期間計算
