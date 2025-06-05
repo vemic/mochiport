@@ -1,11 +1,13 @@
 import { jest } from '@jest/globals'
-import { HttpRequest, InvocationContext } from '@azure/functions'
+import { HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
 import { 
   getConversations, 
   getConversation, 
   createConversation, 
   updateConversation, 
-  deleteConversation 
+  deleteConversation,
+  addMessage,
+  generateAIResponse
 } from '../../functions/chat/conversations'
 import { HTTP_STATUS } from '@ai-chat/shared'
 
@@ -14,22 +16,52 @@ describe('Conversations Functions', () => {
     log: jest.fn(),
     error: jest.fn(),
     warn: jest.fn(),
-    info: jest.fn()
-  } as unknown as InvocationContext
+    info: jest.fn()  } as unknown as InvocationContext
 
+  // 型安全なmockRequestを作成する関数
   const createMockRequest = (
     query?: Record<string, string>,
     params?: Record<string, string>,
     body?: any
-  ): HttpRequest => ({
-    query: new URLSearchParams(query || {}),
-    params: params || {},
-    headers: {},
-    json: jest.fn().mockResolvedValue(body),
-    text: jest.fn(),
-    arrayBuffer: jest.fn(),
-    formData: jest.fn(),
-  } as unknown as HttpRequest)
+  ): HttpRequest => {
+    const jsonMock = jest.fn<() => Promise<any>>();
+    jsonMock.mockResolvedValue(body);
+
+    const textMock = jest.fn<() => Promise<string>>();
+    textMock.mockResolvedValue('');
+
+    const arrayBufferMock = jest.fn<() => Promise<ArrayBuffer>>();
+    arrayBufferMock.mockResolvedValue(new ArrayBuffer(0));
+
+    const formDataMock = jest.fn<() => Promise<FormData>>();
+    formDataMock.mockResolvedValue(new FormData());
+
+    return {
+      query: new URLSearchParams(query || {}),
+      params: params || {},
+      headers: {},
+      json: jsonMock,
+      text: textMock,
+      arrayBuffer: arrayBufferMock,
+      formData: formDataMock,
+      method: 'GET',
+      url: 'http://localhost/api',
+      bodyUsed: false
+    } as unknown as HttpRequest;
+  };
+
+  // レスポンス形式を変換するヘルパー関数
+  const parseResponse = (response: HttpResponseInit): any => {
+    // 新しいAPIはjsonBodyを使用
+    if (response.jsonBody) {
+      return response.jsonBody;
+    }
+    // 古いAPIはbodyを文字列化したJSONとして使用
+    if (response.body) {
+      return JSON.parse(response.body as string);
+    }
+    return null;
+  }
 
   beforeEach(() => {
     jest.clearAllMocks()
@@ -42,9 +74,8 @@ describe('Conversations Functions', () => {
       const response = await getConversations(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.OK)
-      expect(response.headers?.['Content-Type']).toBe('application/json')
       
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(true)
       expect(body.data).toBeDefined()
       expect(body.pagination).toBeDefined()
@@ -58,7 +89,7 @@ describe('Conversations Functions', () => {
       const response = await getConversations(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.OK)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(true)
     })
 
@@ -82,7 +113,7 @@ describe('Conversations Functions', () => {
       const response = await getConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.OK)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(true)
       expect(body.data).toBeDefined()
       expect(body.data.id).toBe('123')
@@ -94,7 +125,7 @@ describe('Conversations Functions', () => {
       const response = await getConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(false)
       expect(body.error).toContain('required')
     })
@@ -108,7 +139,7 @@ describe('Conversations Functions', () => {
       const response = await createConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.CREATED)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(true)
       expect(body.data).toBeDefined()
       expect(body.data.title).toBe('New Conversation')
@@ -120,7 +151,7 @@ describe('Conversations Functions', () => {
       const response = await createConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(false)
       expect(body.error).toContain('required')
     })
@@ -131,7 +162,7 @@ describe('Conversations Functions', () => {
       const response = await createConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(false)
       expect(body.error).toContain('required')
     })
@@ -145,7 +176,7 @@ describe('Conversations Functions', () => {
       const response = await updateConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.OK)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(true)
       expect(body.data).toBeDefined()
     })
@@ -157,7 +188,7 @@ describe('Conversations Functions', () => {
       const response = await updateConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(false)
       expect(body.error).toContain('required')
     })
@@ -170,17 +201,16 @@ describe('Conversations Functions', () => {
       const response = await deleteConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.NO_CONTENT)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(true)
     })
 
     it('should return bad request when ID is missing', async () => {
       const request = createMockRequest({}, {})
-      
-      const response = await deleteConversation(request, mockContext)
+        const response = await deleteConversation(request, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(false)
       expect(body.error).toContain('required')
     })
@@ -188,16 +218,88 @@ describe('Conversations Functions', () => {
 
   describe('Error Handling', () => {
     it('should handle JSON parsing errors', async () => {
-      const request = {
-        ...createMockRequest(),
-        json: jest.fn().mockRejectedValue(new Error('Invalid JSON'))
-      }
+      // エラーを発生させるリクエストを作成
+      const mockRequest = {
+        query: new URLSearchParams(),
+        params: {},
+        headers: {},
+        // @ts-ignore - エラーを無視して型エラーを回避
+        json: jest.fn().mockImplementation(() => Promise.reject(new Error('Invalid JSON'))),
+        text: jest.fn(),
+        arrayBuffer: jest.fn(),
+        formData: jest.fn(),        method: 'GET',
+        url: 'http://localhost/api',
+        bodyUsed: false
+      } as unknown as HttpRequest;
       
-      const response = await createConversation(request, mockContext)
+      const response = await createConversation(mockRequest, mockContext)
       
       expect(response.status).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-      const body = JSON.parse(response.body as string)
+      const body = parseResponse(response);
       expect(body.success).toBe(false)
+    })
+  })
+
+  // 新しく追加したエンドポイントのテスト
+  describe('addMessage', () => {
+    it('should add a message to a conversation', async () => {
+      const messageData = { content: 'Hello world', role: 'user' }
+      const request = createMockRequest({}, { id: '123' }, messageData)
+      
+      const response = await addMessage(request, mockContext)
+      
+      expect(response.status).toBe(HTTP_STATUS.OK)
+      const body = parseResponse(response);
+      expect(body.success).toBe(true)
+      expect(body.data).toBeDefined()
+    })
+
+    it('should return bad request when ID is missing', async () => {
+      const messageData = { content: 'Hello world', role: 'user' }
+      const request = createMockRequest({}, {}, messageData)
+      
+      const response = await addMessage(request, mockContext)
+      
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
+      const body = parseResponse(response);
+      expect(body.success).toBe(false)
+      expect(body.error).toContain('required')
+    })
+
+    it('should return bad request when content is missing', async () => {
+      const messageData = { role: 'user' }
+      const request = createMockRequest({}, { id: '123' }, messageData)
+      
+      const response = await addMessage(request, mockContext)
+      
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
+      const body = parseResponse(response);
+      expect(body.success).toBe(false)
+      expect(body.error).toContain('required')
+    })
+  })
+
+  describe('generateAIResponse', () => {
+    it('should generate an AI response for a conversation', async () => {
+      const request = createMockRequest({}, { id: '123' })
+      
+      const response = await generateAIResponse(request, mockContext)
+      
+      expect(response.status).toBe(HTTP_STATUS.OK)
+      const body = parseResponse(response);
+      expect(body.success).toBe(true)
+      expect(body.data).toBeDefined()
+    })
+
+    it('should return bad request when ID is missing', async () => {
+      const request = createMockRequest({}, {})
+      
+      const response = await generateAIResponse(request, mockContext)
+      
+      expect(response.status).toBe(HTTP_STATUS.BAD_REQUEST)
+      const body = parseResponse(response);
+      expect(body.success).toBe(false)
+      expect(body.error).toContain('required')
     })
   })
 })

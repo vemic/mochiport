@@ -12,13 +12,16 @@ import {
 import { ConversationRepository as IConversationRepository } from "../repositories/interfaces/conversation"
 import { ConversationRepository } from "../repositories/ConversationRepository"
 import { NotFoundError, ValidationError } from "../utils/errors"
+import { IAIService, AIService, MockAIService } from "./AIService"
 
 export class ConversationService extends BaseService<Conversation, CreateConversationData, UpdateConversationData> {
   private conversationRepository: IConversationRepository
+  private aiService: IAIService
 
-  constructor() {
+  constructor(useMockAI: boolean = true) {
     super()
     this.conversationRepository = new ConversationRepository()
+    this.aiService = useMockAI ? new MockAIService() : new AIService()
   }  protected validate(data: CreateConversationData | UpdateConversationData): { success: boolean; errors: any[] } {
     const errors: any[] = [];
     
@@ -153,5 +156,32 @@ export class ConversationService extends BaseService<Conversation, CreateConvers
 
   async create(data: CreateConversationData): Promise<Conversation> {
     return this.createConversation(data)
+  }
+
+  /**
+   * 会話履歴に基づいてAIの応答を生成し、会話に追加する
+   * @param conversationId 会話ID
+   * @returns 更新された会話
+   */
+  async generateAIResponse(conversationId: string): Promise<Conversation> {
+    try {
+      const conversation = await this.getConversationById(conversationId)
+      
+      // AIサービスを使用して応答を生成
+      const aiResponse = await this.aiService.generateResponse(conversation.messages)
+      
+      // AI応答メッセージを作成
+      const aiMessage: Omit<Message, 'id' | 'timestamp'> = {
+        content: aiResponse.text,
+        role: 'assistant',
+        metadata: aiResponse.metadata
+      }
+      
+      // メッセージを会話に追加
+      return await this.addMessage(conversationId, aiMessage)
+    } catch (error) {
+      this.handleError(error as Error, `Failed to generate AI response for conversation ${conversationId}`)
+      throw error
+    }
   }
 }

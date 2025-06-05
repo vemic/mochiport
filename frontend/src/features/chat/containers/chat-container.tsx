@@ -5,7 +5,17 @@ import { ConversationCard } from '../components/conversation-card';
 import { ChatWindow } from '../components/chat-window';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { 
   useConversations, 
   useCreateConversation, 
@@ -16,7 +26,18 @@ import {
 } from '@/lib/hooks';
 import { useConversationStore } from '@/lib/stores';
 import { useDebounce } from '@/lib/hooks';
-import { Plus, Search } from 'lucide-react';
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  Download, 
+  MoreVertical, 
+  SlidersHorizontal,
+  Star,
+  Archive as ArchiveIcon,
+  Tag,
+  Pin
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChatContainerProps {
@@ -24,7 +45,17 @@ interface ChatContainerProps {
 }
 
 export function ChatContainer({ className }: ChatContainerProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');  
+  const [filter, setFilter] = useState('all');
+  const [isFiltersVisible, setIsFiltersVisible] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedPriority, setSelectedPriority] = useState<string>('');
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [showPinned, setShowPinned] = useState(false);
+  
+  // 型拡張を適用する必要がないよう実装を単純化
+  type SimpleMetadata = Record<string, any>;
   const debouncedSearch = useDebounce(searchQuery, 300);
   
   const store = useConversationStore();
@@ -48,6 +79,7 @@ export function ChatContainer({ className }: ChatContainerProps) {
       store.actions.setConversations(conversationsData.data);
     }
   }, [conversationsData, store.actions]);
+  
   const handleCreateConversation = async () => {
     try {
       await createMutation.mutateAsync({
@@ -80,6 +112,58 @@ export function ChatContainer({ className }: ChatContainerProps) {
     }
   };
 
+  // ピン留め機能の実装
+  const handlePinConversation = async (id: string) => {
+    const conversation = store.conversations.find(c => c.id === id);
+    if (!conversation) return;
+    
+    const metadata = conversation.metadata as any || {};
+    const isPinned = metadata.pinned || false;
+    
+    try {
+      await updateMutation.mutateAsync({
+        id,
+        data: {
+          metadata: {
+            ...metadata,
+            pinned: !isPinned
+          } as any
+        }
+      });
+      
+      // 更新成功を示す通知などをここに追加可能
+      console.log(`会話を${!isPinned ? 'ピン留め' : 'ピン留め解除'}しました`);
+    } catch (error) {
+      console.error('Failed to update pin status:', error);
+    }
+  };
+
+  // お気に入り機能の実装
+  const handleFavoriteConversation = async (id: string) => {
+    const conversation = store.conversations.find(c => c.id === id);
+    if (!conversation) return;
+    
+    const metadata = conversation.metadata as any || {};
+    const isFavorite = metadata.favorite || false;
+    
+    try {
+      await updateMutation.mutateAsync({
+        id,
+        data: {
+          metadata: {
+            ...metadata,
+            favorite: !isFavorite
+          } as any
+        }
+      });
+      
+      // 更新成功を示す通知などをここに追加可能
+      console.log(`会話を${!isFavorite ? 'お気に入りに追加' : 'お気に入りから削除'}しました`);
+    } catch (error) {
+      console.error('Failed to update favorite status:', error);
+    }
+  };
+
   const handleSendMessage = async (content: string) => {
     if (!selectedConversationId) return;
 
@@ -105,10 +189,114 @@ export function ChatContainer({ className }: ChatContainerProps) {
     } catch (error) {
       console.error('Failed to send message:', error);
     }
+  };  
+  
+  const handleExportConversation = (id: string) => {
+    // TODO: Implement conversation export
+    console.log('Export conversation:', id);
   };
 
-  const conversations = store.conversations;
+  const handleDeleteMessage = async (messageId: string) => {
+    // TODO: Implement message deletion
+    console.log('Delete message:', messageId);
+  };
 
+  // チャットウィンドウでのピン留め・お気に入り処理
+  const handleChatWindowPin = async () => {
+    if (selectedConversationId) {
+      await handlePinConversation(selectedConversationId);
+    }
+  };
+
+  const handleChatWindowFavorite = async () => {
+    if (selectedConversationId) {
+      await handleFavoriteConversation(selectedConversationId);
+    }
+  };
+
+  // 高度なフィルタリング機能
+  const toggleFiltersVisibility = () => {
+    setIsFiltersVisible(!isFiltersVisible);
+  };
+
+  const handleTagFilter = (tag: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag) 
+        : [...prev, tag]
+    );
+  };
+
+  const clearFilters = () => {
+    setSelectedTags([]);
+    setSelectedCategory('');
+    setSelectedPriority('');
+    setShowFavorites(false);
+    setShowPinned(false);
+    setFilter('all');
+  };
+
+  // Process conversations based on filters
+  let conversations = store.conversations;
+  
+  // Filter by status
+  if (filter === 'archived') {
+    conversations = conversations.filter(c => c.status === 'archived');
+  } else {
+    conversations = conversations.filter(c => c.status === 'active');
+  }
+
+  // Filter by favorites
+  if (showFavorites) {
+    conversations = conversations.filter(c => (c.metadata as any)?.favorite);
+  }
+
+  // Filter by pinned
+  if (showPinned) {
+    conversations = conversations.filter(c => (c.metadata as any)?.pinned);
+  }
+
+  // Filter by tags
+  if (selectedTags.length > 0) {
+    conversations = conversations.filter(c => 
+      selectedTags.every(tag => c.metadata?.tags?.includes(tag))
+    );
+  }
+
+  // Filter by category
+  if (selectedCategory) {
+    conversations = conversations.filter(c => c.metadata?.category === selectedCategory);
+  }
+
+  // Filter by priority
+  if (selectedPriority) {
+    conversations = conversations.filter(c => c.metadata?.priority === selectedPriority);
+  }
+
+  // Sort: pinned first, then by updated date
+  conversations = [...conversations].sort((a, b) => {
+    const isPinnedA = (a.metadata as any)?.pinned || false;
+    const isPinnedB = (b.metadata as any)?.pinned || false;
+    
+    if (isPinnedA && !isPinnedB) return -1;
+    if (!isPinnedA && isPinnedB) return 1;
+    
+    return b.updatedAt.getTime() - a.updatedAt.getTime();
+  });
+
+  // Extract unique tags and categories for filters
+  const allTags = Array.from(new Set(
+    store.conversations
+      .flatMap(c => c.metadata?.tags || [])
+      .filter(Boolean)
+  ));
+  
+  const allCategories = Array.from(new Set(
+    store.conversations
+      .map(c => c.metadata?.category)
+      .filter(Boolean)
+  )) as string[];
+  
   return (
     <div className={cn('flex h-full', className)}>
       {/* Sidebar */}
@@ -117,13 +305,26 @@ export function ChatContainer({ className }: ChatContainerProps) {
         <div className="p-4 border-b space-y-4">
           <div className="flex items-center justify-between">
             <h1 className="font-semibold">会話</h1>
-            <Button
-              size="icon"
-              onClick={handleCreateConversation}
-              disabled={createMutation.isPending}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-8 w-8"
+                onClick={toggleFiltersVisibility}
+                title="フィルター"
+              >
+                <SlidersHorizontal className="h-4 w-4" />
+              </Button>
+              <Button
+                size="icon"
+                className="h-8 w-8"
+                onClick={handleCreateConversation}
+                disabled={createMutation.isPending}
+                title="新しい会話"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Search */}
@@ -136,6 +337,125 @@ export function ChatContainer({ className }: ChatContainerProps) {
               className="pl-9"
             />
           </div>
+
+          {/* Simple filter buttons */}
+          <div className="flex items-center space-x-2">
+            <Button
+              variant={filter === 'all' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('all')}
+              className="flex-1 text-xs"
+            >
+              全て
+            </Button>
+            <Button
+              variant={filter === 'archived' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('archived')}
+              className="flex-1 text-xs"
+            >
+              <ArchiveIcon className="h-3 w-3 mr-1" />
+              アーカイブ
+            </Button>
+          </div>
+          
+          {/* Advanced filters */}
+          {isFiltersVisible && (
+            <div className="space-y-3 py-2 border-t border-b">
+              {/* Favorite & Pinned filters */}
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant={showFavorites ? 'default' : 'outline'}
+                  size="sm" 
+                  onClick={() => setShowFavorites(!showFavorites)}
+                  className="text-xs gap-1 h-7"
+                >
+                  <Star className={cn("h-3 w-3", showFavorites && "fill-current")} />
+                  お気に入り
+                </Button>
+                <Button 
+                  variant={showPinned ? 'default' : 'outline'}
+                  size="sm" 
+                  onClick={() => setShowPinned(!showPinned)}
+                  className="text-xs gap-1 h-7"
+                >
+                  <Pin className={cn("h-3 w-3", showPinned && "fill-current")} />
+                  ピン留め
+                </Button>
+              </div>
+              
+              {/* Tags filter */}
+              {allTags.length > 0 && (
+                <div className="space-y-1">
+                  <Label className="text-xs font-medium">タグ</Label>
+                  <div className="flex flex-wrap gap-1">
+                    {allTags.map(tag => (
+                      <Badge 
+                        key={tag} 
+                        variant={selectedTags.includes(tag) ? 'default' : 'outline'}
+                        className="text-xs cursor-pointer hover:opacity-80"
+                        onClick={() => handleTagFilter(tag)}
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Categories filter */}
+              {allCategories.length > 0 && (
+                <div className="space-y-1">
+                  <Label className="text-xs font-medium">カテゴリ</Label>
+                  <Select 
+                    value={selectedCategory} 
+                    onValueChange={setSelectedCategory}
+                  >
+                    <SelectTrigger className="h-7 text-xs">
+                      <SelectValue placeholder="カテゴリを選択" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">すべて</SelectItem>
+                      {allCategories.map(category => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              {/* Priority filter */}
+              <div className="space-y-1">
+                <Label className="text-xs font-medium">優先度</Label>
+                <Select 
+                  value={selectedPriority} 
+                  onValueChange={setSelectedPriority}
+                >
+                  <SelectTrigger className="h-7 text-xs">
+                    <SelectValue placeholder="優先度を選択" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">すべて</SelectItem>
+                    <SelectItem value="high">高</SelectItem>
+                    <SelectItem value="medium">中</SelectItem>
+                    <SelectItem value="low">低</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Clear filters */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearFilters}
+                className="text-xs w-full"
+              >
+                フィルターをクリア
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Conversation List */}
@@ -167,23 +487,40 @@ export function ChatContainer({ className }: ChatContainerProps) {
                   onSelect={handleSelectConversation}
                   onArchive={handleArchiveConversation}
                   onDelete={handleDeleteConversation}
+                  onPin={handlePinConversation}
+                  onFavorite={handleFavoriteConversation}
+                  showActions={true}
                 />
               ))
             )}
           </div>
         </ScrollArea>
       </div>
-
+      
       {/* Main Chat Area */}
       <div className="flex-1">
         <ChatWindow
           conversation={selectedConversation}
           loading={addMessageMutation.isPending}
           onSendMessage={handleSendMessage}
+          onEditMessage={(messageId) => {
+            console.log('Edit message:', messageId);
+          }}
+          onDeleteMessage={handleDeleteMessage}
           onCopyMessage={(content) => {
             // TODO: Show toast notification
             console.log('Copied:', content);
           }}
+          onArchiveConversation={handleArchiveConversation}
+          onExportConversation={handleExportConversation}
+          onReactToMessage={(messageId, reaction) => {
+            console.log('React to message:', messageId, reaction);
+          }}
+          onShareMessage={(messageId) => {
+            console.log('Share message:', messageId);
+          }}
+          onPinConversation={handleChatWindowPin}
+          onFavoriteConversation={handleChatWindowFavorite}
         />
       </div>
     </div>
