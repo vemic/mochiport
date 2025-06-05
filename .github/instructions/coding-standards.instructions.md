@@ -433,13 +433,13 @@ export class ApiGateway {
 
   registerService(name: string, service: BaseService) {
     this.services.set(name, service);
-  }
-
-  async execute(serviceName: string, method: string, ...args: any[]) {
+  }  async execute(serviceName: string, method: string, args: any[]) {
     const service = this.services.get(serviceName);
     if (!service) throw new Error(`Service ${serviceName} not found`);
 
-    return service[method](...args);
+    // 動的メソッド呼び出し
+    const methodFn = (service as any)[method];
+    return methodFn.apply(service, args);
   }
 }
 
