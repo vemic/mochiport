@@ -8,12 +8,12 @@ export interface AuthResult {
 }
 
 export interface AuthRequest extends HttpRequest {
-  user?: any
+  user: any
 }
 
 export const generateToken = (userData: any, expiresIn: string = '24h'): string => {
   const secret = process.env.JWT_SECRET || 'test-secret'
-  return jwt.sign(userData, secret, { expiresIn })
+  return jwt.sign(userData, secret, { expiresIn } as jwt.SignOptions)
 }
 
 export const verifyToken = (token: string): any | null => {
