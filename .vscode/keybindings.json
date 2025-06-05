@@ -1,0 +1,95 @@
+[
+  // ビルド関連のキーバインド
+  {
+    "key": "ctrl+shift+b",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Build All"
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Test All"
+  },
+  {
+    "key": "ctrl+shift+d",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Start Full Development Environment"
+  },
+
+  // 個別ビルドのキーバインド
+  {
+    "key": "ctrl+alt+f",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Build Frontend"
+  },
+  {
+    "key": "ctrl+alt+b",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Build Backend"
+  },
+  {
+    "key": "ctrl+alt+s",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Build Shared"
+  },
+
+  // テスト関連のキーバインド
+  {
+    "key": "ctrl+alt+t",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Test Backend"
+  },
+  {
+    "key": "ctrl+alt+w",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Test Backend Watch"
+  },
+
+  // メンテナンス関連のキーバインド
+  {
+    "key": "ctrl+shift+c",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Clean All"
+  },
+  {
+    "key": "ctrl+shift+f",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Format Code"
+  },
+  {
+    "key": "ctrl+shift+l",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Lint All"
+  },
+
+  // 複合タスクのキーバインド
+  {
+    "key": "ctrl+alt+q",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Quick Build & Test"
+  },
+  {
+    "key": "ctrl+alt+r",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Clean & Rebuild"
+  },
+
+  // ターミナル関連の強化
+  {
+    "key": "ctrl+shift+`",
+    "command": "workbench.action.terminal.new",
+    "args": {
+      "cwd": "${workspaceFolder}"
+    }
+  },
+
+  // ファイル移動の強化
+  {
+    "key": "ctrl+alt+left",
+    "command": "workbench.action.focusPreviousGroup"
+  },
+  {
+    "key": "ctrl+alt+right",
+    "command": "workbench.action.focusNextGroup"
+  }
+]

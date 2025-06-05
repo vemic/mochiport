@@ -1,3 +1,16 @@
+# VS Code Settings Management
+# チーム共通設定は Git 管理対象:
+#   - .vscode/settings.json (チーム共通)
+#   - .vscode/tasks.json (ビルドタスク)
+#   - .vscode/launch.json (デバッグ設定)
+#   - .vscode/extensions.json (推奨拡張機能)
+#   - .vscode/keybindings.json (プロジェクト用ショートカット)
+#   - *.code-workspace (ワークスペース設定)
+#
+# 個人設定は Git 管理対象外:
+#   - .vscode/settings.json.user (個人設定)
+#   - .vscode/*.log (ログファイル)
+
 # Dependencies
 node_modules/
 .pnpm-store/
@@ -24,8 +37,9 @@ build/
 # Azure
 .azure/
 
-# IDE
-.vscode/
+# IDE - Personal settings only (shared settings are in the repo)
+.vscode/settings.json.user
+.vscode/*.log
 .idea/
 
 # OS

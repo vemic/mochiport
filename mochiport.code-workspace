@@ -1,0 +1,186 @@
+{
+  "folders": [
+    {
+      "name": "🏠 Root",
+      "path": ".",
+    },
+    {
+      "name": "🌐 Frontend",
+      "path": "./frontend",
+    },
+    {
+      "name": "⚡ Backend",
+      "path": "./backend",
+    },
+    {
+      "name": "📦 Shared",
+      "path": "./shared",
+    },
+    {
+      "name": "🔧 Packages",
+      "path": "./packages",
+    },
+  ],
+  "settings": {
+    // TypeScript設定の強化
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.suggest.autoImports": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.inlayHints.enumValues.enabled": true,
+    "typescript.inlayHints.functionLikeReturnTypes.enabled": true,
+    "typescript.inlayHints.parameterNames.enabled": "literals",
+    "typescript.inlayHints.parameterTypes.enabled": true,
+    "typescript.inlayHints.propertyDeclarationTypes.enabled": true,
+    "typescript.inlayHints.variableTypes.enabled": false,
+
+    // ESLint設定の強化
+    "eslint.workingDirectories": [
+      {
+        "directory": "./frontend",
+        "changeProcessCwd": true,
+      },
+      {
+        "directory": "./backend",
+        "changeProcessCwd": true,
+      },
+      {
+        "directory": "./shared",
+        "changeProcessCwd": true,
+      },
+      {
+        "directory": "./packages/ui-components",
+        "changeProcessCwd": true,
+      },
+    ],
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+    ],
+    "eslint.format.enable": true,
+    "eslint.codeAction.showDocumentation": {
+      "enabled": true,
+    },
+
+    // ファイル関連設定の強化
+    "files.associations": {
+      "*.env.*": "properties",
+      "*.azure": "json",
+      "host.json": "json",
+      "local.settings.json": "json",
+    },
+
+    // 検索・置換設定の強化
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/.next": true,
+      "**/coverage": true,
+      "**/.turbo": true,
+      "**/yarn.lock": true,
+      "**/.yarn": true,
+      "**/build": true,
+      "**/out": true,
+    },
+
+    // Git設定の強化
+    "git.decorations.enabled": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "git.autoStash": true,
+
+    // エディタ設定の強化
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.inlineSuggest.enabled": true,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.parameterHints.enabled": true,
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true,
+    },
+
+    // TurboRepo固有設定
+    "turbo.useLocalTurbo": true,
+    "turbo.experimental.ui": true,
+
+    // Azure Functions固有設定
+    "azureFunctions.showCoreToolsWarning": false,
+    "azureFunctions.showPythonWarning": false,
+    "azureFunctions.showNodejsWarning": false,
+
+    // Next.js固有設定
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "javascript.preferences.includePackageJsonAutoImports": "on",
+
+    // パフォーマンス設定
+    "search.smartCase": true,
+    "search.useGlobalIgnoreFiles": true,
+    "search.useParentIgnoreFiles": true,
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/.git/**": true,
+      "**/dist/**": true,
+      "**/.next/**": true,
+      "**/coverage/**": true,
+      "**/.turbo/**": true,
+      "**/.yarn/**": true,
+      "**/build/**": true,
+    },
+  },
+  "extensions": {
+    "recommendations": [
+      // 必須拡張機能
+      "ms-vscode.vscode-typescript-next",
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+
+      // React & Next.js
+      "bradlc.vscode-tailwindcss",
+      "ms-vscode.vscode-json",
+      "ms-vscode.vscode-css-language-features",
+
+      // Azure Functions
+      "ms-azuretools.vscode-azurefunctions",
+      "ms-azuretools.vscode-azureresourcegroups",
+
+      // Git & GitHub
+      "eamodio.gitlens",
+      "github.vscode-pull-request-github",
+      "github.copilot",
+      "github.copilot-chat",
+
+      // 開発効率化
+      "ms-vscode.vscode-npm-script",
+      "formulahendry.auto-rename-tag",
+      "christian-kohler.path-intellisense",
+      "christian-kohler.npm-intellisense",
+      "bradlc.vscode-tailwindcss",
+
+      // テスト
+      "orta.vscode-jest",
+
+      // ユーティリティ
+      "ms-vscode.powershell",
+      "usernamehw.errorlens",
+      "gruntfuggly.todo-tree",
+      "streetsidesoftware.code-spell-checker",
+      "aaron-bond.better-comments",
+
+      // UI
+      "pkief.material-icon-theme",
+      "equinusocio.vsc-material-theme",
+
+      // TurboRepo
+      "vercel.turbo-vsc",
+
+      // その他
+      "ms-vscode.vscode-typescript-next",
+      "bradlc.vscode-tailwindcss",
+    ],
+  },
+}

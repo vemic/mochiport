@@ -1,0 +1,116 @@
+{
+  // TypeScript設定
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+
+  // ESLint設定
+  "eslint.workingDirectories": [
+    "frontend",
+    "backend",
+    "shared",
+    "packages/ui-components"
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // Prettier設定
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // ファイル監視設定
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/.next/**": true,
+    "**/coverage/**": true,
+    "**/.turbo/**": true
+  },
+
+  // 検索設定
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.next": true,
+    "**/coverage": true,
+    "**/.turbo": true,
+    "**/yarn.lock": true
+  },
+
+  // ファイル表示設定
+  "files.exclude": {
+    "**/.turbo": true
+  },
+
+  // Git設定
+  "git.ignoreLimitWarning": true,
+  "git.autofetch": true,
+
+  // ターミナル設定
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "args": ["-NoProfile"]
+    }
+  },
+
+  // IntelliSense設定
+  "typescript.suggest.paths": true,
+  "typescript.workspaceSymbols.scope": "allOpenProjects",
+
+  // Turbo設定
+  "turbo.useLocalTurbo": true,
+
+  // Next.js設定
+  "emmet.includeLanguages": {
+    "typescript": "html",
+    "typescriptreact": "html"
+  },
+
+  // Azure Functions設定
+  "azureFunctions.projectLanguage": "TypeScript",
+  "azureFunctions.projectRuntime": "~4",
+
+  // タスク設定
+  "task.autoDetect": "on",
+  "task.quickOpen.detail": true,
+  "task.quickOpen.skip": false,
+
+  // 自動保存設定
+  "files.autoSave": "onFocusChange",
+
+  // エディタ設定
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [80, 120],
+  "editor.wordWrap": "on",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
+  // 拡張機能設定
+  "extensions.ignoreRecommendations": false
+}

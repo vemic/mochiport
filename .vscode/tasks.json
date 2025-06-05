@@ -1,0 +1,251 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Full Development Environment",
+      "type": "shell",
+      "command": "yarn dev",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": ["$tsc"],
+      "args": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Build All",
+      "type": "shell",
+      "command": "yarn build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Build Frontend",
+      "type": "shell",
+      "command": "yarn workspace @ai-chat/frontend build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Build Backend",
+      "type": "shell",
+      "command": "yarn workspace @ai-chat/backend build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Build Shared",
+      "type": "shell",
+      "command": "yarn workspace @ai-chat/shared build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Clean All",
+      "type": "shell",
+      "command": "yarn clean",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Type Check All",
+      "type": "shell",
+      "command": "yarn type-check",
+      "group": "test",
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Lint All",
+      "type": "shell",
+      "command": "yarn lint",
+      "group": "test",
+      "problemMatcher": ["$eslint-stylish"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Test All",
+      "type": "shell",
+      "command": "yarn test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Test Backend",
+      "type": "shell",
+      "command": "yarn workspace @ai-chat/backend test",
+      "group": "test",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Test Backend Watch",
+      "type": "shell",
+      "command": "yarn workspace @ai-chat/backend test:watch",
+      "group": "test",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Install Dependencies",
+      "type": "shell",
+      "command": "yarn install",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Format Code",
+      "type": "shell",
+      "command": "yarn format",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Start Frontend Dev",
+      "type": "shell",
+      "command": "yarn workspace @ai-chat/frontend dev",
+      "group": "build",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Start Backend Dev",
+      "type": "shell",
+      "command": "yarn workspace @ai-chat/backend dev:watch",
+      "group": "build",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": false
+      }
+    },
+    {
+      "label": "Quick Build & Test",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Type Check All", "Lint All", "Build All", "Test All"]
+    },
+    {
+      "label": "Clean & Rebuild",
+      "dependsOrder": "sequence",
+      "dependsOn": ["Clean All", "Install Dependencies", "Build All"]
+    }
+  ]
+}

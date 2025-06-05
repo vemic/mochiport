@@ -1,0 +1,45 @@
+{
+  "recommendations": [
+    // TypeScript & JavaScript
+    "ms-vscode.vscode-typescript-next",
+
+    // ESLint & Prettier
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+
+    // React & Next.js
+    "bradlc.vscode-tailwindcss",
+    "ms-vscode.vscode-json",
+
+    // Azure Functions
+    "ms-azuretools.vscode-azurefunctions",
+    "ms-azuretools.vscode-azureresourcegroups",
+
+    // Git
+    "eamodio.gitlens",
+    "github.vscode-pull-request-github",
+
+    // Productivity
+    "ms-vscode.vscode-npm-script",
+    "bradlc.vscode-tailwindcss",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "christian-kohler.npm-intellisense",
+
+    // Testing
+    "orta.vscode-jest",
+
+    // Utilities
+    "ms-vscode.powershell",
+    "usernamehw.errorlens",
+    "gruntfuggly.todo-tree",
+    "streetsidesoftware.code-spell-checker",
+
+    // Theme & Icons
+    "pkief.material-icon-theme",
+
+    // TurboRepo
+    "vercel.turbo-vsc"
+  ],
+  "unwantedRecommendations": ["ms-vscode.vscode-typescript", "hookyqr.beautify"]
+}
