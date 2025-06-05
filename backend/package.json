@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "yarn build ; echo 'Backend compiled successfully. Azure Functions Core Tools temporarily disabled.'",
+    "dev": "yarn build && powershell -Command \"Write-Host 'Backend compiled successfully. Azure Functions Core Tools temporarily disabled.'\"",
     "dev:watch": "tsc --watch",
     "start": "echo 'Azure Functions Core Tools temporarily disabled. Run: func host start --port 7071'",
     "clean": "powershell -Command \"Remove-Item -Path 'dist' -Recurse -Force -ErrorAction SilentlyContinue\"",

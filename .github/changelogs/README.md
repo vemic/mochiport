@@ -32,6 +32,7 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 - `CHANGELOG_20250605_008_Copilot_Instructions_Restructuring.md` - Copilot指示書のベストプラクティス準拠再構築
 - `CHANGELOG_20250605_009_Critical_Gitignore_Fix.md` - **[緊急修正]** .gitignoreによる重要ソースコード除外問題の解決
 - `CHANGELOG_20250605_010_Complete_Project_Namespace_Migration.md` - プロジェクト全体の名前空間移行（ai-chat → mochiport）
+- `CHANGELOG_20250605_011_Development_Server_Stability_Fix.md` - 開発サーバー安定性修正と恒久的依存関係管理
 
 ## 関連ドキュメント
 
