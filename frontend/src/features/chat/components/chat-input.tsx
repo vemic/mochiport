@@ -122,6 +122,8 @@ export const ChatInput = memo<ChatInputProps>(({
           onChange={handleFileChange} 
           className="hidden"
           accept="image/*, application/pdf, text/*" 
+          title="ファイル添付"
+          aria-label="ファイル添付"
         />
         
         {/* Voice recording button */}

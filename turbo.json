@@ -2,19 +2,43 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "lib/**"]
+      "outputs": ["dist/**", ".next/**", "lib/**", "build/**"],
+      "env": ["NODE_ENV"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
+    "dev:watch": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "start": {
+      "dependsOn": ["build"],
+      "cache": false
+    },
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"]
     },
-    "lint": {},
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "outputs": []
+    },
+    "lint:fix": {
+      "outputs": [],
+      "cache": false
+    },
     "type-check": {
-      "dependsOn": ["^type-check"]
+      "dependsOn": ["^type-check"],
+      "outputs": []
+    },
+    "format": {
+      "cache": false
     },
     "clean": {
       "cache": false
@@ -24,6 +48,8 @@
     "package.json",
     "turbo.json",
     ".env",
-    ".env.local"
+    ".env.local",
+    ".env.development",
+    ".env.production"
   ]
 }
