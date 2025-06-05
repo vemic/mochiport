@@ -24,5 +24,6 @@
   "moduleNameMapper": {
     "^@ai-chat/shared$": "<rootDir>/../shared/index.ts"
   },
-  "setupFilesAfterEnv": ["<rootDir>/src/__tests__/setup.ts"]
+  "setupFilesAfterEnv": ["<rootDir>/src/__tests__/setup.ts"],
+  "testPathIgnorePatterns": ["<rootDir>/src/__tests__/setup.ts"]
 }

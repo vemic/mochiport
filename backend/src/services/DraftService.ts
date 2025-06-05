@@ -87,7 +87,6 @@ export class DraftService extends BaseService<Draft, CreateDraftData, UpdateDraf
       throw error
     }
   }
-
   async createDraft(data: CreateDraftData): Promise<Draft> {
     try {
       const validation = this.validate(data)
@@ -95,10 +94,11 @@ export class DraftService extends BaseService<Draft, CreateDraftData, UpdateDraf
         throw new ValidationError('Validation failed', validation.errors)
       }
 
-      const newDraft: CreateDraftData = {
+      const newDraft: CreateDraftData & { status: string } = {
         title: data.title || '',
         content: data.content || '',
         type: data.type || 'note',
+        status: 'draft',
         conversationId: data.conversationId,
         metadata: data.metadata || {}
       }

@@ -10,7 +10,7 @@ import type {
 import type { ReminderRepository as IReminderRepository } from '../repositories/interfaces/reminder'
 import { ReminderRepository } from '../repositories/ReminderRepository'
 import { BaseService } from './BaseService'
-import { ValidationError } from '../utils/errors'
+import { ValidationError, NotFoundError } from '../utils/errors'
 
 export class ReminderService extends BaseService<Reminder, CreateReminderData, UpdateReminderData> {
   private reminderRepository: IReminderRepository
@@ -18,6 +18,116 @@ export class ReminderService extends BaseService<Reminder, CreateReminderData, U
   constructor() {
     super()
     this.reminderRepository = new ReminderRepository()
+  }
+
+  async getReminders(filters: ReminderFilters): Promise<PaginatedResponse<Reminder>> {
+    try {
+      return await this.reminderRepository.findMany(filters)
+    } catch (error) {
+      this.handleError(error as Error, 'Failed to get reminders')
+      throw error
+    }
+  }
+  async getReminderById(id: string): Promise<Reminder> {
+    try {
+      const reminder = await this.reminderRepository.findById(id)
+      if (!reminder) {
+        throw new NotFoundError('Reminder', id)
+      }
+      return reminder
+    } catch (error) {
+      this.handleError(error as Error, `Failed to get reminder ${id}`)
+      throw error
+    }
+  }
+  async createReminder(data: CreateReminderData): Promise<Reminder> {
+    try {
+      // Validate due date is in the future (check both dueDate and scheduledAt)
+      const dueDate = (data as any).dueDate || data.scheduledAt
+      if (dueDate) {
+        const dueDateObj = new Date(dueDate)
+        const now = new Date()
+        if (dueDateObj <= now) {
+          throw new ValidationError('Due date must be in the future')
+        }
+      }
+
+      // Ensure scheduledAt is set if dueDate is provided
+      const createData = {
+        ...data,
+        scheduledAt: data.scheduledAt || (data as any).dueDate,
+        status: 'pending' as const,
+        priority: (data as any).priority || data.metadata?.priority || 'medium'
+      }
+
+      const validation = this.validate(createData)
+      if (!validation.success) {
+        throw new ValidationError('Validation failed', validation.errors)
+      }
+
+      return await this.reminderRepository.create(createData)
+    } catch (error) {
+      this.handleError(error as Error, 'Failed to create reminder')
+      throw error
+    }
+  }
+  async updateReminder(id: string, data: UpdateReminderData): Promise<Reminder> {
+    try {
+      const existing = await this.reminderRepository.findById(id)
+      if (!existing) {
+        throw new NotFoundError('Reminder', id)
+      }
+
+      const validation = this.validate(data)
+      if (!validation.success) {
+        throw new ValidationError('Validation failed', validation.errors)
+      }
+
+      const updated = await this.reminderRepository.update(id, data)
+      if (!updated) {
+        throw new NotFoundError('Reminder', id)
+      }
+      return updated
+    } catch (error) {
+      this.handleError(error as Error, `Failed to update reminder ${id}`)
+      throw error
+    }
+  }
+  async deleteReminder(id: string): Promise<boolean> {
+    try {
+      const existing = await this.reminderRepository.findById(id)
+      if (!existing) {
+        throw new NotFoundError('Reminder', id)
+      }
+
+      await this.reminderRepository.delete(id)
+      return true
+    } catch (error) {
+      this.handleError(error as Error, `Failed to delete reminder ${id}`)
+      throw error
+    }
+  }
+
+  async markAsCompleted(id: string): Promise<Reminder> {
+    try {
+      const updated = await this.reminderRepository.update(id, { status: 'completed' })
+      if (!updated) {
+        throw new Error(`Failed to mark reminder ${id} as completed`)
+      }
+      return updated
+    } catch (error) {
+      this.handleError(error as Error, `Failed to mark reminder ${id} as completed`)
+      throw error
+    }
+  }
+
+  async getUpcomingReminders(days: number = 7): Promise<Reminder[]> {
+    try {
+      return await this.reminderRepository.findUpcoming(days)
+    } catch (error) {
+      this.handleError(error as Error, 'Failed to get upcoming reminders')
+      throw error
+    }
   }
 
   async findById(id: string): Promise<Reminder | null> {

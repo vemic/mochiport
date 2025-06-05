@@ -108,7 +108,7 @@ describe('Conversations Functions', () => {
 
   describe('getConversation', () => {
     it('should return a specific conversation', async () => {
-      const request = createMockRequest({}, { id: '123' })
+      const request = createMockRequest({}, { id: 'conversation_1' })
       
       const response = await getConversation(request, mockContext)
       
@@ -116,7 +116,7 @@ describe('Conversations Functions', () => {
       const body = parseResponse(response);
       expect(body.success).toBe(true)
       expect(body.data).toBeDefined()
-      expect(body.data.id).toBe('123')
+      expect(body.data.id).toBe('conversation_1')
     })
 
     it('should return bad request when ID is missing', async () => {
@@ -171,7 +171,7 @@ describe('Conversations Functions', () => {
   describe('updateConversation', () => {
     it('should update an existing conversation', async () => {
       const updateData = { title: 'Updated Conversation' }
-      const request = createMockRequest({}, { id: '123' }, updateData)
+      const request = createMockRequest({}, { id: 'conversation_1' }, updateData)
       
       const response = await updateConversation(request, mockContext)
       
@@ -196,7 +196,7 @@ describe('Conversations Functions', () => {
 
   describe('deleteConversation', () => {
     it('should delete an existing conversation', async () => {
-      const request = createMockRequest({}, { id: '123' })
+      const request = createMockRequest({}, { id: 'conversation_1' })
       
       const response = await deleteConversation(request, mockContext)
       
@@ -244,7 +244,7 @@ describe('Conversations Functions', () => {
   describe('addMessage', () => {
     it('should add a message to a conversation', async () => {
       const messageData = { content: 'Hello world', role: 'user' }
-      const request = createMockRequest({}, { id: '123' }, messageData)
+      const request = createMockRequest({}, { id: 'conversation_2' }, messageData)
       
       const response = await addMessage(request, mockContext)
       
@@ -281,7 +281,7 @@ describe('Conversations Functions', () => {
 
   describe('generateAIResponse', () => {
     it('should generate an AI response for a conversation', async () => {
-      const request = createMockRequest({}, { id: '123' })
+      const request = createMockRequest({}, { id: 'conversation_3' })
       
       const response = await generateAIResponse(request, mockContext)
       

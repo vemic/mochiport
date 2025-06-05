@@ -1,4 +1,4 @@
-import { merge, pick, omit, isEmpty as isObjectEmpty, isPlainObject } from '@ai-chat/shared'
+import { merge, pick, omit, isObjectEmpty, isPlainObject } from '@ai-chat/shared'
 
 describe('Object Utils', () => {
   describe('merge', () => {

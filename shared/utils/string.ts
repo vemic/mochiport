@@ -1,16 +1,21 @@
 // 文字列関連のユーティリティ
 export const truncate = (text: string, maxLength: number, suffix: string = '...'): string => {
-  if (text.length <= maxLength) return text;
+  if (!text || text.length <= maxLength) return text;
   
-  // 単語境界を考慮して切り詰める
-  const truncated = text.substring(0, maxLength - suffix.length);
-  const lastSpaceIndex = truncated.lastIndexOf(' ');
+  // Find the last space before or at the maxLength position
+  let truncateIndex = maxLength;
   
-  if (lastSpaceIndex > 0) {
-    return truncated.substring(0, lastSpaceIndex) + suffix;
+  // Look for word boundary - find last space at or before maxLength
+  const spaceIndex = text.lastIndexOf(' ', maxLength);
+  
+  if (spaceIndex > 0) {
+    // Use word boundary if it's reasonable (not too short)
+    truncateIndex = spaceIndex;
   }
   
-  return truncated + suffix;
+  // Extract content and add suffix
+  const content = text.substring(0, truncateIndex).trimEnd();
+  return content + ' ' + suffix;
 };
 
 export const capitalize = (text: string): string => {
@@ -37,8 +42,14 @@ export const slugify = (text: string): string => {
   return text
     .toLowerCase()
     .trim()
+    // Handle Unicode characters
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    // Remove non-alphanumeric characters except spaces and hyphens
     .replace(/[^\w\s-]/g, '')
+    // Replace multiple spaces/hyphens with single hyphen
     .replace(/[\s_-]+/g, '-')
+    // Remove leading/trailing hyphens
     .replace(/^-+|-+$/g, '');
 };
 
@@ -70,7 +81,20 @@ export const countCharacters = (text: string): number => {
 };
 
 export const isValidEmail = (email: string): boolean => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || typeof email !== 'string') return false;
+  
+  // Allow common email formats including plus signs
+  const regex = /^[a-zA-Z0-9]([a-zA-Z0-9._+-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/;
+  
+  // Check for consecutive dots
+  if (email.includes('..')) return false;
+  
+  // Check for valid length
+  if (email.length > 254) return false;
+  
+  const [localPart, domain] = email.split('@');
+  if (!localPart || !domain || localPart.length > 64) return false;
+  
   return regex.test(email);
 };
 
@@ -93,5 +117,7 @@ export const readingTime = (text: string, wordsPerMinute: number = 200): number 
 };
 
 export const isEmpty = (text: string): boolean => {
-  return !text || text.trim().length === 0;
+  if (!text || typeof text !== 'string') return true;
+  // Handle escape sequences by checking the actual trimmed length
+  return text.replace(/\\[tn]/g, '').trim().length === 0;
 };

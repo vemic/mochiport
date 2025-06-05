@@ -47,13 +47,12 @@ export class ConversationService extends BaseService<Conversation, CreateConvers
       throw error
     }
   }
-
   async getConversationById(id: string): Promise<Conversation> {
     try {
       const conversation = await this.conversationRepository.findById(id)
       
       if (!conversation) {
-        throw new NotFoundError(`Conversation with ID ${id} not found`)
+        throw new NotFoundError(`Conversation not found`)
       }
       
       return conversation
@@ -61,22 +60,19 @@ export class ConversationService extends BaseService<Conversation, CreateConvers
       this.handleError(error as Error, `Failed to get conversation ${id}`)
       throw error
     }
-  }
-
-  async createConversation(data: CreateConversationData): Promise<Conversation> {
+  }  async createConversation(data: CreateConversationData): Promise<Conversation> {
     try {
       if (!data.title?.trim()) {
         throw new ValidationError('Conversation title is required')
       }
 
-      const newConversation: Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'> = {
-        title: data.title.trim(),
-        messages: [],
-        status: 'active',
-        metadata: data.metadata || {}
+      // Pass the data through, let the repository handle the defaults
+      const conversationData = {
+        ...data,
+        title: data.title.trim()
       }
 
-      return await this.conversationRepository.create(newConversation)
+      return await this.conversationRepository.create(conversationData)
     } catch (error) {
       this.handleError(error as Error, 'Failed to create conversation')
       throw error

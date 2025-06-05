@@ -99,17 +99,23 @@ describe('Auth Middleware', () => {
       expect(result).toBeNull()
     })
   })
-
   describe('authenticateRequest', () => {
-    const createMockRequest = (authHeader?: string): HttpRequest => ({
-      headers: authHeader ? { authorization: authHeader } : {},
-      query: new URLSearchParams(),
-      params: {},
-      json: jest.fn(),
-      text: jest.fn(),
-      arrayBuffer: jest.fn(),
-      formData: jest.fn(),
-    } as unknown as HttpRequest)
+    const createMockRequest = (authHeader?: string): HttpRequest => {
+      const headers = new Map()
+      if (authHeader) {
+        headers.set('authorization', authHeader)
+      }
+      
+      return {
+        headers,
+        query: new URLSearchParams(),
+        params: {},
+        json: jest.fn(),
+        text: jest.fn(),
+        arrayBuffer: jest.fn(),
+        formData: jest.fn(),
+      } as unknown as HttpRequest
+    }
 
     it('should authenticate request with valid Bearer token', async () => {
       const mockPayload = { userId: '123', email: 'test@example.com' }
@@ -163,22 +169,23 @@ describe('Auth Middleware', () => {
       expect(result.user).toEqual({
         userId: 'dev-user-123',
         email: 'dev@example.com',
-        name: 'Development User'
-      })
-    })
+        name: 'Development User',
+        roles: ['admin', 'user']
+      })    })
   })
-
   describe('authorizeRequest', () => {
-    const createAuthenticatedRequest = (user: any): AuthenticatedRequest => ({
-      headers: {},
-      query: new URLSearchParams(),
-      params: {},
-      json: jest.fn(),
-      text: jest.fn(),
-      arrayBuffer: jest.fn(),
-      formData: jest.fn(),
-      user
-    } as unknown as AuthenticatedRequest)
+    const createAuthenticatedRequest = (user: any): AuthenticatedRequest => {
+      return {
+        headers: new Map(),
+        query: new URLSearchParams(),
+        params: {},
+        json: jest.fn(),
+        text: jest.fn(),
+        arrayBuffer: jest.fn(),
+        formData: jest.fn(),
+        user  // Set user directly for testing authorization logic
+      } as unknown as AuthenticatedRequest
+    }
 
     it('should authorize user with required role', async () => {
       const user = { userId: '123', roles: ['admin', 'user'] }

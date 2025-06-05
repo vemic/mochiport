@@ -73,15 +73,24 @@ export const formatRelativeTime = (date: Date): string => {
   return rtf.format(0, 'second');
 };
 
-export const isValidDate = (dateString: string): boolean => {
-  if (typeof dateString !== 'string') return false;
-  const parsed = new Date(dateString);
-  return !isNaN(parsed.getTime());
+export const isValidDate = (date: Date | string | null | undefined): boolean => {
+  if (!date) return false;
+  
+  if (date instanceof Date) {
+    return !isNaN(date.getTime());
+  }
+  
+  if (typeof date === 'string') {
+    const parsed = new Date(date);
+    return !isNaN(parsed.getTime());
+  }
+  
+  return false;
 };
 
 export const parseDate = (input: string | Date | null | undefined): Date | null => {
-  if (!input) {
-    return null;
+  if (input === null || input === undefined) {
+    throw new Error('Date input cannot be null or undefined');
   }
   
   if (input instanceof Date) {
@@ -90,10 +99,11 @@ export const parseDate = (input: string | Date | null | undefined): Date | null 
   
   if (typeof input === 'string') {
     const parsed = new Date(input);
-    return isNaN(parsed.getTime()) ? null : parsed;
+    // Return invalid Date object for invalid strings (not null)
+    return parsed;
   }
   
-  return null;
+  throw new Error('Invalid date input type');
 };
 
 // 期間計算

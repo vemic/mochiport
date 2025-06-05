@@ -6,11 +6,12 @@ import {
   CreateConversationData,
   UpdateConversationData 
 } from "@ai-chat/shared"
+import { mockConversations } from "../data/mock-data"
 
 export class ConversationRepository implements IConversationRepository {
   // In-memory storage for development - replace with actual database
-  private conversations: Conversation[] = []
-  private nextId = 1
+  private conversations: Conversation[] = [...mockConversations]
+  private nextId = mockConversations.length + 1
 
   async findById(id: string): Promise<Conversation | null> {
     return this.conversations.find(conversation => conversation.id === id) || null
@@ -59,12 +60,19 @@ export class ConversationRepository implements IConversationRepository {
       success: true,
       timestamp: new Date().toISOString()
     }
-  }
-
-  async create(data: Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'>): Promise<Conversation> {
+  }  async create(data: Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'> | CreateConversationData): Promise<Conversation> {
     const now = new Date()
+    
+    // Ensure all required fields exist
+    const fullData: Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'> = {
+      title: data.title,
+      messages: 'messages' in data ? data.messages : [],
+      status: 'status' in data ? data.status : 'active',
+      metadata: data.metadata || {}
+    }
+    
     const newConversation: Conversation = {
-      ...data,
+      ...fullData,
       id: `conversation_${this.nextId++}`,
       createdAt: now,
       updatedAt: now

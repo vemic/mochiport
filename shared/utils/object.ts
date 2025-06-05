@@ -63,12 +63,43 @@ export const isObject = (value: unknown): value is Record<string, unknown> => {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 };
 
-export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
-  if (!isObject(value)) return false;
+export const isObjectEmpty = (value: unknown): boolean => {
+  if (value === null || value === undefined) {
+    return true;
+  }
   
-  // 純粋なオブジェクト（{}またはnew Object()で作成）かチェック
-  const prototype = Object.getPrototypeOf(value);
-  return prototype === null || prototype === Object.prototype;
+  if (typeof value === 'string') {
+    return value.length === 0;
+  }
+  
+  if (Array.isArray(value)) {
+    return value.length === 0;
+  }
+  
+  if (typeof value === 'object') {
+    return Object.keys(value).length === 0;
+  }
+  
+  // For primitive values (numbers, booleans, etc.), they are not empty
+  return false;
+};
+
+export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || value === undefined) {
+    return false;
+  }
+  
+  if (typeof value !== 'object') {
+    return false;
+  }
+  
+  // Handle Object.create(null) case
+  if (Object.getPrototypeOf(value) === null) {
+    return true;
+  }
+  
+  // Handle regular object literals
+  return value.constructor === Object;
 };
 
 // ネストされたオブジェクトプロパティの取得

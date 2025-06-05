@@ -465,7 +465,7 @@ export async function generateAIResponse(
   }
 }
 
-// Azure Functions アプリケーションにエンドポイントを登録
+// HTTP handlers registration
 app.http('getConversations', {
   methods: ['GET'],
   route: 'conversations',
