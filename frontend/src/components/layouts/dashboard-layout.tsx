@@ -11,7 +11,8 @@ import {
   FileText, 
   Settings, 
   Menu,
-  X 
+  X,
+  Home
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -19,6 +20,11 @@ interface DashboardLayoutProps {
 }
 
 const navigation = [
+  {
+    name: 'ダッシュボード',
+    href: '/dashboard',
+    icon: Home,
+  },
   {
     name: '会話',
     href: '/dashboard/conversations',
@@ -64,10 +70,16 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className="flex h-full flex-col">
-          {/* Logo */}
-          <div className="flex h-16 items-center justify-between px-6 border-b">
-            <h1 className="text-xl font-semibold">AI チャット管理</h1>
+        <div className="flex h-full flex-col">          {/* Logo */}
+          <div className="flex h-16 items-center justify-between px-6 border-b bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950 dark:to-purple-950">
+            <div className="flex items-center space-x-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-sm">
+                M
+              </div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                mochiport
+              </h1>
+            </div>
             <Button
               variant="ghost"
               size="icon"
@@ -76,24 +88,25 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               <X className="h-6 w-6" />
             </Button>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 space-y-1 px-4 py-6">
+          </div>          {/* Navigation */}
+          <nav className="flex-1 space-y-2 px-4 py-6">
             {navigation.map((item) => {
-              const isActive = pathname.startsWith(item.href);
+              const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    'flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                    'flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group',
                     isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                      ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
+                      : 'text-muted-foreground hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-700 dark:hover:from-indigo-950 dark:hover:to-purple-950 dark:hover:text-indigo-300'
                   )}
                 >
-                  <item.icon className="mr-3 h-5 w-5" />
+                  <item.icon className={cn(
+                    "mr-3 h-5 w-5 transition-transform group-hover:scale-110",
+                    isActive ? "text-white" : ""
+                  )} />
                   {item.name}
                 </Link>
               );
