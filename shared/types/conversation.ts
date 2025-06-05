@@ -28,6 +28,10 @@ export interface ConversationMetadata {
   aiModel?: string;
   topic?: string;
   publishedFromDraft?: string;
+  pinned?: boolean;
+  favorite?: boolean;
+  lastReadAt?: Date;
+  unreadCount?: number;
 }
 
 export interface MessageMetadata {
@@ -68,6 +72,8 @@ export interface ConversationFilters {
   priority?: 'low' | 'medium' | 'high';
   dateFrom?: Date;
   dateTo?: Date;
+  pinned?: boolean;
+  favorite?: boolean;
 }
 
 // ページネーション応答の型
