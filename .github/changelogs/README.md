@@ -30,6 +30,7 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 - `CHANGELOG_20250605_006_Update_Project_Config_Documentation.md` - プロジェクト構成ドキュメントの更新
 - `CHANGELOG_20250605_007_Copilot_Instructions_Optimization.md` - Copilot指示ドキュメント最適化と判断基準明確化
 - `CHANGELOG_20250605_008_Copilot_Instructions_Restructuring.md` - Copilot指示書のベストプラクティス準拠再構築
+- `CHANGELOG_20250605_009_Critical_Gitignore_Fix.md` - **[緊急修正]** .gitignoreによる重要ソースコード除外問題の解決
 
 ## 関連ドキュメント
 

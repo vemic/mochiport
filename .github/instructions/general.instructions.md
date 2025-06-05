@@ -122,6 +122,11 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 3. **技術的詳細**: 変更前後の比較、設定変更内容
 4. **次回作業予定**: 未完了項目や継続課題
 
+### Changelog記載言語
+- **日本語必須**: すべてのChangelogは日本語で記載する
+- **技術用語**: 必要に応じて英語技術用語を併記可能
+- **コード例**: コードブロックは元の言語のまま記載
+
 ### Changelog更新時の手順
 1. 既存Changelogがある場合は追記更新
 2. `.github/changelogs/README.md` のリストに新規追加
