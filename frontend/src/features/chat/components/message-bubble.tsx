@@ -5,9 +5,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Message } from '@ai-chat/shared';
+import { Message } from '@mochiport/shared';
 import { cn } from '@/lib/utils';
-import { formatDate } from '@ai-chat/shared';
+import { formatDate } from '@mochiport/shared';
 import { 
   User, 
   Bot, 

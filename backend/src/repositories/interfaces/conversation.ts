@@ -4,7 +4,7 @@ import {
   UpdateConversationData, 
   ConversationFilters,
   PaginatedResponse 
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 import { BaseRepository, SearchableRepository } from './base';
 
 export interface ConversationRepository 

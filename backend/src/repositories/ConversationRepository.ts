@@ -5,7 +5,7 @@ import {
   PaginatedResponse,
   CreateConversationData,
   UpdateConversationData 
-} from "@ai-chat/shared"
+} from "@mochiport/shared"
 import { mockConversations } from "../data/mock-data"
 
 export class ConversationRepository implements IConversationRepository {

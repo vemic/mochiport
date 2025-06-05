@@ -1,5 +1,5 @@
 
-import { Message, MessageRole, MessageMetadata } from '@ai-chat/shared';
+import { Message, MessageRole, MessageMetadata } from '@mochiport/shared';
 
 export interface AIModelConfig {
   model: string;

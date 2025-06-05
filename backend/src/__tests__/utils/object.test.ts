@@ -1,4 +1,4 @@
-import { merge, pick, omit, isObjectEmpty, isPlainObject } from '@ai-chat/shared'
+import { merge, pick, omit, isObjectEmpty, isPlainObject } from '@mochiport/shared'
 
 describe('Object Utils', () => {
   describe('merge', () => {

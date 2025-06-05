@@ -1,6 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
 import { ReminderService } from '../../services/ReminderService'
-import type { ReminderFilters, CreateReminderData, UpdateReminderData } from '@ai-chat/shared'
+import type { ReminderFilters, CreateReminderData, UpdateReminderData } from '@mochiport/shared'
 
 const reminderService = new ReminderService()
 

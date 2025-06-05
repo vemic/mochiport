@@ -4,8 +4,8 @@ import { Card } from "@/components/ui/card"
 import { ReminderCard } from "../components/reminder-card"
 import { ReminderForm } from "../components/reminder-form"
 import { useReminders } from "@/lib/hooks"
-import { REMINDER_PRIORITY } from "@ai-chat/shared"
-import type { Reminder } from "@ai-chat/shared"
+import { REMINDER_PRIORITY } from "@mochiport/shared"
+import type { Reminder } from "@mochiport/shared"
 
 interface ReminderListProps {
   reminders: Reminder[]

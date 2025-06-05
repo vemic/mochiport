@@ -1,5 +1,5 @@
 {
-  "name": "@ai-chat/tsconfig",
+  "name": "@mochiport/tsconfig",
   "version": "1.0.0",
   "private": true,
   "files": [

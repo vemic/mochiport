@@ -5,7 +5,7 @@ import {
   CreateReminderData, 
   UpdateReminderData,
   ReminderFilters 
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 export interface ReminderState {
   // State

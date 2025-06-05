@@ -9,7 +9,7 @@ import {
   addMessage,
   generateAIResponse
 } from '../../functions/chat/conversations'
-import { HTTP_STATUS } from '@ai-chat/shared'
+import { HTTP_STATUS } from '@mochiport/shared'
 
 describe('Conversations Functions', () => {
   const mockContext = {

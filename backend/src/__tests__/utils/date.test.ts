@@ -1,4 +1,4 @@
-import { formatDate, isValidDate, parseDate } from '@ai-chat/shared'
+import { formatDate, isValidDate, parseDate } from '@mochiport/shared'
 
 describe('Date Utils', () => {
   describe('formatDate', () => {

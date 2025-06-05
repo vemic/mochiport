@@ -6,7 +6,7 @@ import {
   CreateReminderData, 
   UpdateReminderData, 
   ReminderFilters 
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 // Query keys
 export const reminderKeys = {

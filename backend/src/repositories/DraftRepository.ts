@@ -1,4 +1,4 @@
-import type { Draft, CreateDraftData, UpdateDraftData, DraftFilters, PaginatedResponse, DraftStatus } from '@ai-chat/shared'
+import type { Draft, CreateDraftData, UpdateDraftData, DraftFilters, PaginatedResponse, DraftStatus } from '@mochiport/shared'
 import type { DraftRepository as IDraftRepository } from './interfaces/draft'
 import { mockDrafts } from '../data/mock-data'
 

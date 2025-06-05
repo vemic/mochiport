@@ -6,7 +6,7 @@ import {
   DraftFilters,
   PaginatedResponse,
   Conversation
-} from "@ai-chat/shared"
+} from "@mochiport/shared"
 import { DraftRepository as IDraftRepository } from "../repositories/interfaces/draft"
 import { DraftRepository } from "../repositories/DraftRepository"
 import { ConversationRepository as IConversationRepository } from "../repositories/interfaces/conversation"

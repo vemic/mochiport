@@ -5,7 +5,7 @@ import {
   CreateDraftData, 
   UpdateDraftData,
   DraftFilters 
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 export interface DraftState {
   // State

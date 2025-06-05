@@ -1,4 +1,4 @@
-import type { Reminder, CreateReminderData, UpdateReminderData, ReminderFilters, ReminderStatus } from '@ai-chat/shared'
+import type { Reminder, CreateReminderData, UpdateReminderData, ReminderFilters, ReminderStatus } from '@mochiport/shared'
 import type { BaseRepository } from './base'
 
 export interface ReminderRepository extends BaseRepository<Reminder, CreateReminderData, UpdateReminderData, ReminderFilters> {

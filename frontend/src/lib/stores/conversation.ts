@@ -5,7 +5,7 @@ import {
   CreateConversationData, 
   UpdateConversationData,
   ConversationFilters 
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 export interface ConversationState {
   // State

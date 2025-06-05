@@ -140,14 +140,13 @@
   ],
 
   // バックエンド Jest 設定
-  "jest.pathToJest.backend": "yarn workspace @ai-chat/backend jest",
+  "jest.pathToJest.backend": "yarn workspace @mochiport/backend jest",
   "jest.pathToConfig.backend": "${workspaceFolder}/backend/jest.config.json",
-
   // フロントエンド Jest 設定
-  "jest.pathToJest.frontend": "yarn workspace @ai-chat/frontend jest",
+  "jest.pathToJest.frontend": "yarn workspace @mochiport/frontend jest",
   "jest.pathToConfig.frontend": "${workspaceFolder}/frontend/jest.config.js",
 
   // 共有モジュール Jest 設定
-  "jest.pathToJest.shared": "yarn workspace @ai-chat/shared jest",
+  "jest.pathToJest.shared": "yarn workspace @mochiport/shared jest",
   "jest.pathToConfig.shared": "${workspaceFolder}/shared/jest.config.js"
 }

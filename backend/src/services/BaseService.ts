@@ -1,4 +1,4 @@
-import { ValidationResult } from '@ai-chat/shared';
+import { ValidationResult } from '@mochiport/shared';
 import { ValidationError } from '../utils/errors';
 
 export abstract class BaseService<T, TCreate, TUpdate> {

@@ -39,7 +39,7 @@
     {
       "label": "Build Frontend",
       "type": "shell",
-      "command": "yarn workspace @ai-chat/frontend build",
+      "command": "yarn workspace @mochiport/frontend build",
       "group": "build",
       "problemMatcher": ["$tsc"],
       "options": {
@@ -56,7 +56,7 @@
     {
       "label": "Build Backend",
       "type": "shell",
-      "command": "yarn workspace @ai-chat/backend build",
+      "command": "yarn workspace @mochiport/backend build",
       "group": "build",
       "problemMatcher": ["$tsc"],
       "options": {
@@ -73,7 +73,7 @@
     {
       "label": "Build Shared",
       "type": "shell",
-      "command": "yarn workspace @ai-chat/shared build",
+      "command": "yarn workspace @mochiport/shared build",
       "group": "build",
       "problemMatcher": ["$tsc"],
       "options": {
@@ -147,7 +147,7 @@
     {
       "label": "Test Backend",
       "type": "shell",
-      "command": "yarn workspace @ai-chat/backend test",
+      "command": "yarn workspace @mochiport/backend test",
       "group": "test",
       "options": {
         "cwd": "${workspaceFolder}"
@@ -163,7 +163,7 @@
     {
       "label": "Test Backend Watch",
       "type": "shell",
-      "command": "yarn workspace @ai-chat/backend test:watch",
+      "command": "yarn workspace @mochiport/backend test:watch",
       "group": "test",
       "isBackground": true,
       "options": {
@@ -206,7 +206,7 @@
     {
       "label": "Start Frontend Dev",
       "type": "shell",
-      "command": "yarn workspace @ai-chat/frontend dev",
+      "command": "yarn workspace @mochiport/frontend dev",
       "group": "build",
       "isBackground": true,
       "options": {
@@ -223,7 +223,7 @@
     {
       "label": "Start Backend Dev",
       "type": "shell",
-      "command": "yarn workspace @ai-chat/backend dev:watch",
+      "command": "yarn workspace @mochiport/backend dev:watch",
       "group": "build",
       "isBackground": true,
       "options": {
@@ -267,7 +267,7 @@
     {
       "label": "Turbo Dev with Filter",
       "type": "shell",
-      "command": "turbo run dev --filter=@ai-chat/frontend --filter=@ai-chat/backend",
+      "command": "turbo run dev --filter=@mochiport/frontend --filter=@mochiport/backend",
       "group": "build",
       "isBackground": true,
       "presentation": {

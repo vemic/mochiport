@@ -6,7 +6,7 @@ import {
   CreateConversationData, 
   UpdateConversationData, 
   ConversationFilters 
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 // Query keys
 export const conversationKeys = {

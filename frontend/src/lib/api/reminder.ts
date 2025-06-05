@@ -6,7 +6,7 @@ import {
   ReminderFilters,
   ApiResponse,
   PaginatedResponse
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 export const reminderApi = {
   /**

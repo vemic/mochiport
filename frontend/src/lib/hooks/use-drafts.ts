@@ -6,7 +6,7 @@ import {
   CreateDraftData, 
   UpdateDraftData, 
   DraftFilters 
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 // Query keys
 export const draftKeys = {

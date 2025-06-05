@@ -1,4 +1,4 @@
-import type { Reminder, CreateReminderData, UpdateReminderData, ReminderFilters, PaginatedResponse } from '@ai-chat/shared'
+import type { Reminder, CreateReminderData, UpdateReminderData, ReminderFilters, PaginatedResponse } from '@mochiport/shared'
 import type { ReminderRepository as IReminderRepository } from './interfaces/reminder'
 import { mockReminders } from '../data/mock-data'
 

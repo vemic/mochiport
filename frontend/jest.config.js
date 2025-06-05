@@ -17,11 +17,10 @@ const config = {
     }]
   },
   moduleNameMapper: {
-    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
-    "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.js",
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",    "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.js",
     "^@/(.*)$": "<rootDir>/src/$1",
-    "^@ai-chat/shared$": "<rootDir>/../shared/index.ts",
-    "^@ai-chat/shared/(.*)$": "<rootDir>/../shared/$1"
+    "^@mochiport/shared$": "<rootDir>/../shared/index.ts",
+    "^@mochiport/shared/(.*)$": "<rootDir>/../shared/$1"
   },
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
   testPathIgnorePatterns: [

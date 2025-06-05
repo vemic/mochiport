@@ -3,7 +3,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react']
   },
-  transpilePackages: ['@ai-chat/shared'],
+  transpilePackages: ['@mochiport/shared'],
   typescript: {
     ignoreBuildErrors: false,
   },

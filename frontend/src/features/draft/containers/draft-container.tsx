@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card"
 import { DraftCard } from "../components/draft-card"
 import { DraftEditor } from "../components/draft-editor"
 import { useDrafts } from "@/lib/hooks"
-import type { Draft } from "@ai-chat/shared"
+import type { Draft } from "@mochiport/shared"
 
 interface DraftListProps {
   drafts: Draft[]

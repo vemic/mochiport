@@ -16,9 +16,9 @@ import {
   User,
   Bot
 } from 'lucide-react';
-import { Conversation } from '@ai-chat/shared';
+import { Conversation } from '@mochiport/shared';
 import { cn } from '@/lib/utils';
-import { formatDate } from '@ai-chat/shared';
+import { formatDate } from '@mochiport/shared';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
 

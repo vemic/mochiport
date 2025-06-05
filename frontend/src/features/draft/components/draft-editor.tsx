@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import type { Draft, CreateDraftData } from "@ai-chat/shared"
+import type { Draft, CreateDraftData } from "@mochiport/shared"
 import { useCreateDraft, useUpdateDraft, useDebounce } from "@/lib/hooks"
 import { X, Save, Send } from "lucide-react"
 

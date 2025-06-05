@@ -11,7 +11,7 @@ import {
   CreateConversationData,
   UpdateConversationData, 
   HTTP_STATUS
-} from "@ai-chat/shared";
+} from "@mochiport/shared";
 import { ConversationService } from "../../services/ConversationService";
 import { NotFoundError, ValidationError } from "../../utils/errors";
 

@@ -1,5 +1,5 @@
 {
-  "name": "@ai-chat/backend",
+  "name": "@mochiport/backend",
   "version": "1.0.0",
   "private": true,
   "main": "dist/index.js",
@@ -16,7 +16,7 @@
     "format": "prettier --write \"src/**/*.{ts,js,json}\""
   },
   "dependencies": {
-    "@ai-chat/shared": "*",
+    "@mochiport/shared": "*",
     "@azure/cosmos": "^4.0.0",
     "@azure/functions": "^4.0.0",
     "concurrently": "^9.1.2",
@@ -25,10 +25,9 @@
     "rimraf": "^6.0.1",
     "uuid": "^9.0.0",
     "zod": "^3.25.51"
-  },
-  "devDependencies": {
-    "@ai-chat/eslint-config": "*",
-    "@ai-chat/tsconfig": "*",
+  },  "devDependencies": {
+    "@mochiport/eslint-config": "*",
+    "@mochiport/tsconfig": "*",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.29",

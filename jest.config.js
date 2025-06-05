@@ -22,8 +22,8 @@ const config = {
         ],
       },
       moduleNameMapper: {
-        "^@ai-chat/shared$": "<rootDir>/shared/index.ts",
-        "^@ai-chat/shared/(.*)$": "<rootDir>/shared/$1",
+        "^@mochiport/shared$": "<rootDir>/shared/index.ts",
+        "^@mochiport/shared/(.*)$": "<rootDir>/shared/$1",
       },
       transformIgnorePatterns: ["/node_modules/(?!.*(shared)/).+\\.js$"],
       setupFilesAfterEnv: ["<rootDir>/backend/src/__tests__/setup.ts"],

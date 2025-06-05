@@ -1,4 +1,4 @@
-import { PaginationParams, PaginatedResponse } from '@ai-chat/shared';
+import { PaginationParams, PaginatedResponse } from '@mochiport/shared';
 
 // ベースリポジトリインターフェース
 export interface BaseRepository<T, TCreate, TUpdate, TFilters = Record<string, unknown>> {

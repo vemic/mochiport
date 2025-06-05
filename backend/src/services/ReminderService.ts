@@ -6,7 +6,7 @@ import type {
   PaginatedResponse,
   ValidationError as SharedValidationError,
   ReminderStatus
-} from '@ai-chat/shared'
+} from '@mochiport/shared'
 import type { ReminderRepository as IReminderRepository } from '../repositories/interfaces/reminder'
 import { ReminderRepository } from '../repositories/ReminderRepository'
 import { BaseService } from './BaseService'

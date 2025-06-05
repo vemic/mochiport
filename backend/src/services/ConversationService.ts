@@ -8,7 +8,7 @@ import {
   PaginatedResponse,
   ValidationResult,
   ValidationError as SharedValidationError
-} from "@ai-chat/shared"
+} from "@mochiport/shared"
 import { ConversationRepository as IConversationRepository } from "../repositories/interfaces/conversation"
 import { ConversationRepository } from "../repositories/ConversationRepository"
 import { NotFoundError, ValidationError } from "../utils/errors"

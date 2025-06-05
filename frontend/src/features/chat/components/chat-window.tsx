@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MessageBubble } from './message-bubble';
 import { ChatInput } from './chat-input';
-import { Conversation, Message } from '@ai-chat/shared';
+import { Conversation, Message } from '@mochiport/shared';
 import { cn } from '@/lib/utils';
-import { formatDate } from '@ai-chat/shared';
+import { formatDate } from '@mochiport/shared';
 import { 
   MoreVertical, 
   Archive, 

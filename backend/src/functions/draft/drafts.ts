@@ -1,6 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions'
 import { DraftService } from '../../services/DraftService'
-import type { DraftFilters, CreateDraftData, UpdateDraftData } from '@ai-chat/shared'
+import type { DraftFilters, CreateDraftData, UpdateDraftData } from '@mochiport/shared'
 
 const draftService = new DraftService()
 

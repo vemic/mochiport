@@ -9,4 +9,4 @@ export type {
   ApiResponse,
   PaginatedResponse,
   ApiError as ApiErrorType
-} from '@ai-chat/shared';
+} from '@mochiport/shared';

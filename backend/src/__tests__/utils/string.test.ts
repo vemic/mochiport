@@ -1,4 +1,4 @@
-import { capitalize, truncate, slugify, isEmpty, isEmail } from '@ai-chat/shared'
+import { capitalize, truncate, slugify, isEmpty, isEmail } from '@mochiport/shared'
 
 describe('String Utils', () => {
   describe('capitalize', () => {

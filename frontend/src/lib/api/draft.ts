@@ -6,7 +6,7 @@ import {
   DraftFilters,
   ApiResponse,
   PaginatedResponse
-} from '@ai-chat/shared';
+} from '@mochiport/shared';
 
 export const draftApi = {
   /**

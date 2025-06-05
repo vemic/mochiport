@@ -1,5 +1,5 @@
 import { BaseRepository } from "./base"
-import { Draft, DraftFilters, PaginatedResponse, CreateDraftData, UpdateDraftData } from "@ai-chat/shared"
+import { Draft, DraftFilters, PaginatedResponse, CreateDraftData, UpdateDraftData } from "@mochiport/shared"
 
 export interface DraftRepository extends BaseRepository<Draft, CreateDraftData, UpdateDraftData, DraftFilters> {
   /**
