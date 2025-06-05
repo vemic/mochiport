@@ -7,9 +7,11 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
     "type-check": "tsc --noEmit"
-  },  "devDependencies": {
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.0",
     "typescript": "^5.2.0"
   },
   "dependencies": {

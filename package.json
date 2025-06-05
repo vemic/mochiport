@@ -19,16 +19,17 @@
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
-    "turbo": "^1.10.0",
+    "turbo": "^2.5.4",
     "typescript": "^5.2.0"
-  },  "engines": {
+  },
+  "engines": {
     "node": ">=18.0.0",
     "yarn": ">=1.22.0"
   },
   "packageManager": "yarn@1.22.19",
   "workspaces": [
     "frontend",
-    "backend", 
+    "backend",
     "shared",
     "packages/*",
     "apps/*"

@@ -131,6 +131,7 @@
       "**/.yarn/**": true,
       "**/build/**": true,
     },
+    "debug.internalConsoleOptions": "neverOpen",
   },
   "extensions": {
     "recommendations": [

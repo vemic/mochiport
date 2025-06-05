@@ -112,5 +112,9 @@
   "editor.insertSpaces": true,
 
   // 拡張機能設定
-  "extensions.ignoreRecommendations": false
+  "extensions.ignoreRecommendations": false,
+  "azureFunctions.deploySubpath": "backend",
+  "azureFunctions.postDeployTask": "npm install (functions)",
+  "azureFunctions.projectLanguageModel": 4,
+  "azureFunctions.preDeployTask": "npm prune (functions)"
 }

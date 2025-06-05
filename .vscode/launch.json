@@ -6,9 +6,13 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/frontend/node_modules/.bin/next",
-      "args": ["dev"],
+      "args": [
+        "dev"
+      ],
       "cwd": "${workspaceFolder}/frontend",
-      "runtimeArgs": ["--inspect"],
+      "runtimeArgs": [
+        "--inspect"
+      ],
       "env": {
         "NODE_OPTIONS": "--inspect"
       },
@@ -24,7 +28,12 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/.bin/func",
-      "args": ["host", "start", "--inspect", "9229"],
+      "args": [
+        "host",
+        "start",
+        "--inspect",
+        "9229"
+      ],
       "cwd": "${workspaceFolder}/backend",
       "env": {
         "AzureWebJobsScriptRoot": "${workspaceFolder}/backend",
@@ -38,7 +47,11 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/.bin/jest",
-      "args": ["--runInBand", "--no-cache", "--watchAll=false"],
+      "args": [
+        "--runInBand",
+        "--no-cache",
+        "--watchAll=false"
+      ],
       "cwd": "${workspaceFolder}/backend",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -63,6 +76,14 @@
       "env": {
         "NODE_ENV": "test"
       }
+    },
+    {
+      "name": "Attach to Node Functions",
+      "type": "node",
+      "request": "attach",
+      "restart": true,
+      "port": 9229,
+      "preLaunchTask": "func: host start"
     }
   ],
   "compounds": [
