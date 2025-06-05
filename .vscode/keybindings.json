@@ -15,6 +15,12 @@
     "command": "workbench.action.tasks.runTask",
     "args": "Start Full Development Environment"
   },
+  // Turbo専用キーバインド
+  {
+    "key": "ctrl+alt+t",
+    "command": "workbench.action.tasks.runTask",
+    "args": "Turbo Cache Status"
+  },
 
   // 個別ビルドのキーバインド
   {

@@ -311,39 +311,72 @@
       }
     },
     {
-      "label": "Auto Start Turbo Dev",
+      "label": "Turbo Build with Cache",
       "type": "shell",
-      "command": "yarn dev",
+      "command": "turbo run build --cache-dir=.turbo",
       "group": "build",
-      "isBackground": true,
-      "runOptions": {
-        "runOn": "folderOpen"
-      },
-      "problemMatcher": [
-        {
-          "pattern": [
-            {
-              "regexp": ".",
-              "file": 1,
-              "location": 2,
-              "message": 3
-            }
-          ],
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": "^.*turbo.*",
-            "endsPattern": "^.*ready.*"
-          }
-        }
-      ],
       "presentation": {
         "echo": true,
-        "reveal": "silent",
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Turbo Dev with Filter",
+      "type": "shell",
+      "command": "turbo run dev --filter=@ai-chat/frontend --filter=@ai-chat/backend",
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
         "focus": false,
         "panel": "new",
         "showReuseMessage": false,
         "clear": true,
-        "group": "turbo"
+        "group": "turbo-filtered"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Turbo Test Watch",
+      "type": "shell",
+      "command": "turbo run test:watch",
+      "group": "test",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true,
+        "group": "turbo-test"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Turbo Cache Status",
+      "type": "shell",
+      "command": "turbo run build --dry-run",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       },
       "options": {
         "cwd": "${workspaceFolder}"

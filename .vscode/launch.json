@@ -6,13 +6,9 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/frontend/node_modules/.bin/next",
-      "args": [
-        "dev"
-      ],
+      "args": ["dev"],
       "cwd": "${workspaceFolder}/frontend",
-      "runtimeArgs": [
-        "--inspect"
-      ],
+      "runtimeArgs": ["--inspect"],
       "env": {
         "NODE_OPTIONS": "--inspect"
       },
@@ -28,12 +24,7 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/.bin/func",
-      "args": [
-        "host",
-        "start",
-        "--inspect",
-        "9229"
-      ],
+      "args": ["host", "start", "--inspect", "9229"],
       "cwd": "${workspaceFolder}/backend",
       "env": {
         "AzureWebJobsScriptRoot": "${workspaceFolder}/backend",
@@ -47,11 +38,7 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceFolder}/backend/node_modules/.bin/jest",
-      "args": [
-        "--runInBand",
-        "--no-cache",
-        "--watchAll=false"
-      ],
+      "args": ["--runInBand", "--no-cache", "--watchAll=false"],
       "cwd": "${workspaceFolder}/backend",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -84,6 +71,47 @@
       "restart": true,
       "port": 9229,
       "preLaunchTask": "func: host start"
+    },
+    {
+      "name": "Launch Turbo Dev",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/turbo",
+      "args": ["dev"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development",
+        "TURBO_TELEMETRY_DISABLED": "1"
+      },
+      "serverReadyAction": {
+        "pattern": "ready",
+        "action": "debugWithChrome"
+      }
+    },
+    {
+      "name": "Launch Turbo Build",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/turbo",
+      "args": ["build"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "Launch Turbo Test",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/turbo",
+      "args": ["test"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "test"
+      }
     }
   ],
   "compounds": [
@@ -93,6 +121,12 @@
         "Debug Frontend (Next.js)",
         "Debug Backend (Azure Functions)"
       ],
+      "stopAll": true
+    },
+    {
+      "name": "Turbo Full Development",
+      "configurations": ["Launch Turbo Dev"],
+      "preLaunchTask": "Clean All",
       "stopAll": true
     }
   ]
