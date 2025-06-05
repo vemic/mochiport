@@ -27,6 +27,22 @@
 
 ## 🏗️ アーキテクチャ
 
+### 拡張性重視の設計思想
+
+プロジェクトは段階的なスケーリングに対応した設計を採用しています：
+
+- **Phase 1 (1-3人)**: useState + カスタムフック
+- **Phase 2 (3-10人)**: Zustand + Context API
+- **Phase 3 (10人+)**: マイクロフロントエンド + 独立デプロイ
+
+### 責務分離アーキテクチャ
+
+- **Presentation Layer**: UIコンポーネント（状態なし）
+- **Container Layer**: 状態管理とビジネスロジック接続
+- **Service Layer**: ビジネスロジックの実装
+- **Repository Layer**: データアクセス抽象化
+- **Infrastructure Layer**: 外部サービス統合
+
 ### Monorepo 構成
 
 ```

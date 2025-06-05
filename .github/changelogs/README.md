@@ -27,12 +27,15 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 - `CHANGELOG_20250605_003_ESLint_Configuration_Setup.md` - ESLint設定構築とワークスペース対応
 - `CHANGELOG_20250605_004_Final_Project_Completion_Report.md` - 包括的アップグレード戦略完了報告
 - `CHANGELOG_20250605_005_Complete_Project_Validation_Report.md` - プロジェクト全体の最終検証レポート
+- `CHANGELOG_20250605_006_Update_Project_Config_Documentation.md` - プロジェクト構成ドキュメントの更新
+- `CHANGELOG_20250605_007_Copilot_Instructions_Optimization.md` - Copilot指示ドキュメント最適化と判断基準明確化
+- `CHANGELOG_20250605_008_Copilot_Instructions_Restructuring.md` - Copilot指示書のベストプラクティス準拠再構築
 
 ## 関連ドキュメント
 
+- `../.github/instructions/` - GitHub Copilot専用指示書ディレクトリ（general, coding-standards, react, testing）
 - `../.github/LIBRARY_UPGRADE_STRATEGY.md` - ライブラリアップグレードの戦略ドキュメント
 - `../.github/scalable-project-config.md` - プロジェクト設定のスケーラビリティ戦略
-- `../.github/copilot-instructions.md` - GitHub Copilot使用指針
 
 ## ガイドライン
 
