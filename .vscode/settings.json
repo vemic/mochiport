@@ -79,9 +79,14 @@
   // IntelliSense設定
   "typescript.suggest.paths": true,
   "typescript.workspaceSymbols.scope": "allOpenProjects",
-
-  // Turbo設定
-  "turbo.useLocalTurbo": true,
+  // Turbo設定 - すべての機能を無効化
+  "turbo.useLocalTurbo": false,
+  "turbo.experimental.ui": false,
+  "turbo.daemon": false,
+  "turbo.telemetry": false,
+  "turbo.enabled": false,
+  "turbo.lsp.enabled": false,
+  "turbo.lsp.analyticsEnabled": false,
 
   // Next.js設定
   "emmet.includeLanguages": {

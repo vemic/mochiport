@@ -99,16 +99,21 @@
     "editor.guides.bracketPairs": "active",
     "editor.inlineSuggest.enabled": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "editor.parameterHints.enabled": true,
-    "editor.quickSuggestions": {
+    "editor.parameterHints.enabled": true,    "editor.quickSuggestions": {
       "other": true,
       "comments": false,
       "strings": true,
-    }, // TurboRepo固有設定 - サーバー接続エラー回避
-    "turbo.useLocalTurbo": true,
+    },
+    
+    // TurboRepo固有設定 - 言語サーバーを完全に無効化
+    "turbo.useLocalTurbo": false,
     "turbo.experimental.ui": false,
     "turbo.daemon": false,
     "turbo.telemetry": false,
+    "turbo.enabled": false,
+    "turbo.lsp.enabled": false,
+    "turbo.lsp.analyticsEnabled": false,
+    "workbench.localHistory.enabled": false,
 
     // Azure Functions固有設定
     "azureFunctions.showCoreToolsWarning": false,
@@ -133,8 +138,7 @@
       "**/build/**": true,
     },
     "debug.internalConsoleOptions": "neverOpen",
-  },
-  "extensions": {
+  },  "extensions": {
     "recommendations": [
       // 必須拡張機能
       "ms-vscode.vscode-typescript-next",
@@ -154,8 +158,12 @@
       // テスト
       "orta.vscode-jest",
 
-      // TurboRepo
-      "vercel.turbo-vsc",
+      // TurboRepoの拡張機能を一時的に無効化
+      // "vercel.turbo-vsc",
     ],
   },
+  "unwantedRecommendations": [
+    // TurboRepo拡張機能を明示的に除外
+    "vercel.turbo-vsc"
+  ],
 }
