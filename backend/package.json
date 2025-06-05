@@ -5,10 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "yarn build && echo 'Backend compiled successfully. Azure Functions Core Tools temporarily disabled.'",
+    "dev": "yarn build ; echo 'Backend compiled successfully. Azure Functions Core Tools temporarily disabled.'",
     "dev:watch": "tsc --watch",
     "start": "echo 'Azure Functions Core Tools temporarily disabled. Run: func host start --port 7071'",
-    "clean": "rimraf dist",
+    "clean": "powershell -Command \"Remove-Item -Path 'dist' -Recurse -Force -ErrorAction SilentlyContinue\"",
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",

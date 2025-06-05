@@ -19,12 +19,18 @@
     "rootDir": ".",
     "declaration": true,
     "declarationMap": true
-  },
-  "include": [
+  },  "include": [
     "types/**/*",
     "constants/**/*",
     "utils/**/*",
     "validation/**/*",
     "index.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/__tests__/**",
+    "dist"
   ]
 }
