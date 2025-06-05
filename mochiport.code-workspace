@@ -90,11 +90,9 @@
     "git.enableSmartCommit": true,
     "git.confirmSync": false,
     "git.autofetch": true,
-    "git.autoStash": true,
-
-    // タスク自動実行設定 - ワークスペース起動時にTurborepoを自動起動
-    "task.allowAutomaticTasks": "on",
-    "task.autoDetect": "on",
+    "git.autoStash": true, // タスク自動実行設定 - 自動起動を無効化
+    "task.allowAutomaticTasks": "off",
+    "task.autoDetect": "off",
 
     // エディタ設定の強化
     "editor.bracketPairColorization.enabled": true,
@@ -106,11 +104,11 @@
       "other": true,
       "comments": false,
       "strings": true,
-    },
-
-    // TurboRepo固有設定
+    }, // TurboRepo固有設定 - サーバー接続エラー回避
     "turbo.useLocalTurbo": true,
-    "turbo.experimental.ui": true,
+    "turbo.experimental.ui": false,
+    "turbo.daemon": false,
+    "turbo.telemetry": false,
 
     // Azure Functions固有設定
     "azureFunctions.showCoreToolsWarning": false,
@@ -141,16 +139,11 @@
       // 必須拡張機能
       "ms-vscode.vscode-typescript-next",
       "esbenp.prettier-vscode",
-      "dbaeumer.vscode-eslint",
-
-      // React & Next.js
+      "dbaeumer.vscode-eslint", // React & Next.js
       "bradlc.vscode-tailwindcss",
-      "ms-vscode.vscode-json",
-      "ms-vscode.vscode-css-language-features",
 
       // Azure Functions
       "ms-azuretools.vscode-azurefunctions",
-      "ms-azuretools.vscode-azureresourcegroups",
 
       // Git & GitHub
       "eamodio.gitlens",
@@ -158,23 +151,8 @@
       "github.copilot",
       "github.copilot-chat",
 
-      // 開発効率化
-      "ms-vscode.vscode-npm-script",
-      "formulahendry.auto-rename-tag",
-      "christian-kohler.path-intellisense",
-      "christian-kohler.npm-intellisense",
-
       // テスト
       "orta.vscode-jest",
-
-      // ユーティリティ      "ms-vscode.powershell",
-      "usernamehw.errorlens",
-      "gruntfuggly.todo-tree",
-      "aaron-bond.better-comments",
-
-      // UI
-      "pkief.material-icon-theme",
-      "equinusocio.vsc-material-theme",
 
       // TurboRepo
       "vercel.turbo-vsc",
