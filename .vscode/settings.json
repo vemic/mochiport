@@ -110,11 +110,15 @@
   "editor.wordWrap": "on",
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
-
   // 拡張機能設定
   "extensions.ignoreRecommendations": false,
   "azureFunctions.deploySubpath": "backend",
   "azureFunctions.postDeployTask": "npm install (functions)",
   "azureFunctions.projectLanguageModel": 4,
-  "azureFunctions.preDeployTask": "npm prune (functions)"
+  "azureFunctions.preDeployTask": "npm prune (functions)",
+
+  // Code Spell Checker設定 - 警告を無効化
+  "cSpell.enabled": false,
+  "cSpell.showStatus": false,
+  "cSpell.diagnosticLevel": "Hint"
 }

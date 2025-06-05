@@ -2,24 +2,24 @@
   "folders": [
     {
       "name": "🏠 Root",
-      "path": "."
+      "path": ".",
     },
     {
-      "name": "🌐 Frontend", 
-      "path": "./frontend"
+      "name": "🌐 Frontend",
+      "path": "./frontend",
     },
     {
       "name": "⚡ Backend",
-      "path": "./backend"
+      "path": "./backend",
     },
     {
       "name": "📦 Shared",
-      "path": "./shared"
+      "path": "./shared",
     },
     {
       "name": "🔧 Packages",
-      "path": "./packages"
-    }
+      "path": "./packages",
+    },
   ],
   "settings": {
     // TypeScript設定の強化
@@ -38,30 +38,30 @@
     "eslint.workingDirectories": [
       {
         "directory": "./frontend",
-        "changeProcessCwd": true
+        "changeProcessCwd": true,
       },
       {
         "directory": "./backend",
-        "changeProcessCwd": true
+        "changeProcessCwd": true,
       },
       {
         "directory": "./shared",
-        "changeProcessCwd": true
+        "changeProcessCwd": true,
       },
       {
         "directory": "./packages/ui-components",
-        "changeProcessCwd": true
-      }
+        "changeProcessCwd": true,
+      },
     ],
     "eslint.validate": [
       "javascript",
       "javascriptreact",
       "typescript",
-      "typescriptreact"
+      "typescriptreact",
     ],
     "eslint.format.enable": true,
     "eslint.codeAction.showDocumentation": {
-      "enabled": true
+      "enabled": true,
     },
 
     // ファイル関連設定の強化
@@ -69,7 +69,7 @@
       "*.env.*": "properties",
       "*.azure": "json",
       "host.json": "json",
-      "local.settings.json": "json"
+      "local.settings.json": "json",
     },
 
     // 検索・置換設定の強化
@@ -82,7 +82,7 @@
       "**/yarn.lock": true,
       "**/.yarn": true,
       "**/build": true,
-      "**/out": true
+      "**/out": true,
     },
 
     // Git設定の強化
@@ -105,7 +105,7 @@
     "editor.quickSuggestions": {
       "other": true,
       "comments": false,
-      "strings": true
+      "strings": true,
     },
 
     // TurboRepo固有設定
@@ -132,9 +132,9 @@
       "**/coverage/**": true,
       "**/.turbo/**": true,
       "**/.yarn/**": true,
-      "**/build/**": true
+      "**/build/**": true,
     },
-    "debug.internalConsoleOptions": "neverOpen"
+    "debug.internalConsoleOptions": "neverOpen",
   },
   "extensions": {
     "recommendations": [
@@ -167,11 +167,9 @@
       // テスト
       "orta.vscode-jest",
 
-      // ユーティリティ
-      "ms-vscode.powershell",
+      // ユーティリティ      "ms-vscode.powershell",
       "usernamehw.errorlens",
       "gruntfuggly.todo-tree",
-      "streetsidesoftware.code-spell-checker",
       "aaron-bond.better-comments",
 
       // UI
@@ -179,7 +177,7 @@
       "equinusocio.vsc-material-theme",
 
       // TurboRepo
-      "vercel.turbo-vsc"
-    ]
-  }
+      "vercel.turbo-vsc",
+    ],
+  },
 }
