@@ -21,8 +21,11 @@ out/
 
 # Build outputs
 dist/
-lib/
 build/
+# Build lib outputs only (exclude source lib directories)
+packages/*/lib/
+backend/lib/
+shared/lib/
 
 # Environment variables
 .env
