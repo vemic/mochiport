@@ -1,5 +1,7 @@
 // Test setup file for backend tests
-import { jest } from '@jest/globals'
+
+// Jest is already available globally in the test environment
+// No need to import it from '@jest/globals'
 
 // Mock console methods to reduce noise in tests
 global.console = {

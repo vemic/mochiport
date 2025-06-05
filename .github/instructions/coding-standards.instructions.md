@@ -1,9 +1,11 @@
 ---
 applyTo: "**/*.{ts,tsx,js,jsx}"
 ---
+
 # Coding Standards Instructions
 
 ## 基本方針
+
 - **責務分離**: Presentation/Container/Service/Repository層
 - **拡張性**: 段階的スケーリング対応（useState → Zustand → マイクロフロントエンド）
 - **型安全性**: TypeScript strict mode準拠
@@ -11,6 +13,7 @@ applyTo: "**/*.{ts,tsx,js,jsx}"
 ## ディレクトリ構造
 
 ### Frontend (`frontend/src/`)
+
 ```
 src/
 ├── app/                    # Next.js App Router
@@ -52,6 +55,7 @@ src/
 ```
 
 ### Backend (`backend/src/`)
+
 ```
 src/
 ├── functions/              # Azure Functions
@@ -87,6 +91,7 @@ src/
 ## TypeScript規約
 
 ### 型定義
+
 ```typescript
 // ✅ 良い例: 明確な型定義
 interface User {
@@ -103,12 +108,13 @@ const userData: any = {};
 // ✅ 良い例: ジェネリクス活用
 interface ApiResponse<T> {
   data: T;
-  status: 'success' | 'error';
+  status: "success" | "error";
   message?: string;
 }
 ```
 
 ### 関数定義
+
 ```typescript
 // ✅ 良い例: 明確な戻り値型
 async function fetchUser(id: string): Promise<User | null> {
@@ -123,7 +129,10 @@ async function safeApiCall<T>(
     const data = await apiCall();
     return { data, error: null };
   } catch (error) {
-    return { data: null, error: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      data: null,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
   }
 }
 ```
@@ -131,6 +140,7 @@ async function safeApiCall<T>(
 ## React規約
 
 ### コンポーネント定義
+
 ```typescript
 // ✅ 良い例: 完全なコンポーネント定義
 interface ButtonProps {
@@ -141,12 +151,12 @@ interface ButtonProps {
   onClick?: () => void;
 }
 
-export const Button: React.FC<ButtonProps> = ({ 
-  children, 
-  variant = 'primary', 
-  size = 'md', 
-  disabled = false, 
-  onClick 
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  onClick
 }) => {
   return (
     <button
@@ -164,6 +174,7 @@ Button.displayName = 'Button';
 ```
 
 ### カスタムフック
+
 ```typescript
 // ✅ 良い例: 適切な依存配列とエラーハンドリング
 export function useApi<T>(url: string, options?: RequestInit) {
@@ -183,7 +194,7 @@ export function useApi<T>(url: string, options?: RequestInit) {
         const result = await response.json();
         setData(result);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -199,12 +210,13 @@ export function useApi<T>(url: string, options?: RequestInit) {
 ## エラーハンドリング規約
 
 ### 非同期処理のエラーハンドリング
+
 ```typescript
 // ✅ 良い例: 包括的なエラーハンドリング
 async function processData(input: unknown): Promise<ProcessedData> {
   // 入力検証
   if (!isValidInput(input)) {
-    throw new ValidationError('Invalid input format');
+    throw new ValidationError("Invalid input format");
   }
 
   try {
@@ -213,17 +225,17 @@ async function processData(input: unknown): Promise<ProcessedData> {
     return processed;
   } catch (error) {
     // 詳細なエラーログ
-    logger.error('Data processing failed', {
+    logger.error("Data processing failed", {
       input,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      stack: error instanceof Error ? error.stack : undefined
+      error: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
     });
 
     // 適切なエラー再スロー
     if (error instanceof ValidationError) {
       throw error; // ビジネスエラーはそのまま
     }
-    throw new ProcessingError('Data processing failed', { cause: error });
+    throw new ProcessingError("Data processing failed", { cause: error });
   }
 }
 ```
@@ -231,6 +243,7 @@ async function processData(input: unknown): Promise<ProcessedData> {
 ## テスト規約
 
 ### Unit Test
+
 ```typescript
 // ✅ 良い例: 包括的なテストケース
 describe('Button Component', () => {
@@ -243,7 +256,7 @@ describe('Button Component', () => {
   it('should handle click events', async () => {
     const handleClick = jest.fn();
     render(<Button onClick={handleClick}>Click me</Button>);
-    
+
     await user.click(screen.getByRole('button'));
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
@@ -256,18 +269,19 @@ describe('Button Component', () => {
 ```
 
 ### Integration Test
+
 ```typescript
 // ✅ 良い例: APIとの統合テスト
-describe('useApi Hook', () => {
+describe("useApi Hook", () => {
   beforeEach(() => {
     fetchMock.resetMocks();
   });
 
-  it('should fetch data successfully', async () => {
-    const mockData = { id: '1', name: 'Test User' };
+  it("should fetch data successfully", async () => {
+    const mockData = { id: "1", name: "Test User" };
     fetchMock.mockResponseOnce(JSON.stringify(mockData));
 
-    const { result } = renderHook(() => useApi<User>('/api/users/1'));
+    const { result } = renderHook(() => useApi<User>("/api/users/1"));
 
     expect(result.current.loading).toBe(true);
     expect(result.current.data).toBe(null);
@@ -285,11 +299,12 @@ describe('useApi Hook', () => {
 ## パフォーマンス最適化
 
 ### React パフォーマンス
+
 ```typescript
 // ✅ 良い例: メモ化の適切な使用
-const ExpensiveComponent = React.memo<ExpensiveComponentProps>(({ 
-  data, 
-  onAction 
+const ExpensiveComponent = React.memo<ExpensiveComponentProps>(({
+  data,
+  onAction
 }) => {
   const processedData = useMemo(() => {
     return heavyDataProcessing(data);
@@ -314,12 +329,14 @@ ExpensiveComponent.displayName = 'ExpensiveComponent';
 ## 命名規約
 
 ### ファイル・ディレクトリ
+
 - **コンポーネント**: PascalCase (`Button.tsx`, `UserProfile.tsx`)
 - **フック**: camelCase with use prefix (`useApi.ts`, `useLocalStorage.ts`)
 - **ユーティリティ**: camelCase (`formatDate.ts`, `apiClient.ts`)
 - **型定義**: camelCase (`user.ts`, `apiTypes.ts`)
 
 ### 変数・関数
+
 - **変数**: camelCase (`userName`, `isLoading`)
 - **定数**: UPPER_SNAKE_CASE (`API_BASE_URL`, `MAX_RETRY_COUNT`)
 - **関数**: camelCase (`fetchUser`, `validateInput`)
@@ -330,20 +347,20 @@ ExpensiveComponent.displayName = 'ExpensiveComponent';
 ```typescript
 // ✅ 良い例: 整理されたインポート
 // 1. React関連
-import React, { useState, useEffect, useCallback } from 'react';
-import { NextPage } from 'next/next';
+import React, { useState, useEffect, useCallback } from "react";
+import { NextPage } from "next/next";
 
 // 2. サードパーティライブラリ
-import { z } from 'zod';
-import { clsx } from 'clsx';
+import { z } from "zod";
+import { clsx } from "clsx";
 
 // 3. 内部モジュール（絶対パス）
-import { Button } from '@/components/ui/Button';
-import { useApi } from '@/hooks/useApi';
-import { User } from '@/types/user';
+import { Button } from "@/components/ui/Button";
+import { useApi } from "@/hooks/useApi";
+import { User } from "@/types/user";
 
 // 4. 相対パス
-import './ComponentName.css';
+import "./ComponentName.css";
 
 // ✅ 良い例: Named Exportの使用
 export const ComponentName: React.FC<Props> = () => {
@@ -357,6 +374,7 @@ export default ComponentName;
 ## 実装テンプレート
 
 ### コンポーネント生成テンプレート
+
 ```typescript
 // Feature-based コンポーネントテンプレート
 'use client';
@@ -396,6 +414,7 @@ Component.displayName = 'Component';
 ```
 
 ### Service層抽象クラステンプレート
+
 ```typescript
 // Service層の拡張可能な実装
 export abstract class BaseService<T> {
@@ -426,6 +445,7 @@ export class ChatService extends BaseService<Conversation> {
 ```
 
 ### API Gateway パターン
+
 ```typescript
 // API Gateway パターン
 export class ApiGateway {
@@ -433,7 +453,8 @@ export class ApiGateway {
 
   registerService(name: string, service: BaseService) {
     this.services.set(name, service);
-  }  async execute(serviceName: string, method: string, args: any[]) {
+  }
+  async execute(serviceName: string, method: string, args: any[]) {
     const service = this.services.get(serviceName);
     if (!service) throw new Error(`Service ${serviceName} not found`);
 
@@ -453,6 +474,7 @@ export const createApiHandler = (version: "v1" | "v2" = "v2") => {
 ```
 
 ### 状態管理の段階的拡張
+
 ```typescript
 // Phase 1: カスタムフック（小規模）
 export const useConversation = (id: string) => {
