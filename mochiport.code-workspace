@@ -99,12 +99,13 @@
     "editor.guides.bracketPairs": "active",
     "editor.inlineSuggest.enabled": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "editor.parameterHints.enabled": true,    "editor.quickSuggestions": {
+    "editor.parameterHints.enabled": true,
+    "editor.quickSuggestions": {
       "other": true,
       "comments": false,
       "strings": true,
     },
-    
+
     // TurboRepo固有設定 - 言語サーバーを完全に無効化
     "turbo.useLocalTurbo": false,
     "turbo.experimental.ui": false,
@@ -113,12 +114,7 @@
     "turbo.enabled": false,
     "turbo.lsp.enabled": false,
     "turbo.lsp.analyticsEnabled": false,
-    "workbench.localHistory.enabled": false,
-
-    // Azure Functions固有設定
-    "azureFunctions.showCoreToolsWarning": false,
-    "azureFunctions.showPythonWarning": false,
-    "azureFunctions.showNodejsWarning": false,
+    "workbench.localHistory.enabled": false, // Azure Functions固有設定は削除しました
 
     // Next.js固有設定
     "javascript.preferences.includePackageJsonAutoImports": "on",
@@ -138,16 +134,14 @@
       "**/build/**": true,
     },
     "debug.internalConsoleOptions": "neverOpen",
-  },  "extensions": {
+  },
+  "extensions": {
     "recommendations": [
       // 必須拡張機能
       "ms-vscode.vscode-typescript-next",
       "esbenp.prettier-vscode",
       "dbaeumer.vscode-eslint", // React & Next.js
       "bradlc.vscode-tailwindcss",
-
-      // Azure Functions
-      "ms-azuretools.vscode-azurefunctions",
 
       // Git & GitHub
       "eamodio.gitlens",
@@ -164,6 +158,6 @@
   },
   "unwantedRecommendations": [
     // TurboRepo拡張機能を明示的に除外
-    "vercel.turbo-vsc"
+    "vercel.turbo-vsc",
   ],
 }
