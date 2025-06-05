@@ -79,6 +79,7 @@
   // IntelliSense設定
   "typescript.suggest.paths": true,
   "typescript.workspaceSymbols.scope": "allOpenProjects",
+
   // Turbo設定 - すべての機能を無効化
   "turbo.useLocalTurbo": false,
   "turbo.experimental.ui": false,
@@ -93,10 +94,6 @@
     "typescript": "html",
     "typescriptreact": "html"
   },
-
-  // Azure Functions設定
-  "azureFunctions.projectLanguage": "TypeScript",
-  "azureFunctions.projectRuntime": "~4",
 
   // タスク設定
   "task.autoDetect": "on",
@@ -115,15 +112,42 @@
   "editor.wordWrap": "on",
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
+
   // 拡張機能設定
   "extensions.ignoreRecommendations": false,
-  "azureFunctions.deploySubpath": "backend",
-  "azureFunctions.postDeployTask": "npm install (functions)",
-  "azureFunctions.projectLanguageModel": 4,
-  "azureFunctions.preDeployTask": "npm prune (functions)",
 
   // Code Spell Checker設定 - 警告を無効化
   "cSpell.enabled": false,
   "cSpell.showStatus": false,
-  "cSpell.diagnosticLevel": "Hint"
+  "cSpell.diagnosticLevel": "Hint", // Jest設定 - モノレポ環境対応
+  "jest.showCoverageOnLoad": false,
+  "jest.debugMode": true,
+  "jest.debugCodeLens.showWhenTestStateIn": ["fail", "unknown", "pass", "skip"],
+  "jest.nodeEnv": {
+    "NODE_ENV": "test",
+    "NODE_OPTIONS": "--experimental-vm-modules",
+    "TURBO_TELEMETRY_DISABLED": "1",
+    "TURBO_DAEMON": "false"
+  },
+  "jest.monitorWorkspaceModifications": true,
+  "jest.runMode": "watch",
+
+  // ワークスペースフォルダごとのJest設定
+  "jest.projectRoots": [
+    "${workspaceFolder}/backend",
+    "${workspaceFolder}/frontend",
+    "${workspaceFolder}/shared"
+  ],
+
+  // バックエンド Jest 設定
+  "jest.pathToJest.backend": "yarn workspace @ai-chat/backend jest",
+  "jest.pathToConfig.backend": "${workspaceFolder}/backend/jest.config.json",
+
+  // フロントエンド Jest 設定
+  "jest.pathToJest.frontend": "yarn workspace @ai-chat/frontend jest",
+  "jest.pathToConfig.frontend": "${workspaceFolder}/frontend/jest.config.js",
+
+  // 共有モジュール Jest 設定
+  "jest.pathToJest.shared": "yarn workspace @ai-chat/shared jest",
+  "jest.pathToConfig.shared": "${workspaceFolder}/shared/jest.config.js"
 }
