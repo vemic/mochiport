@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals'
 import { ConversationService } from '../../services/ConversationService'
 import { ConversationRepository } from '../../repositories/ConversationRepository'
-import { NotFoundError, ValidationError } from '../../utils/errors'
+import { NotFoundError } from '../../utils/errors'
 import { IConversation } from '@mochiport/shared'
 
 // Mock the repository

@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { REMINDER_PRIORITY, REMINDER_TYPE } from "@mochiport/shared"
 import type { Reminder, CreateReminderData } from "@mochiport/shared"
 import { useCreateReminder, useUpdateReminder } from "@/lib/hooks"
-import { X, Calendar, Clock } from "lucide-react"
+import { X, Calendar } from "lucide-react"
 
 interface ReminderFormProps {
   reminder?: Reminder
@@ -57,13 +57,14 @@ export function ReminderForm({ reminder, onClose, onSave }: ReminderFormProps) {
           updatedAt: new Date(),
         }
         onSave?.(updatedReminder)
-      } else {
-        // Create new reminder
+      } else {        // Create new reminder
         const newReminderData: CreateReminderData = {
           conversationId: "default", // TODO: Get from context or prop
           title: formData.title.trim(),
           description: formData.description.trim(),
+          dueDate: new Date(formData.dueDate),
           scheduledAt: new Date(formData.dueDate),
+          priority: formData.priority,
           type: formData.type,
           metadata: {
             priority: formData.priority,
@@ -75,9 +76,8 @@ export function ReminderForm({ reminder, onClose, onSave }: ReminderFormProps) {
         }
       }
       
-      onClose?.()
-    } catch (error) {
-      console.error("Failed to save reminder:", error)
+      onClose?.()    } catch (error) {
+      // console.error("Failed to save reminder:", error)
     }
   }
 

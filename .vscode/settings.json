@@ -1,11 +1,34 @@
 {
   // TypeScript設定
   "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.suggest.autoImports": true,
+  "typescript.suggest.autoImports": false,
   "typescript.updateImportsOnFileMove.enabled": "always",
-  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  
+  // TypeScript言語サーバーのメモリ使用量制限とパフォーマンス最適化
+  "typescript.tsserver.maxTsServerMemory": 3072,
+  "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEventsOnParentDirectory",
+    "watchDirectory": "useFsEventsOnParentDirectory",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/.git",
+      "**/.next",
+      "**/dist",
+      "**/.turbo",
+      "**/coverage",
+      "**/yarn.lock"
+    ]
+  },
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.tsserver.useSeparateSyntaxServer": true,
+  "typescript.suggest.paths": false,
+  "typescript.workspaceSymbols.scope": "currentProject",
 
-  // ESLint設定
+  // ESLint設定 - パフォーマンス最適化
   "eslint.workingDirectories": [
     "frontend",
     "backend",
@@ -18,25 +41,47 @@
     "typescript",
     "typescriptreact"
   ],
+  "eslint.codeAction.showDocumentation": {
+    "enable": false
+  },
+  "eslint.run": "onSave",
 
-  // Prettier設定
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  // エディターパフォーマンス最適化
+  "editor.suggest.showWords": false,
+  "editor.suggest.showSnippets": false,
+  "editor.suggest.showUsers": false,
+  "editor.suggest.showIssues": false,
+  "editor.quickSuggestions": {
+    "other": false,
+    "comments": false,
+    "strings": false
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
+  "editor.acceptSuggestionOnCommitCharacter": false,
+  "editor.acceptSuggestionOnEnter": "off",
+  "editor.wordBasedSuggestions": "off",
+  "editor.parameterHints.enabled": false,
+  "editor.lightbulb.enabled": "off",
+  "editor.codeLens": false,
+  "editor.hover.delay": 1000,
+  "editor.minimap.enabled": false,
+  "editor.occurrencesHighlight": "off",
+  "editor.selectionHighlight": false,
+  "editor.renderWhitespace": "none",
+  "editor.renderControlCharacters": false,
+  "editor.renderLineHighlight": "none",
+  "editor.folding": false,
+  "editor.glyphMargin": false,
+  "editor.rulers": [],
+  "editor.wordWrap": "off",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
+  // フォーマット設定
+  "editor.formatOnSave": false,
+  "editor.formatOnType": false,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {},
+  "editor.defaultFormatter": null,
 
   // ファイル監視設定
   "files.watcherExclude": {
@@ -45,7 +90,10 @@
     "**/dist/**": true,
     "**/.next/**": true,
     "**/coverage/**": true,
-    "**/.turbo/**": true
+    "**/.turbo/**": true,
+    "**/*.log": true,
+    "**/yarn.lock": true,
+    "**/package-lock.json": true
   },
 
   // 検索設定
@@ -55,17 +103,28 @@
     "**/.next": true,
     "**/coverage": true,
     "**/.turbo": true,
-    "**/yarn.lock": true
+    "**/yarn.lock": true,
+    "**/package-lock.json": true
   },
+  "search.useGlobalIgnoreFiles": true,
+  "search.useParentIgnoreFiles": true,
+  "search.followSymlinks": false,
+  "search.smartCase": false,
 
   // ファイル表示設定
   "files.exclude": {
     "**/.turbo": true
   },
+  "files.autoSave": "onFocusChange",
+  "files.autoSaveDelay": 5000,
 
   // Git設定
   "git.ignoreLimitWarning": true,
-  "git.autofetch": true,
+  "git.autofetch": false,
+  "git.decorations.enabled": false,
+  "git.autoStash": false,
+  "git.fetchOnPull": false,
+  "scm.diffDecorations": "none",
 
   // ターミナル設定
   "terminal.integrated.defaultProfile.windows": "PowerShell",
@@ -75,10 +134,8 @@
       "args": ["-NoProfile"]
     }
   },
-
-  // IntelliSense設定
-  "typescript.suggest.paths": true,
-  "typescript.workspaceSymbols.scope": "allOpenProjects",
+  "terminal.integrated.gpuAcceleration": "off",
+  "terminal.integrated.rendererType": "dom",
 
   // Turbo設定 - すべての機能を無効化
   "turbo.useLocalTurbo": false,
@@ -88,6 +145,27 @@
   "turbo.enabled": false,
   "turbo.lsp.enabled": false,
   "turbo.lsp.analyticsEnabled": false,
+
+  // Jest設定 - パフォーマンス最適化
+  "jest.runMode": "on-demand",
+  "jest.autoEnable": false,
+  "jest.disableCodeLens": true,
+  "jest.enableInlineErrorMessages": false,
+  "jest.enableSnapshotUpdateMessages": false,
+  "jest.projects": [
+    {
+      "name": "backend",
+      "rootPath": "backend"
+    },
+    {
+      "name": "frontend", 
+      "rootPath": "frontend"
+    },
+    {
+      "name": "shared",
+      "rootPath": "shared"
+    }
+  ],
 
   // Next.js設定
   "emmet.includeLanguages": {
@@ -100,53 +178,18 @@
   "task.quickOpen.detail": true,
   "task.quickOpen.skip": false,
 
-  // 自動保存設定
-  "files.autoSave": "onFocusChange",
-
-  // エディタ設定
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit",
-    "source.organizeImports": "explicit"
-  },
-  "editor.rulers": [80, 120],
-  "editor.wordWrap": "on",
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
-
-  // 拡張機能設定
-  "extensions.ignoreRecommendations": false,
-
-  // Code Spell Checker設定 - 警告を無効化
-  "cSpell.enabled": false,
-  "cSpell.showStatus": false,
-  "cSpell.diagnosticLevel": "Hint", // Jest設定 - モノレポ環境対応
-  "jest.showCoverageOnLoad": false,
-  "jest.debugMode": true,
-  "jest.debugCodeLens.showWhenTestStateIn": ["fail", "unknown", "pass", "skip"],
-  "jest.nodeEnv": {
-    "NODE_ENV": "test",
-    "NODE_OPTIONS": "--experimental-vm-modules",
-    "TURBO_TELEMETRY_DISABLED": "1",
-    "TURBO_DAEMON": "false"
-  },
-  "jest.monitorWorkspaceModifications": true,
-  "jest.runMode": "watch",
-
-  // ワークスペースフォルダごとのJest設定
-  "jest.projectRoots": [
-    "${workspaceFolder}/backend",
-    "${workspaceFolder}/frontend",
-    "${workspaceFolder}/shared"
-  ],
-
-  // バックエンド Jest 設定
-  "jest.pathToJest.backend": "yarn workspace @mochiport/backend jest",
-  "jest.pathToConfig.backend": "${workspaceFolder}/backend/jest.config.json",
-  // フロントエンド Jest 設定
-  "jest.pathToJest.frontend": "yarn workspace @mochiport/frontend jest",
-  "jest.pathToConfig.frontend": "${workspaceFolder}/frontend/jest.config.js",
-
-  // 共有モジュール Jest 設定
-  "jest.pathToJest.shared": "yarn workspace @mochiport/shared jest",
-  "jest.pathToConfig.shared": "${workspaceFolder}/shared/jest.config.js"
+  // パフォーマンス設定
+  "telemetry.telemetryLevel": "off",
+  "update.enableWindowsBackgroundUpdates": false,
+  "workbench.enableExperiments": false,
+  "workbench.settings.enableNaturalLanguageSearch": false,
+  "workbench.startupEditor": "none",
+  "workbench.tips.enabled": false,
+  "workbench.tree.renderIndentGuides": "none",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.editor.limit.enabled": true,
+  "workbench.editor.limit.value": 10,
+  "workbench.editor.limit.perEditorGroup": true,
+  "editor.guides.indentation": false
 }

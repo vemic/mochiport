@@ -3,8 +3,7 @@ import type {
   CreateReminderData, 
   UpdateReminderData, 
   ReminderFilters, 
-  PaginatedResponse,
-  ValidationError as SharedValidationError,
+    PaginatedResponse,
   ReminderStatus
 } from '@mochiport/shared'
 import type { ReminderRepository as IReminderRepository } from '../repositories/interfaces/reminder'

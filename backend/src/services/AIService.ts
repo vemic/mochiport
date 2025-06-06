@@ -1,5 +1,5 @@
 
-import { Message, MessageRole, MessageMetadata } from '@mochiport/shared';
+import { Message, MessageMetadata } from '@mochiport/shared';
 
 export interface AIModelConfig {
   model: string;
@@ -40,7 +40,7 @@ export class MockAIService implements IAIService {
   /**
    * モックの応答を生成する
    */
-  async generateResponse(messages: Message[], config?: AIModelConfig): Promise<AIServiceResponse> {
+  async generateResponse(messages: Message[], _config?: AIModelConfig): Promise<AIServiceResponse> {
     // 処理時間をシミュレート
     const startTime = Date.now();
     await this.delay(500 + Math.random() * 1000);

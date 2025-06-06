@@ -1,4 +1,4 @@
-import { Conversation, Message, Reminder, Draft } from "@mochiport/shared"
+import { Conversation, Reminder, Draft } from "@mochiport/shared"
 
 // Mock conversations for development
 export const mockConversations: Conversation[] = [

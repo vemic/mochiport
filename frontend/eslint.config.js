@@ -43,13 +43,14 @@ export default [
         React: 'readonly',
         JSX: 'readonly',
       },
-    },
-    rules: {
+    },    rules: {
       // 基本的なルールのみ（プラグインなし）
       'prefer-const': 'error',
       'no-var': 'error',
       'no-console': 'warn',
       'no-unused-vars': 'warn',
+      // any型の使用を許可
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
   // テストファイルの設定

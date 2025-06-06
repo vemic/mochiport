@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
 
 // Mock reminder storage
-let reminders: any[] = [
+const reminders: any[] = [
   {
     id: 'reminder-1',
     title: '企画書のレビュー',

@@ -6,16 +6,21 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "lib/**", "build/**"],
-      "env": ["NODE_ENV"]
+      "env": ["NODE_ENV"],
+      "passThroughEnv": ["NODE_OPTIONS"]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["NODE_ENV", "NODE_OPTIONS"],
+      "passThroughEnv": ["NODE_OPTIONS"]
     },
     "dev:watch": {
       "cache": false,
       "persistent": true,
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "env": ["NODE_ENV", "NODE_OPTIONS"],
+      "passThroughEnv": ["NODE_OPTIONS"]
     },
     "start": {
       "dependsOn": ["build"],
@@ -23,11 +28,15 @@
     },
     "test": {
       "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
+      "outputs": ["coverage/**"],
+      "env": ["NODE_ENV", "NODE_OPTIONS"],
+      "passThroughEnv": ["NODE_OPTIONS"]
     },
     "test:watch": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["NODE_ENV", "NODE_OPTIONS"],
+      "passThroughEnv": ["NODE_OPTIONS"]
     },
     "lint": {
       "outputs": []
@@ -54,5 +63,6 @@
     ".env.local",
     ".env.development",
     ".env.production"
-  ]
+  ],
+  "globalEnv": ["NODE_OPTIONS"]
 }

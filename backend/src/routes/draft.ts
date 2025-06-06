@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const router = express.Router();
 
 // Mock draft storage
-let drafts: any[] = [
+const drafts: any[] = [
   {
     id: 'draft-1',
     title: 'プロジェクト企画書のドラフト',

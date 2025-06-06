@@ -1,183 +1,203 @@
-import { BaseService } from "./BaseService"
 import { 
-  Conversation, 
-  Message, 
-  CreateConversationData, 
-  UpdateConversationData, 
+  DatabaseConversation, 
+  ConversationWithMessages, 
+  ConversationSummary,
+  DatabaseMessage,
   ConversationFilters,
-  PaginatedResponse,
-  ValidationResult,
-  ValidationError as SharedValidationError
-} from "@mochiport/shared"
-import { ConversationRepository as IConversationRepository } from "../repositories/interfaces/conversation"
+  ConversationService as IConversationService
+} from "../models/database"
 import { ConversationRepository } from "../repositories/ConversationRepository"
+import { MessageRepository } from "../repositories/MessageRepository"
 import { NotFoundError, ValidationError } from "../utils/errors"
 import { IAIService, AIService, MockAIService } from "./AIService"
+import { Message } from '@mochiport/shared'
+import { supabase } from "../config/supabase"
 
-export class ConversationService extends BaseService<Conversation, CreateConversationData, UpdateConversationData> {
-  private conversationRepository: IConversationRepository
+export class ConversationService implements IConversationService {
+  private conversationRepository: ConversationRepository
+  private messageRepository: MessageRepository
   private aiService: IAIService
-
   constructor(useMockAI: boolean = true) {
-    super()
-    this.conversationRepository = new ConversationRepository()
+    this.conversationRepository = new ConversationRepository(supabase)
+    this.messageRepository = new MessageRepository(supabase)
     this.aiService = useMockAI ? new MockAIService() : new AIService()
-  }  protected validate(data: CreateConversationData | UpdateConversationData): { success: boolean; errors: any[] } {
-    const errors: any[] = [];
-    
-    if ('title' in data && data.title !== undefined && (!data.title || data.title.trim().length === 0)) {
-      errors.push({
-        field: 'title',
-        message: 'Title is required and cannot be empty',
-        code: 'REQUIRED'
-      });
-    }
+  }
 
+  // DatabaseMessageをshared Messageに変換するヘルパー関数
+  private convertToSharedMessage(dbMessage: DatabaseMessage): Message {
     return {
-      success: errors.length === 0,
-      errors
-    };
+      id: dbMessage.id,
+      content: dbMessage.content,
+      role: dbMessage.role,
+      timestamp: new Date(dbMessage.timestamp),
+      metadata: dbMessage.metadata
+    }
+  }
+  async getConversations(userId: string, filters?: ConversationFilters): Promise<ConversationSummary[]> {
+    try {
+      const result = await this.conversationRepository.findSummaries(userId, filters);
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+      return result.data || [];
+    } catch (error) {
+      console.error('Failed to get conversations:', error);
+      throw error;
+    }
   }
 
-  async getConversations(filters: ConversationFilters): Promise<PaginatedResponse<Conversation>> {
+  async getConversation(id: string, userId: string): Promise<ConversationWithMessages | null> {
     try {
-      return await this.conversationRepository.findMany(filters)
+      const result = await this.conversationRepository.findWithMessages(id, userId);
+      if (!result.success) {
+        if (result.error?.includes('not found')) {
+          return null;
+        }
+        throw new Error(result.error);
+      }
+      return result.data || null;
     } catch (error) {
-      this.handleError(error as Error, 'Failed to get conversations')
-      throw error
+      console.error(`Failed to get conversation ${id}:`, error);
+      throw error;
     }
   }
-  async getConversationById(id: string): Promise<Conversation> {
-    try {
-      const conversation = await this.conversationRepository.findById(id)
-      
-      if (!conversation) {
-        throw new NotFoundError(`Conversation not found`)
-      }
-      
-      return conversation
-    } catch (error) {
-      this.handleError(error as Error, `Failed to get conversation ${id}`)
-      throw error
-    }
-  }  async createConversation(data: CreateConversationData): Promise<Conversation> {
+
+  async createConversation(data: { title: string; initialMessage?: string }, userId: string): Promise<ConversationWithMessages> {
     try {
       if (!data.title?.trim()) {
         throw new ValidationError('Conversation title is required')
       }
 
-      // Pass the data through, let the repository handle the defaults
-      const conversationData = {
-        ...data,
-        title: data.title.trim()
-      }
+      if (data.initialMessage) {
+        // 初期メッセージ付きで会話を作成
+        const result = await this.conversationRepository.createWithInitialMessage(
+          { title: data.title.trim() },
+          { content: data.initialMessage, role: 'user' },
+          userId
+        );
+        
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+        return result.data!;
+      } else {
+        // 初期メッセージなしで会話を作成
+        const conversationData: Omit<DatabaseConversation, 'id' | 'created_at' | 'updated_at'> = {
+          title: data.title.trim(),
+          user_id: userId,
+          status: 'active',
+          metadata: {}
+        };
 
-      return await this.conversationRepository.create(conversationData)
+        const result = await this.conversationRepository.create(conversationData, userId);
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+
+        // メッセージなしの会話を返す
+        return {
+          ...result.data!,
+          messages: []
+        };
+      }
     } catch (error) {
-      this.handleError(error as Error, 'Failed to create conversation')
-      throw error
+      console.error('Failed to create conversation:', error);
+      throw error;
     }
   }
-  async updateConversation(id: string, data: UpdateConversationData): Promise<Conversation> {
+
+  async updateConversation(id: string, data: { title?: string }, userId: string): Promise<ConversationWithMessages | null> {
     try {
-      const existingConversation = await this.getConversationById(id)
-      
       if (data.title !== undefined && !data.title.trim()) {
         throw new ValidationError('Conversation title cannot be empty')
       }
 
-      const updates: UpdateConversationData = {
-        ...data
-      }
-
+      const updates: Partial<DatabaseConversation> = {};
       if (data.title) {
-        updates.title = data.title.trim()
+        updates.title = data.title.trim();
+      }
+      updates.updated_at = new Date().toISOString();
+
+      const result = await this.conversationRepository.update(id, updates, userId);
+      if (!result.success) {
+        if (result.error?.includes('not found')) {
+          return null;
+        }
+        throw new Error(result.error);
       }
 
-      const updatedConversation = await this.conversationRepository.update(id, updates)
-      if (!updatedConversation) {
-        throw new Error(`Failed to update conversation ${id}`)
-      }
-      return updatedConversation
+      // 更新後の会話とメッセージを取得
+      return await this.getConversation(id, userId);
     } catch (error) {
-      this.handleError(error as Error, `Failed to update conversation ${id}`)
-      throw error
+      console.error(`Failed to update conversation ${id}:`, error);
+      throw error;
     }
   }
 
-  async deleteConversation(id: string): Promise<void> {
+  async deleteConversation(id: string, userId: string): Promise<boolean> {
     try {
-      const existingConversation = await this.getConversationById(id)
-      await this.conversationRepository.delete(id)
+      const result = await this.conversationRepository.delete(id, userId);
+      if (!result.success) {
+        if (result.error?.includes('not found')) {
+          return false;
+        }
+        throw new Error(result.error);
+      }
+      return true;
     } catch (error) {
-      this.handleError(error as Error, `Failed to delete conversation ${id}`)
-      throw error
+      console.error(`Failed to delete conversation ${id}:`, error);
+      throw error;
     }
   }
-  async addMessage(conversationId: string, message: Omit<Message, 'id' | 'timestamp'>): Promise<Conversation> {
+
+  async addMessage(conversationId: string, content: string, role: 'user' | 'assistant', userId: string): Promise<DatabaseMessage> {
     try {
-      const conversation = await this.getConversationById(conversationId)
-      
-      if (!message.content?.trim()) {
+      if (!content?.trim()) {
         throw new ValidationError('Message content is required')
       }
 
-      if (!['user', 'assistant'].includes(message.role)) {
+      if (!['user', 'assistant'].includes(role)) {
         throw new ValidationError('Message role must be either "user" or "assistant"')
+      }      const messageData: Omit<DatabaseMessage, 'id' | 'created_at'> = {
+        user_id: userId,
+        conversation_id: conversationId,
+        content: content.trim(),
+        role,
+        timestamp: new Date().toISOString(),
+        metadata: {}
+      };
+
+      const result = await this.messageRepository.create(messageData, userId);
+      if (!result.success) {
+        throw new Error(result.error);
       }
 
-      const newMessage: Message = {
-        ...message,
-        id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        content: message.content.trim(),
-        timestamp: new Date()
-      }
-
-      const updatedMessages = [...conversation.messages, newMessage]
-
-      const updates: UpdateConversationData = {
-        messages: updatedMessages
-      }
-
-      const updatedConversation = await this.conversationRepository.update(conversationId, updates)
-      if (!updatedConversation) {
-        throw new Error(`Failed to add message to conversation ${conversationId}`)
-      }
-      return updatedConversation
+      return result.data!;
     } catch (error) {
-      this.handleError(error as Error, `Failed to add message to conversation ${conversationId}`)
-      throw error
+      console.error(`Failed to add message to conversation ${conversationId}:`, error);
+      throw error;
     }
   }
-
-  async create(data: CreateConversationData): Promise<Conversation> {
-    return this.createConversation(data)
-  }
-
-  /**
-   * 会話履歴に基づいてAIの応答を生成し、会話に追加する
-   * @param conversationId 会話ID
-   * @returns 更新された会話
-   */
-  async generateAIResponse(conversationId: string): Promise<Conversation> {
+  async generateAIResponse(conversationId: string, userId: string): Promise<DatabaseMessage> {
     try {
-      const conversation = await this.getConversationById(conversationId)
-      
-      // AIサービスを使用して応答を生成
-      const aiResponse = await this.aiService.generateResponse(conversation.messages)
-      
-      // AI応答メッセージを作成
-      const aiMessage: Omit<Message, 'id' | 'timestamp'> = {
-        content: aiResponse.text,
-        role: 'assistant',
-        metadata: aiResponse.metadata
+      const conversation = await this.getConversation(conversationId, userId);
+      if (!conversation) {
+        throw new NotFoundError('Conversation not found');
       }
       
-      // メッセージを会話に追加
-      return await this.addMessage(conversationId, aiMessage)
+      // DatabaseMessage[]をMessage[]に変換
+      const sharedMessages: Message[] = (conversation.messages || []).map(dbMessage => 
+        this.convertToSharedMessage(dbMessage)
+      );
+      
+      // AIサービスを使用して応答を生成
+      const aiResponse = await this.aiService.generateResponse(sharedMessages);
+      
+      // AI応答メッセージを作成
+      return await this.addMessage(conversationId, aiResponse.text, 'assistant', userId);
     } catch (error) {
-      this.handleError(error as Error, `Failed to generate AI response for conversation ${conversationId}`)
-      throw error
+      console.error(`Failed to generate AI response for conversation ${conversationId}:`, error);
+      throw error;
     }
   }
 }

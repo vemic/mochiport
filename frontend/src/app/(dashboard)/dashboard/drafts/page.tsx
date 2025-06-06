@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { DraftContainer } from "@/features/draft"
-import { Plus, FileText } from "lucide-react"
+import { Plus } from "lucide-react"
 
 export default function DraftsPage() {
   const [showEditor, setShowEditor] = React.useState(false)

@@ -44,7 +44,9 @@ export interface CreateReminderData {
   conversationId: string;
   title: string;
   description?: string;
+  dueDate: Date;
   scheduledAt: Date;
+  priority: ReminderPriority;
   type: ReminderType;
   metadata?: Partial<ReminderMetadata>;
 }
@@ -52,7 +54,9 @@ export interface CreateReminderData {
 export interface UpdateReminderData {
   title?: string;
   description?: string;
+  dueDate?: Date;
   scheduledAt?: Date;
+  priority?: ReminderPriority;
   status?: ReminderStatus;
   type?: ReminderType;
   snoozeUntil?: string;

@@ -1,0 +1,22 @@
+{
+  "watch": ["src", "dist"],
+  "ext": "ts,js,json",
+  "ignore": [
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts",
+    "src/__tests__/**/*",
+    "node_modules/**/*",
+    "coverage/**/*"
+  ],
+  "exec": "node --max-old-space-size=2048 dist/server.js",
+  "delay": 2500,
+  "restartable": "rs",
+  "colours": true,
+  "legacyWatch": false,
+  "verbose": false,
+  "signal": "SIGTERM",
+  "env": {
+    "NODE_ENV": "development",
+    "NODE_OPTIONS": "--max-old-space-size=2048"
+  }
+}

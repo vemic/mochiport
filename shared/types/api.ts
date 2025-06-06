@@ -41,14 +41,7 @@ export interface PaginationParams {
 }
 
 // フィルタリング用の型
-export interface ConversationFilters extends PaginationParams {
-  status?: ConversationStatus;
-  dateFrom?: string;
-  dateTo?: string;
-  tags?: string[];
-  category?: string;
-  search?: string;
-}
+// ConversationFilters は conversation.ts で定義されています
 
 // Note: Extended filter interfaces are defined in their respective type files
 // and re-exported below for consistency

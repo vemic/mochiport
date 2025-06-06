@@ -178,7 +178,72 @@ NEXT_PUBLIC_ENABLE_MOCK_DATA=true
 AZURE_FUNCTIONS_ENVIRONMENT=Development
 PORT=7071
 CORS_ORIGINS=http://localhost:3000
+
+# Supabase Configuration (Required for v1.1.0+)
+SUPABASE_URL=your-supabase-project-url
+SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+
+# Optional Settings
+JWT_SECRET=development-secret-key
+REDIS_CONNECTION_STRING=mock://development
+LOG_LEVEL=debug
 ```
+
+### Supabase セットアップ (v1.1.0+)
+
+1. **Supabaseプロジェクトの作成**
+
+   - https://supabase.com でアカウント作成
+   - 新しいプロジェクトを作成
+
+2. **データベーステーブルの作成**
+
+   ```sql
+   -- conversations テーブル
+   CREATE TABLE conversations (
+     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     title TEXT NOT NULL,
+     user_id TEXT,
+     created_at TIMESTAMPTZ DEFAULT NOW(),
+     updated_at TIMESTAMPTZ DEFAULT NOW()
+   );
+
+   -- drafts テーブル
+   CREATE TABLE drafts (
+     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     title TEXT NOT NULL,
+     content TEXT,
+     conversation_id UUID REFERENCES conversations(id),
+     created_at TIMESTAMPTZ DEFAULT NOW(),
+     updated_at TIMESTAMPTZ DEFAULT NOW()
+   );
+
+   -- reminders テーブル
+   CREATE TABLE reminders (
+     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     title TEXT NOT NULL,
+     description TEXT,
+     due_date TIMESTAMPTZ NOT NULL,
+     status TEXT DEFAULT 'pending',
+     priority TEXT DEFAULT 'medium',
+     type TEXT DEFAULT 'general',
+     conversation_id UUID REFERENCES conversations(id),
+     created_at TIMESTAMPTZ DEFAULT NOW(),
+     updated_at TIMESTAMPTZ DEFAULT NOW()
+   );
+   ```
+
+3. **環境変数の設定**
+
+   - Supabaseプロジェクトの設定からAPI KeysとProject URLを取得
+   - `.env.development` ファイルにコピー
+
+4. **接続テスト**
+   ```bash
+   # Supabase接続テストスクリプトを実行
+   yarn workspace @mochiport/backend exec tsx src/scripts/test-supabase-connection.ts
+   ```
 
 ## 🧪 テスト
 

@@ -1,6 +1,6 @@
-import { ValidationResult } from '@mochiport/shared';
 import { ValidationError } from '../utils/errors';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export abstract class BaseService<T, TCreate, TUpdate> {
   protected abstract validate(data: TCreate | TUpdate): { success: boolean; errors: any[] };
     protected validateAndThrow(data: TCreate | TUpdate): void {

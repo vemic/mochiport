@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MessageBubble } from './message-bubble';
 import { ChatInput } from './chat-input';
-import { Conversation, Message } from '@mochiport/shared';
+import { Conversation } from '@mochiport/shared';
 import { cn } from '@/lib/utils';
 import { formatDate } from '@mochiport/shared';
 import { 
@@ -75,13 +75,13 @@ export const ChatWindow = memo<ChatWindowProps>(({
     setIsAtBottom(isAtBottom);
     setShowScrollButton(!isAtBottom && scrollHeight > clientHeight);
   };  
-  
-  const handleCopy = async (content: string) => {
+    const handleCopy = async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
       // TODO: Show toast notification
     } catch (error) {
-      console.error('Failed to copy text:', error);
+      // TODO: Show error notification to user
+      // console.error('Failed to copy text:', error);
     }
     onCopyMessage?.(content);
   };

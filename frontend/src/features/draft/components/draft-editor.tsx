@@ -59,9 +59,9 @@ export function DraftEditor({ draft, onClose, onSave, onPublish }: DraftEditorPr
         ...updateData,
         updatedAt: new Date(),
       }
-      onSave?.(updatedDraft)
-    } catch (error) {
-      console.error("Auto-save failed:", error)
+      onSave?.(updatedDraft)    } catch (error) {
+      // TODO: Add proper error notification system
+      // console.error("Auto-save failed:", error)
     } finally {
       setAutoSaving(false)
     }
@@ -101,9 +101,9 @@ export function DraftEditor({ draft, onClose, onSave, onPublish }: DraftEditorPr
         // Extract the draft data from API response
         const newDraft = response.data || response
         onSave?.(newDraft)
-      }
-    } catch (error) {
-      console.error("Failed to save draft:", error)
+      }    } catch (error) {
+      // TODO: Add proper error notification system
+      // console.error("Failed to save draft:", error)
     }
   }
   const handlePublish = async () => {
@@ -144,9 +144,9 @@ export function DraftEditor({ draft, onClose, onSave, onPublish }: DraftEditorPr
       }
       
       onPublish?.(draftToPublish)
-      onClose?.()
-    } catch (error) {
-      console.error("Failed to publish draft:", error)
+      onClose?.()    } catch (error) {
+      // TODO: Add proper error notification system
+      // console.error("Failed to publish draft:", error)
     }
   }
 

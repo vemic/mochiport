@@ -79,19 +79,18 @@ export function DraftContainer({ showEditor = false, editingDraft, onEditorClose
   const handleEdit = (draft: Draft) => {
     setCurrentDraft(draft)
   }
-
   const handlePublish = (id: string) => {
     // TODO: Implement publish mutation
-    console.log('Publishing draft:', id)
+    // console.log('Publishing draft:', id)
   }
 
   const handleDuplicate = (id: string) => {
     // TODO: Implement duplicate mutation
-    console.log('Duplicating draft:', id)
+    // console.log('Duplicating draft:', id)
   }
-  const handleDelete = (id: string) => {
+    const handleDelete = (id: string) => {
     // TODO: Implement delete mutation
-    console.log('Deleting draft:', id)
+    // console.log('Deleting draft:', id)
   }
 
   const handleEditorClose = () => {
@@ -104,8 +103,8 @@ export function DraftContainer({ showEditor = false, editingDraft, onEditorClose
   }
 
   const handlePublishFromEditor = (draft: Draft) => {
-    // TODO: Implement publish from editor
-    console.log('Publishing draft from editor:', draft.id)
+        // TODO: Implement publish from editor
+    // console.log('Publishing draft from editor:', draft.id)
   }
 
   if (showEditor || currentDraft) {

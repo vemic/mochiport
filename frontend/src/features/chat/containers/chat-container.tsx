@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/select';
 import { 
   useConversations, 
+  useConversation,
   useCreateConversation, 
   useUpdateConversation,
   useDeleteConversation,
@@ -27,15 +28,11 @@ import {
 import { useConversationStore } from '@/lib/stores';
 import { useDebounce } from '@/lib/hooks';
 import { 
-  Plus, 
+    Plus, 
   Search, 
-  Filter, 
-  Download, 
-  MoreVertical, 
   SlidersHorizontal,
   Star,
   Archive as ArchiveIcon,
-  Tag,
   Pin
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -51,21 +48,23 @@ export function ChatContainer({ className }: ChatContainerProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedPriority, setSelectedPriority] = useState<string>('');
-  const [showFavorites, setShowFavorites] = useState(false);
+    const [showFavorites, setShowFavorites] = useState(false);
   const [showPinned, setShowPinned] = useState(false);
   
-  // 型拡張を適用する必要がないよう実装を単純化
-  type SimpleMetadata = Record<string, any>;
   const debouncedSearch = useDebounce(searchQuery, 300);
-  
-  const store = useConversationStore();
-  const { selectedConversation, selectedConversationId } = store;
-
+    const store = useConversationStore();
+  const { selectedConversationId } = store;
   // API hooks
   const { data: conversationsData, isLoading } = useConversations({
     search: debouncedSearch || undefined,
     status: 'active'
   });
+
+  // 選択された会話の詳細を取得
+  const { data: selectedConversationData } = useConversation(
+    selectedConversationId || '', 
+    !!selectedConversationId
+  );
 
   const createMutation = useCreateConversation();
   const updateMutation = useUpdateConversation();
@@ -79,35 +78,35 @@ export function ChatContainer({ className }: ChatContainerProps) {
       store.actions.setConversations(conversationsData.data);
     }
   }, [conversationsData, store.actions]);
-  
-  const handleCreateConversation = async () => {
+    const handleCreateConversation = async () => {
     try {
       await createMutation.mutateAsync({
         title: '新しい会話'
       });
     } catch (error) {
-      console.error('Failed to create conversation:', error);
+      // TODO: Show error notification to user
+      // console.error('Failed to create conversation:', error);
     }
   };
 
   const handleSelectConversation = (id: string) => {
     store.actions.selectConversation(id);
   };
-
   const handleArchiveConversation = async (id: string) => {
     try {
       await archiveMutation.mutateAsync(id);
     } catch (error) {
-      console.error('Failed to archive conversation:', error);
+      // TODO: Show error notification to user
+      // console.error('Failed to archive conversation:', error);
     }
   };
-
   const handleDeleteConversation = async (id: string) => {
     if (window.confirm('この会話を削除しますか？この操作は取り消せません。')) {
       try {
         await deleteMutation.mutateAsync(id);
       } catch (error) {
-        console.error('Failed to delete conversation:', error);
+        // TODO: Show error notification to user
+        // console.error('Failed to delete conversation:', error);
       }
     }
   };
@@ -128,13 +127,13 @@ export function ChatContainer({ className }: ChatContainerProps) {
             ...metadata,
             pinned: !isPinned
           } as any
-        }
-      });
+        }      });
       
-      // 更新成功を示す通知などをここに追加可能
-      console.log(`会話を${!isPinned ? 'ピン留め' : 'ピン留め解除'}しました`);
+      // TODO: Show success notification to user
+      // console.log(`会話を${!isPinned ? 'ピン留め' : 'ピン留め解除'}しました`);
     } catch (error) {
-      console.error('Failed to update pin status:', error);
+      // TODO: Show error notification to user
+      // console.error('Failed to update pin status:', error);
     }
   };
 
@@ -154,13 +153,13 @@ export function ChatContainer({ className }: ChatContainerProps) {
             ...metadata,
             favorite: !isFavorite
           } as any
-        }
-      });
+        }      });
       
-      // 更新成功を示す通知などをここに追加可能
-      console.log(`会話を${!isFavorite ? 'お気に入りに追加' : 'お気に入りから削除'}しました`);
+      // TODO: Show success notification to user
+      // console.log(`会話を${!isFavorite ? 'お気に入りに追加' : 'お気に入りから削除'}しました`);
     } catch (error) {
-      console.error('Failed to update favorite status:', error);
+      // TODO: Show error notification to user
+      // console.error('Failed to update favorite status:', error);
     }
   };
 
@@ -183,22 +182,20 @@ export function ChatContainer({ className }: ChatContainerProps) {
           message: {
             content: 'これは模擬的なAI応答です。実際の実装では、ここでAI APIを呼び出します。',
             role: 'assistant'
-          }
-        });
+          }        });
       }, 1000);
     } catch (error) {
-      console.error('Failed to send message:', error);
+      // TODO: Show error notification to user
+      // console.error('Failed to send message:', error);
     }
   };  
-  
-  const handleExportConversation = (id: string) => {
+    const handleExportConversation = (id: string) => {
     // TODO: Implement conversation export
-    console.log('Export conversation:', id);
+    // console.log('Export conversation:', id);
   };
-
   const handleDeleteMessage = async (messageId: string) => {
     // TODO: Implement message deletion
-    console.log('Delete message:', messageId);
+    // console.log('Delete message:', messageId);
   };
 
   // チャットウィンドウでのピン留め・お気に入り処理
@@ -498,26 +495,27 @@ export function ChatContainer({ className }: ChatContainerProps) {
       </div>
       
       {/* Main Chat Area */}
-      <div className="flex-1">
-        <ChatWindow
-          conversation={selectedConversation}
+      <div className="flex-1">        <ChatWindow
+          conversation={selectedConversationData?.data || null}
           loading={addMessageMutation.isPending}
-          onSendMessage={handleSendMessage}
-          onEditMessage={(messageId) => {
-            console.log('Edit message:', messageId);
+          onSendMessage={handleSendMessage}          onEditMessage={(messageId) => {
+            // TODO: Implement message editing
+            // console.log('Edit message:', messageId);
           }}
           onDeleteMessage={handleDeleteMessage}
           onCopyMessage={(content) => {
             // TODO: Show toast notification
-            console.log('Copied:', content);
+            // console.log('Copied:', content);
           }}
           onArchiveConversation={handleArchiveConversation}
           onExportConversation={handleExportConversation}
           onReactToMessage={(messageId, reaction) => {
-            console.log('React to message:', messageId, reaction);
+            // TODO: Implement message reactions
+            // console.log('React to message:', messageId, reaction);
           }}
           onShareMessage={(messageId) => {
-            console.log('Share message:', messageId);
+            // TODO: Implement message sharing
+            // console.log('Share message:', messageId);
           }}
           onPinConversation={handleChatWindowPin}
           onFavoriteConversation={handleChatWindowFavorite}

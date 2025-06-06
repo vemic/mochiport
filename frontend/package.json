@@ -10,8 +10,8 @@
     "lint": "eslint src",
     "type-check": "tsc --noEmit",
     "clean": "powershell -Command \"Remove-Item -Path '.next', 'out' -Recurse -Force -ErrorAction SilentlyContinue\"",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "node --max-old-space-size=2048 ./node_modules/.bin/jest",
+    "test:watch": "node --max-old-space-size=2048 ./node_modules/.bin/jest --watch"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.0",
@@ -31,6 +31,7 @@
     "@typescript-eslint/parser": "^8.33.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "critters": "^0.0.25",
     "date-fns": "^4.1.0",
     "eslint": "^9.28.0",
     "eslint-config-next": "^15.3.3",

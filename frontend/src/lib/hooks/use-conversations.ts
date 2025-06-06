@@ -3,10 +3,27 @@ import { conversationApi } from '../api';
 import { useConversationStore } from '../stores';
 import { 
   Conversation, 
+  ConversationSummary,
   CreateConversationData, 
   UpdateConversationData, 
   ConversationFilters 
 } from '@mochiport/shared';
+
+// Utility function to convert Conversation to ConversationSummary
+const convertToConversationSummary = (conversation: Conversation): ConversationSummary => ({
+  id: conversation.id,
+  title: conversation.title,
+  status: conversation.status,
+  messageCount: conversation.messages.length,
+  lastMessage: conversation.messages.length > 0 ? {
+    content: conversation.messages[conversation.messages.length - 1].content,
+    role: conversation.messages[conversation.messages.length - 1].role,
+    timestamp: conversation.messages[conversation.messages.length - 1].timestamp,
+  } : undefined,
+  createdAt: conversation.createdAt,
+  updatedAt: conversation.updatedAt,
+  metadata: conversation.metadata,
+});
 
 // Query keys
 export const conversationKeys = {
@@ -54,9 +71,8 @@ export const useCreateConversation = () => {
       // Update cache
       queryClient.invalidateQueries({ queryKey: conversationKeys.lists() });
       queryClient.invalidateQueries({ queryKey: conversationKeys.stats() });
-      
-      // Update store
-      store.actions.addConversation(response.data);
+        // Update store
+      store.actions.addConversation(convertToConversationSummary(response.data));
       store.actions.selectConversation(response.data.id);
     },
     onError: (error) => {
@@ -71,8 +87,7 @@ export const useUpdateConversation = () => {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateConversationData }) => 
-      conversationApi.update(id, data),
-    onSuccess: (response, { id }) => {
+      conversationApi.update(id, data),    onSuccess: (response, { id }) => {
       // Update cache
       queryClient.setQueryData(
         conversationKeys.detail(id),
@@ -81,7 +96,7 @@ export const useUpdateConversation = () => {
       queryClient.invalidateQueries({ queryKey: conversationKeys.lists() });
       
       // Update store
-      store.actions.updateConversation(id, response.data);
+      store.actions.updateConversation(id, convertToConversationSummary(response.data));
     },
     onError: (error) => {
       store.actions.setError(error instanceof Error ? error.message : 'Unknown error');
@@ -126,7 +141,7 @@ export const useArchiveConversation = () => {
       queryClient.invalidateQueries({ queryKey: conversationKeys.stats() });
       
       // Update store
-      store.actions.updateConversation(id, response.data);
+      store.actions.updateConversation(id, convertToConversationSummary(response.data));
     },
     onError: (error) => {
       store.actions.setError(error instanceof Error ? error.message : 'Unknown error');
@@ -145,12 +160,11 @@ export const useRestoreConversation = () => {
       queryClient.setQueryData(
         conversationKeys.detail(id),
         response
-      );
-      queryClient.invalidateQueries({ queryKey: conversationKeys.lists() });
+      );      queryClient.invalidateQueries({ queryKey: conversationKeys.lists() });
       queryClient.invalidateQueries({ queryKey: conversationKeys.stats() });
       
       // Update store
-      store.actions.updateConversation(id, response.data);
+      store.actions.updateConversation(id, convertToConversationSummary(response.data));
     },
     onError: (error) => {
       store.actions.setError(error instanceof Error ? error.message : 'Unknown error');
@@ -169,8 +183,7 @@ export const useAddMessage = () => {
     }: { 
       conversationId: string; 
       message: { content: string; role: 'user' | 'assistant' }; 
-    }) => conversationApi.addMessage(conversationId, message),
-    onSuccess: (response, { conversationId }) => {
+    }) => conversationApi.addMessage(conversationId, message),    onSuccess: (response, { conversationId }) => {
       // Update cache
       queryClient.setQueryData(
         conversationKeys.detail(conversationId),
@@ -179,7 +192,7 @@ export const useAddMessage = () => {
       queryClient.invalidateQueries({ queryKey: conversationKeys.lists() });
       
       // Update store
-      store.actions.updateConversation(conversationId, response.data);
+      store.actions.updateConversation(conversationId, convertToConversationSummary(response.data));
     },
     onError: (error) => {
       store.actions.setError(error instanceof Error ? error.message : 'Unknown error');

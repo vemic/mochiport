@@ -8,7 +8,6 @@ import { FileText, Edit, Trash2, Send, Copy, Clock } from "lucide-react"
 import type { Draft } from "@mochiport/shared"
 import { formatDistanceToNow } from "date-fns"
 import { ja } from "date-fns/locale"
-import { cn } from "@/lib/utils"
 
 interface DraftCardProps {
   draft: Draft

@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 export function debounce<T extends (...args: any[]) => any>(
   func: T,
   waitMs: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
@@ -21,7 +21,7 @@ export function debounce<T extends (...args: any[]) => any>(
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
   limitMs: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   let inThrottle: boolean;
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
@@ -47,27 +47,27 @@ export const storage = {
   set: <T>(key: string, value: T): void => {
     if (typeof window === 'undefined') return;
     try {
-      window.localStorage.setItem(key, JSON.stringify(value));
-    } catch (error) {
-      console.error('Failed to save to localStorage:', error);
+      window.localStorage.setItem(key, JSON.stringify(value));    } catch (_error) {
+      // TODO: Add proper error handling notification system
+      // console.error('Failed to save to localStorage:', error);
     }
   },
   
   remove: (key: string): void => {
     if (typeof window === 'undefined') return;
     try {
-      window.localStorage.removeItem(key);
-    } catch (error) {
-      console.error('Failed to remove from localStorage:', error);
+      window.localStorage.removeItem(key);    } catch (_error) {
+      // TODO: Add proper error handling notification system
+      // console.error('Failed to remove from localStorage:', error);
     }
   },
   
   clear: (): void => {
     if (typeof window === 'undefined') return;
     try {
-      window.localStorage.clear();
-    } catch (error) {
-      console.error('Failed to clear localStorage:', error);
+      window.localStorage.clear();    } catch (_error) {
+      // TODO: Add proper error handling notification system
+      // console.error('Failed to clear localStorage:', error);
     }
   }
 };

@@ -1,6 +1,7 @@
 import { httpClient } from './client';
 import {
   Conversation,
+  ConversationSummary,
   CreateConversationData,
   UpdateConversationData,
   ConversationFilters,
@@ -11,8 +12,8 @@ import {
 export const conversationApi = {
   /**
    * Get all conversations with optional filters
-   */  async getAll(filters?: ConversationFilters): Promise<PaginatedResponse<Conversation>> {
-    return httpClient.get<PaginatedResponse<Conversation>>('/api/conversations', filters);
+   */  async getAll(filters?: ConversationFilters): Promise<PaginatedResponse<ConversationSummary>> {
+    return httpClient.get<PaginatedResponse<ConversationSummary>>('/api/conversations', filters);
   },
 
   /**

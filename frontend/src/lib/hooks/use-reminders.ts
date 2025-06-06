@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { reminderApi } from '../api';
 import { useReminderStore } from '../stores';
 import { 
-  Reminder, 
   CreateReminderData, 
   UpdateReminderData, 
   ReminderFilters 

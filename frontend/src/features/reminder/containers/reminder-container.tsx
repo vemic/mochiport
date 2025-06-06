@@ -49,10 +49,10 @@ export function ReminderList({
       [REMINDER_PRIORITY.MEDIUM]: 2,
       [REMINDER_PRIORITY.LOW]: 1,
     }
-    
+
     const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority]
     if (priorityDiff !== 0) return priorityDiff
-    
+
     return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
   })
 
@@ -81,31 +81,30 @@ export function ReminderContainer({ showForm = false, onFormClose }: ReminderCon
   const remindersQuery = useReminders()
   const reminders = remindersQuery.data?.data || []
   const isLoading = remindersQuery.isLoading
+
   const handleSnooze = (id: string, newDueDate: Date) => {
     // TODO: Implement snooze mutation
-    console.log('Snoozing reminder:', id, 'until:', newDueDate)
+    // console.log('Snoozing reminder:', id, 'until:', newDueDate)
   }
 
   const handleComplete = (id: string) => {
     // TODO: Implement complete mutation
-    console.log('Completing reminder:', id)
+    // console.log('Completing reminder:', id)
   }
 
   const handleEdit = (reminder: Reminder) => {
     // TODO: Implement update mutation
-    console.log('Editing reminder:', reminder.id)
+    // console.log('Editing reminder:', reminder.id)
   }
 
   const handleDelete = (id: string) => {
     // TODO: Implement delete mutation
-    console.log('Deleting reminder:', id)
+    // console.log('Deleting reminder:', id)
   }
 
   return (
     <div className="space-y-6">
-      {showForm && (
-        <ReminderForm onClose={onFormClose} />
-      )}
+      {showForm && <ReminderForm onClose={onFormClose} />}
       <ReminderList
         reminders={reminders}
         isLoading={isLoading}

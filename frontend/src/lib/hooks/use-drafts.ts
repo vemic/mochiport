@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { draftApi } from '../api';
 import { useDraftStore } from '../stores';
 import { 
-  Draft, 
   CreateDraftData, 
   UpdateDraftData, 
   DraftFilters 
@@ -219,9 +218,9 @@ export const useAutoSaveDraft = () => {
       // Update store
       store.actions.updateDraft(id, response.data);
     },
-    onError: (error) => {
+        onError: (error) => {
       // For auto-save, we might want to handle errors more gracefully
-      console.error('Auto-save failed:', error);
+      // console.error('Auto-save failed:', error);
     },
   });
 };

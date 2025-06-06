@@ -1,7 +1,5 @@
 import { ConversationService } from '../../services/ConversationService';
 import { ReminderService } from '../../services/ReminderService';
-import { ConversationRepository } from '../../repositories/ConversationRepository';
-import { ReminderRepository } from '../../repositories/ReminderRepository';
 import { authenticateRequest, authorizeRequest } from '../../middleware/auth';
 import { mockConversations } from '../../data/mock-data';
 import { InvocationContext } from '@azure/functions';

@@ -1,16 +1,14 @@
-import { jest } from '@jest/globals'
-
 // E2E tests would typically use a real Azure Functions host or test framework
 // For now, we'll create a template that demonstrates the structure
 
-describe('Conversations E2E Tests', () => {
-  // In a real E2E setup, you would:
+describe('Conversations E2E Tests', () => {  // In a real E2E setup, you would:
   // 1. Start the Azure Functions host
   // 2. Make real HTTP requests
   // 3. Use a test database
   // 4. Test the complete user workflow
 
-  const baseUrl = process.env.FUNCTIONS_HOST_URL || 'http://localhost:7071'
+    // E2Eテスト用のベースURL（実際に使用される場合はコメントを解除して使用）
+    // const baseUrl = process.env.FUNCTIONS_HOST_URL || 'http://localhost:7071'
 
   beforeAll(async () => {
     // Setup test environment
@@ -169,8 +167,7 @@ export class E2ETestHelper {
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl
   }
-
-  async authenticate(email: string, password: string): Promise<string> {
+  async authenticate(_email: string, _password: string): Promise<string> {
     // Implement authentication logic
     this.authToken = 'mock-token'
     return this.authToken

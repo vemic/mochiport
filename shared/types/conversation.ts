@@ -9,6 +9,22 @@ export interface Conversation {
   metadata?: ConversationMetadata;
 }
 
+// 会話リスト表示用の軽量版
+export interface ConversationSummary {
+  id: string;
+  title: string;
+  status: ConversationStatus;
+  messageCount: number;
+  lastMessage?: {
+    content: string;
+    role: MessageRole;
+    timestamp: Date;
+  };
+  createdAt: Date;
+  updatedAt: Date;
+  metadata?: ConversationMetadata;
+}
+
 export interface Message {
   id: string;
   content: string;
@@ -66,12 +82,15 @@ export interface ConversationFilters {
   page?: number;
   limit?: number;
   search?: string;
+  title?: string;
   status?: ConversationStatus;
   tags?: string[];
   category?: string;
   priority?: 'low' | 'medium' | 'high';
   dateFrom?: Date;
   dateTo?: Date;
+  updatedAfter?: Date;
+  updatedBefore?: Date;
   pinned?: boolean;
   favorite?: boolean;
 }

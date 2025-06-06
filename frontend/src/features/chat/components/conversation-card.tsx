@@ -8,22 +8,20 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
   MessageSquare, 
   Archive, 
-  Trash2, 
-  MoreHorizontal,
+    Trash2, 
   Pin,
   Star,
   Clock,
   User,
   Bot
 } from 'lucide-react';
-import { Conversation } from '@mochiport/shared';
+import { ConversationSummary } from '@mochiport/shared';
 import { cn } from '@/lib/utils';
-import { formatDate } from '@mochiport/shared';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
 interface ConversationCardProps {
-  conversation: Conversation;
+  conversation: ConversationSummary;
   isSelected?: boolean;
   onSelect: (id: string) => void;
   onArchive: (id: string) => void;
@@ -46,9 +44,9 @@ export const ConversationCard = memo<ConversationCardProps>(({
   className
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const lastMessage = conversation.messages[conversation.messages.length - 1];
-  const messageCount = conversation.messages.length;
-  const isArchived = conversation.status === 'archived';  
+  const lastMessage = conversation.lastMessage;
+  const messageCount = conversation.messageCount;
+  const isArchived = conversation.status === 'archived';
   const metadata = conversation.metadata as any || {};
   const isPinned = metadata.pinned || false;
   const isFavorite = metadata.favorite || false;
@@ -106,8 +104,7 @@ export const ConversationCard = memo<ConversationCardProps>(({
                       {conversation.metadata.priority === 'high' ? '高' : 
                        conversation.metadata.priority === 'medium' ? '中' : '低'}
                     </Badge>
-                  )}
-                  {conversation.metadata.tags?.slice(0, 2).map((tag) => (
+                  )}                  {conversation.metadata.tags?.slice(0, 2).map((tag: string) => (
                     <Badge key={tag} variant="secondary" className="text-xs h-4">
                       {tag}
                     </Badge>

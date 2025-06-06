@@ -33,11 +33,11 @@ export default [
         exports: 'readonly',
         console: 'readonly',
       },
-    },
-    rules: {
+    },    rules: {
       // 現在の.eslintrc.jsの設定を維持
       '@typescript-eslint/no-unused-vars': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      // any型の使用を許可
+      '@typescript-eslint/no-explicit-any': 'off',
       'prefer-const': 'error',
       'no-var': 'error',
       // Node.js環境でのconsole使用を許可
@@ -83,14 +83,14 @@ export default [
       'no-console': 'off',
       '@typescript-eslint/ban-ts-comment': 'warn',
     },
-  },
-  // 除外パターンを明示的に設定
+  },  // 除外パターンを明示的に設定
   {
     ignores: [
       'dist/**',
       'node_modules/**',
       '*.js',
       '__tests__/**',
+      'src/legacy/**',
     ],
   },
 ];

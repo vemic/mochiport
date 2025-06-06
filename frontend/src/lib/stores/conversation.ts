@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { 
-  Conversation, 
+  ConversationSummary,
   CreateConversationData, 
   UpdateConversationData,
   ConversationFilters 
@@ -9,28 +9,23 @@ import {
 
 export interface ConversationState {
   // State
-  conversations: Conversation[];
+  conversations: ConversationSummary[];
   selectedConversationId: string | null;
   loading: boolean;
   error: string | null;
   filters: ConversationFilters;
-  
-  // Computed
-  selectedConversation: Conversation | null;
-  
-  // Actions
-  actions: {
-    // Basic CRUD
-    setConversations: (conversations: Conversation[]) => void;
-    addConversation: (conversation: Conversation) => void;
-    updateConversation: (id: string, updates: Partial<Conversation>) => void;
-    removeConversation: (id: string) => void;
+    // Actions
+  actions: {    // Basic CRUD
+    setConversations: (_conversations: ConversationSummary[]) => void;
+    addConversation: (_conversation: ConversationSummary) => void;
+    updateConversation: (_id: string, _updates: Partial<ConversationSummary>) => void;
+    removeConversation: (_id: string) => void;
     
     // Selection
-    selectConversation: (id: string | null) => void;
+    selectConversation: (_id: string | null) => void;
     
     // Filters
-    setFilters: (filters: Partial<ConversationFilters>) => void;
+    setFilters: (_filters: Partial<ConversationFilters>) => void;
     clearFilters: () => void;
     
     // Loading states
@@ -53,58 +48,49 @@ export const useConversationStore = create<ConversationState>()(
       // Initial state
       conversations: [],
       selectedConversationId: null,
-      loading: false,
-      error: null,
+      loading: false,      error: null,
       filters: {},
-      
-      // Computed values
-      get selectedConversation() {
-        const { conversations, selectedConversationId } = get();
-        return conversations.find(c => c.id === selectedConversationId) || null;
-      },
-      
-      actions: {
+        actions: {
         // Basic CRUD
-        setConversations: (conversations) => 
-          set({ conversations }, false, 'setConversations'),
+        setConversations: (_conversations) => 
+          set({ conversations: _conversations }, false, 'setConversations'),
           
-        addConversation: (conversation) =>
+        addConversation: (_conversation) =>
           set(
-            (state) => ({ conversations: [conversation, ...state.conversations] }),
+            (state) => ({ conversations: [_conversation, ...state.conversations] }),
             false,
             'addConversation'
           ),
           
-        updateConversation: (id, updates) =>
+        updateConversation: (_id, _updates) =>
           set(
             (state) => ({
               conversations: state.conversations.map(c =>
-                c.id === id ? { ...c, ...updates } : c
+                c.id === _id ? { ...c, ..._updates } : c
               )
             }),
             false,
             'updateConversation'
           ),
-          
-        removeConversation: (id) =>
+            removeConversation: (_id) =>
           set(
             (state) => ({
-              conversations: state.conversations.filter(c => c.id !== id),
+              conversations: state.conversations.filter(c => c.id !== _id),
               selectedConversationId: 
-                state.selectedConversationId === id ? null : state.selectedConversationId
+                state.selectedConversationId === _id ? null : state.selectedConversationId
             }),
             false,
             'removeConversation'
           ),
         
         // Selection
-        selectConversation: (id) =>
-          set({ selectedConversationId: id }, false, 'selectConversation'),
+        selectConversation: (_id) =>
+          set({ selectedConversationId: _id }, false, 'selectConversation'),
         
         // Filters
-        setFilters: (filters) =>
+        setFilters: (_filters) =>
           set(
-            (state) => ({ filters: { ...state.filters, ...filters } }),
+            (state) => ({ filters: { ...state.filters, ..._filters } }),
             false,
             'setFilters'
           ),
@@ -113,14 +99,14 @@ export const useConversationStore = create<ConversationState>()(
           set({ filters: {} }, false, 'clearFilters'),
         
         // Loading states
-        setLoading: (loading) =>
-          set({ loading }, false, 'setLoading'),
+        setLoading: (_loading) =>
+          set({ loading: _loading }, false, 'setLoading'),
           
-        setError: (error) =>
-          set({ error }, false, 'setError'),
+        setError: (_error) =>
+          set({ error: _error }, false, 'setError'),
         
         // Async operations (placeholder implementations)
-        fetchConversations: async (filters) => {
+        fetchConversations: async (_filters) => {
           const { actions } = get();
           actions.setLoading(true);
           actions.setError(null);
@@ -138,8 +124,7 @@ export const useConversationStore = create<ConversationState>()(
             actions.setLoading(false);
           }
         },
-        
-        createConversation: async (data) => {
+          createConversation: async (_data) => {
           const { actions } = get();
           actions.setLoading(true);
           actions.setError(null);
@@ -148,16 +133,15 @@ export const useConversationStore = create<ConversationState>()(
             // TODO: Implement API call
             // const conversation = await conversationApi.create(data);
             // actions.addConversation(conversation);
-            
-            // Mock implementation
-            const conversation: Conversation = {
+              // Mock implementation
+            const conversation: ConversationSummary = {
               id: crypto.randomUUID(),
-              title: data.title,
-              messages: [],
+              title: _data.title,
+              messageCount: 0,
+              status: 'active',
               createdAt: new Date(),
               updatedAt: new Date(),
-              status: 'active',
-              metadata: data.metadata
+              metadata: _data.metadata
             };
             actions.addConversation(conversation);
           } catch (error) {
@@ -167,8 +151,7 @@ export const useConversationStore = create<ConversationState>()(
             actions.setLoading(false);
           }
         },
-        
-        updateConversationAsync: async (id, data) => {
+          updateConversationAsync: async (_id, _data) => {
           const { actions } = get();
           actions.setLoading(true);
           actions.setError(null);
@@ -179,7 +162,7 @@ export const useConversationStore = create<ConversationState>()(
             // actions.updateConversation(id, updated);
             
             // Mock implementation
-            actions.updateConversation(id, { ...data, updatedAt: new Date() });
+            actions.updateConversation(_id, { ..._data, updatedAt: new Date() });
           } catch (error) {
             actions.setError(error instanceof Error ? error.message : 'Unknown error');
             throw error;
@@ -188,15 +171,14 @@ export const useConversationStore = create<ConversationState>()(
           }
         },
         
-        deleteConversation: async (id) => {
+        deleteConversation: async (_id) => {
           const { actions } = get();
           actions.setLoading(true);
           actions.setError(null);
-          
-          try {
+            try {
             // TODO: Implement API call
-            // await conversationApi.delete(id);
-            actions.removeConversation(id);
+            // await conversationApi.delete(_id);
+            actions.removeConversation(_id);
           } catch (error) {
             actions.setError(error instanceof Error ? error.message : 'Unknown error');
             throw error;
@@ -205,19 +187,18 @@ export const useConversationStore = create<ConversationState>()(
           }
         },
         
-        archiveConversation: async (id) => {
+        archiveConversation: async (_id) => {
           const { actions } = get();
           try {
-            await actions.updateConversationAsync(id, { status: 'archived' });
+            await actions.updateConversationAsync(_id, { status: 'archived' });
           } catch (error) {
             throw error;
           }
         },
-        
-        restoreConversation: async (id) => {
+          restoreConversation: async (_id) => {
           const { actions } = get();
           try {
-            await actions.updateConversationAsync(id, { status: 'active' });
+            await actions.updateConversationAsync(_id, { status: 'active' });
           } catch (error) {
             throw error;
           }

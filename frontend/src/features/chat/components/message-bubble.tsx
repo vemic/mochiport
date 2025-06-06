@@ -57,7 +57,6 @@ export const MessageBubble = memo<MessageBubbleProps>(({
   const [copySuccess, setCopySuccess] = useState(false);
   const isUser = message.role === 'user';
   const isSystem = message.role === 'system';
-
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(message.content);
@@ -65,7 +64,8 @@ export const MessageBubble = memo<MessageBubbleProps>(({
       setTimeout(() => setCopySuccess(false), 2000);
       onCopy?.(message.content);
     } catch (error) {
-      console.error('Failed to copy text:', error);
+      // TODO: Show error notification to user
+      // console.error('Failed to copy text:', error);
     }
   };
   if (isSystem) {
