@@ -16,10 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { 
-  useConversations, 
+import {
+  useConversations,
   useConversation,
-  useCreateConversation, 
+  useCreateConversation,
   useUpdateConversation,
   useDeleteConversation,
   useArchiveConversation,
@@ -27,9 +27,9 @@ import {
 } from '@/lib/hooks';
 import { useConversationStore } from '@/lib/stores';
 import { useDebounce } from '@/lib/hooks';
-import { 
-    Plus, 
-  Search, 
+import {
+  Plus,
+  Search,
   SlidersHorizontal,
   Star,
   Archive as ArchiveIcon,
@@ -42,17 +42,18 @@ interface ChatContainerProps {
 }
 
 export function ChatContainer({ className }: ChatContainerProps) {
-  const [searchQuery, setSearchQuery] = useState('');  
+  const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedPriority, setSelectedPriority] = useState<string>('');
-    const [showFavorites, setShowFavorites] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const [rtEnabled, setRtEnabled] = useState(process.env.NEXT_PUBLIC_ENABLE_REALTIME === 'true');
   const [showPinned, setShowPinned] = useState(false);
-  
+
   const debouncedSearch = useDebounce(searchQuery, 300);
-    const store = useConversationStore();
+  const store = useConversationStore();
   const { selectedConversationId } = store;
   // API hooks
   const { data: conversationsData, isLoading } = useConversations({
@@ -62,7 +63,7 @@ export function ChatContainer({ className }: ChatContainerProps) {
 
   // 選択された会話の詳細を取得
   const { data: selectedConversationData } = useConversation(
-    selectedConversationId || '', 
+    selectedConversationId || '',
     !!selectedConversationId
   );
 
@@ -78,7 +79,7 @@ export function ChatContainer({ className }: ChatContainerProps) {
       store.actions.setConversations(conversationsData.data);
     }
   }, [conversationsData, store.actions]);
-    const handleCreateConversation = async () => {
+  const handleCreateConversation = async () => {
     try {
       await createMutation.mutateAsync({
         title: '新しい会話'
@@ -115,10 +116,10 @@ export function ChatContainer({ className }: ChatContainerProps) {
   const handlePinConversation = async (id: string) => {
     const conversation = store.conversations.find(c => c.id === id);
     if (!conversation) return;
-    
+
     const metadata = conversation.metadata as any || {};
     const isPinned = metadata.pinned || false;
-    
+
     try {
       await updateMutation.mutateAsync({
         id,
@@ -127,8 +128,9 @@ export function ChatContainer({ className }: ChatContainerProps) {
             ...metadata,
             pinned: !isPinned
           } as any
-        }      });
-      
+        }
+      });
+
       // TODO: Show success notification to user
       // console.log(`会話を${!isPinned ? 'ピン留め' : 'ピン留め解除'}しました`);
     } catch (error) {
@@ -141,10 +143,10 @@ export function ChatContainer({ className }: ChatContainerProps) {
   const handleFavoriteConversation = async (id: string) => {
     const conversation = store.conversations.find(c => c.id === id);
     if (!conversation) return;
-    
+
     const metadata = conversation.metadata as any || {};
     const isFavorite = metadata.favorite || false;
-    
+
     try {
       await updateMutation.mutateAsync({
         id,
@@ -153,8 +155,9 @@ export function ChatContainer({ className }: ChatContainerProps) {
             ...metadata,
             favorite: !isFavorite
           } as any
-        }      });
-      
+        }
+      });
+
       // TODO: Show success notification to user
       // console.log(`会話を${!isFavorite ? 'お気に入りに追加' : 'お気に入りから削除'}しました`);
     } catch (error) {
@@ -182,14 +185,15 @@ export function ChatContainer({ className }: ChatContainerProps) {
           message: {
             content: 'これは模擬的なAI応答です。実際の実装では、ここでAI APIを呼び出します。',
             role: 'assistant'
-          }        });
+          }
+        });
       }, 1000);
     } catch (error) {
       // TODO: Show error notification to user
       // console.error('Failed to send message:', error);
     }
-  };  
-    const handleExportConversation = (id: string) => {
+  };
+  const handleExportConversation = (id: string) => {
     // TODO: Implement conversation export
     // console.log('Export conversation:', id);
   };
@@ -217,9 +221,9 @@ export function ChatContainer({ className }: ChatContainerProps) {
   };
 
   const handleTagFilter = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag) 
+    setSelectedTags(prev =>
+      prev.includes(tag)
+        ? prev.filter(t => t !== tag)
         : [...prev, tag]
     );
   };
@@ -235,7 +239,7 @@ export function ChatContainer({ className }: ChatContainerProps) {
 
   // Process conversations based on filters
   let conversations = store.conversations;
-  
+
   // Filter by status
   if (filter === 'archived') {
     conversations = conversations.filter(c => c.status === 'archived');
@@ -255,7 +259,7 @@ export function ChatContainer({ className }: ChatContainerProps) {
 
   // Filter by tags
   if (selectedTags.length > 0) {
-    conversations = conversations.filter(c => 
+    conversations = conversations.filter(c =>
       selectedTags.every(tag => c.metadata?.tags?.includes(tag))
     );
   }
@@ -274,10 +278,10 @@ export function ChatContainer({ className }: ChatContainerProps) {
   conversations = [...conversations].sort((a, b) => {
     const isPinnedA = (a.metadata as any)?.pinned || false;
     const isPinnedB = (b.metadata as any)?.pinned || false;
-    
+
     if (isPinnedA && !isPinnedB) return -1;
     if (!isPinnedA && isPinnedB) return 1;
-    
+
     return b.updatedAt.getTime() - a.updatedAt.getTime();
   });
 
@@ -287,13 +291,13 @@ export function ChatContainer({ className }: ChatContainerProps) {
       .flatMap(c => c.metadata?.tags || [])
       .filter(Boolean)
   ));
-  
+
   const allCategories = Array.from(new Set(
     store.conversations
       .map(c => c.metadata?.category)
       .filter(Boolean)
   )) as string[];
-  
+
   return (
     <div className={cn('flex h-full', className)}>
       {/* Sidebar */}
@@ -355,24 +359,24 @@ export function ChatContainer({ className }: ChatContainerProps) {
               アーカイブ
             </Button>
           </div>
-          
+
           {/* Advanced filters */}
           {isFiltersVisible && (
             <div className="space-y-3 py-2 border-t border-b">
               {/* Favorite & Pinned filters */}
               <div className="flex items-center gap-2">
-                <Button 
+                <Button
                   variant={showFavorites ? 'default' : 'outline'}
-                  size="sm" 
+                  size="sm"
                   onClick={() => setShowFavorites(!showFavorites)}
                   className="text-xs gap-1 h-7"
                 >
                   <Star className={cn("h-3 w-3", showFavorites && "fill-current")} />
                   お気に入り
                 </Button>
-                <Button 
+                <Button
                   variant={showPinned ? 'default' : 'outline'}
-                  size="sm" 
+                  size="sm"
                   onClick={() => setShowPinned(!showPinned)}
                   className="text-xs gap-1 h-7"
                 >
@@ -380,15 +384,15 @@ export function ChatContainer({ className }: ChatContainerProps) {
                   ピン留め
                 </Button>
               </div>
-              
+
               {/* Tags filter */}
               {allTags.length > 0 && (
                 <div className="space-y-1">
                   <Label className="text-xs font-medium">タグ</Label>
                   <div className="flex flex-wrap gap-1">
                     {allTags.map(tag => (
-                      <Badge 
-                        key={tag} 
+                      <Badge
+                        key={tag}
                         variant={selectedTags.includes(tag) ? 'default' : 'outline'}
                         className="text-xs cursor-pointer hover:opacity-80"
                         onClick={() => handleTagFilter(tag)}
@@ -399,13 +403,13 @@ export function ChatContainer({ className }: ChatContainerProps) {
                   </div>
                 </div>
               )}
-              
+
               {/* Categories filter */}
               {allCategories.length > 0 && (
                 <div className="space-y-1">
                   <Label className="text-xs font-medium">カテゴリ</Label>
-                  <Select 
-                    value={selectedCategory} 
+                  <Select
+                    value={selectedCategory}
                     onValueChange={setSelectedCategory}
                   >
                     <SelectTrigger className="h-7 text-xs">
@@ -422,12 +426,12 @@ export function ChatContainer({ className }: ChatContainerProps) {
                   </Select>
                 </div>
               )}
-              
+
               {/* Priority filter */}
               <div className="space-y-1">
                 <Label className="text-xs font-medium">優先度</Label>
-                <Select 
-                  value={selectedPriority} 
+                <Select
+                  value={selectedPriority}
                   onValueChange={setSelectedPriority}
                 >
                   <SelectTrigger className="h-7 text-xs">
@@ -441,11 +445,11 @@ export function ChatContainer({ className }: ChatContainerProps) {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               {/* Clear filters */}
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={clearFilters}
                 className="text-xs w-full"
               >
@@ -493,33 +497,33 @@ export function ChatContainer({ className }: ChatContainerProps) {
           </div>
         </ScrollArea>
       </div>
-      
+
       {/* Main Chat Area */}
       <div className="flex-1">        <ChatWindow
-          conversation={selectedConversationData?.data || null}
-          loading={addMessageMutation.isPending}
-          onSendMessage={handleSendMessage}          onEditMessage={(messageId) => {
-            // TODO: Implement message editing
-            // console.log('Edit message:', messageId);
-          }}
-          onDeleteMessage={handleDeleteMessage}
-          onCopyMessage={(content) => {
-            // TODO: Show toast notification
-            // console.log('Copied:', content);
-          }}
-          onArchiveConversation={handleArchiveConversation}
-          onExportConversation={handleExportConversation}
-          onReactToMessage={(messageId, reaction) => {
-            // TODO: Implement message reactions
-            // console.log('React to message:', messageId, reaction);
-          }}
-          onShareMessage={(messageId) => {
-            // TODO: Implement message sharing
-            // console.log('Share message:', messageId);
-          }}
-          onPinConversation={handleChatWindowPin}
-          onFavoriteConversation={handleChatWindowFavorite}
-        />
+        conversation={selectedConversationData?.data || null}
+        loading={addMessageMutation.isPending}
+        onSendMessage={handleSendMessage} onEditMessage={(messageId) => {
+          // TODO: Implement message editing
+          // console.log('Edit message:', messageId);
+        }}
+        onDeleteMessage={handleDeleteMessage}
+        onCopyMessage={(content) => {
+          // TODO: Show toast notification
+          // console.log('Copied:', content);
+        }}
+        onArchiveConversation={handleArchiveConversation}
+        onExportConversation={handleExportConversation}
+        onReactToMessage={(messageId, reaction) => {
+          // TODO: Implement message reactions
+          // console.log('React to message:', messageId, reaction);
+        }}
+        onShareMessage={(messageId) => {
+          // TODO: Implement message sharing
+          // console.log('Share message:', messageId);
+        }}
+        onPinConversation={handleChatWindowPin}
+        onFavoriteConversation={handleChatWindowFavorite}
+      />
       </div>
     </div>
   );
