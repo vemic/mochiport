@@ -1,7 +1,7 @@
 // API関連の型定義
-import type { ConversationStatus } from './conversation';
-import type { ReminderStatus, ReminderType } from './reminder';
-import type { DraftStatus, DraftType } from './draft';
+import type { ConversationStatus } from './conversation.js';
+import type { ReminderStatus, ReminderType } from './reminder.js';
+import type { DraftStatus, DraftType } from './draft.js';
 
 export interface ApiResponse<T = unknown> {
   data: T;
@@ -60,6 +60,6 @@ export interface ValidationResult {
 }
 
 // re-export from other type files
-export * from './conversation';
-export * from './reminder';
-export * from './draft';
+export * from './conversation.js';
+export * from './reminder.js';
+export * from './draft.js';

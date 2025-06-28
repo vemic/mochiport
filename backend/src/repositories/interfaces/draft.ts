@@ -1,4 +1,4 @@
-import { BaseRepository } from "./base"
+import { BaseRepository } from './base.js';
 import { Draft, DraftFilters, PaginatedResponse, CreateDraftData, UpdateDraftData } from "@mochiport/shared"
 
 export interface DraftRepository extends BaseRepository<Draft, CreateDraftData, UpdateDraftData, DraftFilters> {

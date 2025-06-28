@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { supabase } from '../config/supabase'
+import { supabase } from '../config/supabase.js';
 import { HTTP_STATUS } from '@mochiport/shared'
 
 export interface AuthenticatedRequest extends Request {

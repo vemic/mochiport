@@ -7,7 +7,7 @@ import {
   PaginatedResponse,
   ReminderStatus 
 } from '@mochiport/shared';
-import { ReminderRepository } from './interfaces/reminder';
+import { ReminderRepository } from './interfaces/reminder.js';
 
 export class SupabaseReminderRepository implements ReminderRepository {
   constructor(private supabase: SupabaseClient) {}

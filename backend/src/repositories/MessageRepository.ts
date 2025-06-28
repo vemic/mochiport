@@ -5,7 +5,7 @@ import {
   PaginationParams,
   DatabaseOperationResult,
   BaseRepository
-} from '../models/database';
+} from '../models/database.js';
 
 export class MessageRepository implements BaseRepository<DatabaseMessage, MessageFilters> {
   constructor(private supabase: SupabaseClient) {}

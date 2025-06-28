@@ -7,7 +7,7 @@ import {
   PaginatedResponse, 
   DraftStatus 
 } from '@mochiport/shared';
-import { DraftRepository } from './interfaces/draft';
+import { DraftRepository } from './interfaces/draft.js';
 
 export class SupabaseDraftRepository implements DraftRepository {
   constructor(private supabase: SupabaseClient) {}

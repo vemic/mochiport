@@ -1,4 +1,4 @@
-import { SupabaseManager } from '../config/supabase';
+import { SupabaseManager } from '../config/supabase.js';
 
 async function testSupabaseConnection() {
   console.log('🧪 Testing Supabase Connection...\n');

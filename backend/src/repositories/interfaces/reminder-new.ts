@@ -1,4 +1,4 @@
-import { BaseRepository } from "./base"
+import { BaseRepository } from './base.js';
 import { Reminder, ReminderFilters, PaginatedResponse, CreateReminderData, UpdateReminderData } from "@mochiport/shared"
 
 export interface ReminderRepository extends BaseRepository<Reminder, CreateReminderData, UpdateReminderData, ReminderFilters> {

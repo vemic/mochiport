@@ -20,6 +20,14 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 
 ## 現在の履歴
 
+### 2025年6月28日
+
+- `CHANGELOG_20250628_001_Shared_Package_ESM_Export_Configuration.md` - SharedパッケージESMエクスポート設定とモジュール互換性改善
+
+### 2025年6月7日
+
+- `CHANGELOG_20250607_001_PowerShell_Clean_Script_Fix.md` - PowerShellクリーンスクリプト修正と安定化対応
+
 ### 2025年6月6日
 
 - `CHANGELOG_20250606_001_Node_js_Memory_Leak_Resolution.md` - Node.jsメモリリーク対策と開発環境最適化
@@ -38,6 +46,7 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 - `CHANGELOG_20250605_010_Complete_Project_Namespace_Migration.md` - プロジェクト全体の名前空間移行（ai-chat → mochiport）
 - `CHANGELOG_20250605_011_Development_Server_Stability_Fix.md` - 開発サーバー安定性修正と恒久的依存関係管理
 - `CHANGELOG_20250605_012_ESLint_9_TailwindCSS_4_Major_Upgrade.md` - ESLint 9系とTailwind CSS 4系メジャーアップグレード
+- `CHANGELOG_20250607_001_PowerShell_Clean_Script_Fix.md` - PowerShellクリーンスクリプト修正と安定化対応
 
 ## 関連ドキュメント
 

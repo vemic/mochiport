@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint src",
     "type-check": "tsc --noEmit",
-    "clean": "powershell -Command \"Remove-Item -Path '.next', 'out' -Recurse -Force -ErrorAction SilentlyContinue\"",
+    "clean": "powershell -Command \"if(Test-Path '.next'){Remove-Item -Path '.next' -Recurse -Force}; if(Test-Path 'out'){Remove-Item -Path 'out' -Recurse -Force}\"",
     "test": "node --max-old-space-size=2048 ./node_modules/.bin/jest",
     "test:watch": "node --max-old-space-size=2048 ./node_modules/.bin/jest --watch"
   },

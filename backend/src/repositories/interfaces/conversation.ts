@@ -5,7 +5,7 @@ import {
   ConversationFilters,
   PaginatedResponse 
 } from '@mochiport/shared';
-import { BaseRepository, SearchableRepository } from './base';
+import { BaseRepository, SearchableRepository } from './base.js';
 
 export interface ConversationRepository 
   extends BaseRepository<Conversation, CreateConversationData, UpdateConversationData, ConversationFilters>,

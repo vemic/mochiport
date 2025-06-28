@@ -1,8 +1,8 @@
 import express from 'express';
-import { authenticateRequest, getUserId } from '../middleware/auth';
+import { authenticateRequest, getUserId } from '../middleware/auth.js';
 import { HTTP_STATUS } from '@mochiport/shared';
-import { ConversationService } from '../services/ConversationService';
-import { ValidationError, NotFoundError } from '../utils/errors';
+import { ConversationService } from '../services/ConversationService.js';
+import { ValidationError, NotFoundError } from '../utils/errors.js';
 
 const router = express.Router();
 const conversationService = new ConversationService(true); // Use mock AI

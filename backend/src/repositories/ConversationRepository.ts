@@ -8,7 +8,7 @@ import {
   BaseRepository,
   ConversationWithMessages,
   ConversationSummary
-} from '../models/database';
+} from '../models/database.js';
 
 export class ConversationRepository implements BaseRepository<DatabaseConversation, ConversationFilters> {
   constructor(private supabase: SupabaseClient) {}

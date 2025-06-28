@@ -1,5 +1,5 @@
-import { SupabaseDraftRepository } from './SupabaseDraftRepository'
-import { SupabaseManager } from '../config/supabase'
+import { SupabaseDraftRepository } from './SupabaseDraftRepository.js';
+import { SupabaseManager } from '../config/supabase.js';
 
 // Create singleton Supabase instance for repositories
 const supabaseManager = new SupabaseManager({
@@ -25,4 +25,4 @@ export class DraftRepository extends SupabaseDraftRepository {
 export default DraftRepository;
 
 // Re-export the interface for type checking
-export type { DraftRepository as IDraftRepository } from './interfaces/draft'
+export type { DraftRepository as IDraftRepository } from './interfaces/draft.js';

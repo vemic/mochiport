@@ -1,7 +1,6 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",  "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
+  "$schema": "https://json.schemastore.org/tsconfig",  "compilerOptions": {    "target": "ES2022",
+    "module": "NodeNext",
     "lib": ["ES2022"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -10,7 +9,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "NodeNext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "outDir": "dist",

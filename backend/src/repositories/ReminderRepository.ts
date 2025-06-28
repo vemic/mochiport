@@ -1,5 +1,5 @@
-import { SupabaseReminderRepository } from './SupabaseReminderRepository'
-import { SupabaseManager } from '../config/supabase'
+import { SupabaseReminderRepository } from './SupabaseReminderRepository.js';
+import { SupabaseManager } from '../config/supabase.js';
 
 // Create singleton Supabase instance for repositories
 const supabaseManager = new SupabaseManager({
@@ -25,4 +25,4 @@ export class ReminderRepository extends SupabaseReminderRepository {
 export default ReminderRepository;
 
 // Re-export the interface for type checking
-export type { ReminderRepository as IReminderRepository } from './interfaces/reminder'
+export type { ReminderRepository as IReminderRepository } from './interfaces/reminder.js';

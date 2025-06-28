@@ -8,7 +8,7 @@ export {
   isEmpty as isStringEmpty,
   isValidEmail,
   isEmail
-} from './string'
+} from './string.js'
 
 // Object utilities  
 export {
@@ -19,7 +19,7 @@ export {
   omit,
   isObjectEmpty,
   isPlainObject
-} from './object'
+} from './object.js'
 
 // Date utilities
 export {
@@ -34,4 +34,4 @@ export {
   isYesterday,
   formatDateTime,
   formatRelativeTime
-} from './date'
+} from './date.js'

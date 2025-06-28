@@ -1,4 +1,4 @@
-import { ValidationError } from '../utils/errors';
+import { ValidationError } from '../utils/errors.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export abstract class BaseService<T, TCreate, TUpdate> {

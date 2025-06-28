@@ -1,5 +1,5 @@
 import type { Reminder, CreateReminderData, UpdateReminderData, ReminderFilters, ReminderStatus } from '@mochiport/shared'
-import type { BaseRepository } from './base'
+import type { BaseRepository } from './base.js';
 
 export interface ReminderRepository extends BaseRepository<Reminder, CreateReminderData, UpdateReminderData, ReminderFilters> {
   findByStatus(status: ReminderStatus[]): Promise<Reminder[]>

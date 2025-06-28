@@ -1,5 +1,5 @@
 import { SupabaseClient } from '@supabase/supabase-js'
-import { BaseService } from "./BaseService"
+import { BaseService } from './BaseService.js';
 import { 
   Draft, 
   CreateDraftData, 
@@ -7,10 +7,10 @@ import {
   DraftFilters,
   PaginatedResponse
 } from "@mochiport/shared"
-import { DraftRepository as IDraftRepository } from "../repositories/interfaces/draft"
-import { DraftRepository } from "../repositories/DraftRepository"
-import { ConversationRepository } from "../repositories/ConversationRepository"
-import { NotFoundError, ValidationError } from "../utils/errors"
+import { DraftRepository as IDraftRepository } from '../repositories/interfaces/draft.js';
+import { DraftRepository } from '../repositories/DraftRepository.js';
+import { ConversationRepository } from '../repositories/ConversationRepository.js';
+import { NotFoundError, ValidationError } from '../utils/errors.js';
 
 export class DraftService extends BaseService<Draft, CreateDraftData, UpdateDraftData> {
   private draftRepository: IDraftRepository

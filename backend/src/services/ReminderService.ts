@@ -6,10 +6,10 @@ import type {
     PaginatedResponse,
   ReminderStatus
 } from '@mochiport/shared'
-import type { ReminderRepository as IReminderRepository } from '../repositories/interfaces/reminder'
-import { ReminderRepository } from '../repositories/ReminderRepository'
-import { BaseService } from './BaseService'
-import { ValidationError, NotFoundError } from '../utils/errors'
+import type { ReminderRepository as IReminderRepository } from '../repositories/interfaces/reminder.js';
+import { ReminderRepository } from '../repositories/ReminderRepository.js';
+import { BaseService } from './BaseService.js';
+import { ValidationError, NotFoundError } from '../utils/errors.js';
 
 export class ReminderService extends BaseService<Reminder, CreateReminderData, UpdateReminderData> {
   private reminderRepository: IReminderRepository

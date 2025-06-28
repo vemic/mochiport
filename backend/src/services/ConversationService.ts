@@ -5,13 +5,13 @@ import {
   DatabaseMessage,
   ConversationFilters,
   ConversationService as IConversationService
-} from "../models/database"
-import { ConversationRepository } from "../repositories/ConversationRepository"
-import { MessageRepository } from "../repositories/MessageRepository"
-import { NotFoundError, ValidationError } from "../utils/errors"
-import { IAIService, AIService, MockAIService } from "./AIService"
+} from "../models/database.js"
+import { ConversationRepository } from '../repositories/ConversationRepository.js';
+import { MessageRepository } from '../repositories/MessageRepository.js';
+import { NotFoundError, ValidationError } from '../utils/errors.js';
+import { IAIService, AIService, MockAIService } from './AIService.js';
 import { Message } from '@mochiport/shared'
-import { supabase } from "../config/supabase"
+import { supabase } from '../config/supabase.js';
 
 export class ConversationService implements IConversationService {
   private conversationRepository: ConversationRepository

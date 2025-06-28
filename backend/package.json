@@ -1,14 +1,13 @@
 {
   "name": "@mochiport/backend",
   "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "main": "dist/index.js",  "scripts": {
+  "private": true,  "type": "module",
+  "main": "dist/index.js","scripts": {
     "build": "tsc",
     "dev": "yarn build && node --max-old-space-size=2048 dist/server.js",
     "dev:watch": "concurrently \"tsc --watch\" \"nodemon\"",
     "start": "node dist/server.js",
-    "clean": "powershell -Command \"Remove-Item -Path 'dist' -Recurse -Force -ErrorAction SilentlyContinue\"",
+    "clean": "powershell -Command \"if(Test-Path 'dist'){Remove-Item -Path 'dist' -Recurse -Force}\"",
     "type-check": "tsc --noEmit",
     "test": "node --max-old-space-size=1024 ./node_modules/.bin/jest",
     "test:watch": "node --max-old-space-size=1024 ./node_modules/.bin/jest --watch",

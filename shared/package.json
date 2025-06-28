@@ -1,13 +1,35 @@
-{
-  "name": "@mochiport/shared",
+{  "name": "@mochiport/shared",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types/*": {
+      "import": "./dist/types/*.js",
+      "types": "./dist/types/*.d.ts"
+    },
+    "./utils/*": {
+      "import": "./dist/utils/*.js",
+      "types": "./dist/utils/*.d.ts"
+    },
+    "./constants/*": {
+      "import": "./dist/constants/*.js",
+      "types": "./dist/constants/*.d.ts"
+    },
+    "./validation/*": {
+      "import": "./dist/validation/*.js",
+      "types": "./dist/validation/*.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "clean": "powershell -Command \"Remove-Item -Path 'dist' -Recurse -Force -ErrorAction SilentlyContinue\"",
+    "clean": "powershell -Command \"if(Test-Path 'dist'){Remove-Item -Path 'dist' -Recurse -Force}\"",
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch"
