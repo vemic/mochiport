@@ -5,7 +5,7 @@ import { ConversationService } from '../services/ConversationService.js';
 import { ValidationError, NotFoundError } from '../utils/errors.js';
 
 const router = express.Router();
-const conversationService = new ConversationService(true); // Use mock AI
+const conversationService = new ConversationService(); // Use environment-based configuration
 
 // GET /api/conversations - Get all conversations
 router.get('/', authenticateRequest, async (req, res) => {

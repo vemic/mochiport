@@ -9,18 +9,70 @@ import {
 import { ConversationRepository } from '../repositories/ConversationRepository.js';
 import { MessageRepository } from '../repositories/MessageRepository.js';
 import { NotFoundError, ValidationError } from '../utils/errors.js';
-import { IAIService, AIService, MockAIService } from './AIService.js';
+import { IAIService, AIServiceFactory } from './AIService.js';
+import { DatabaseServiceFactory } from './DatabaseServiceFactory.js';
 import { Message } from '@mochiport/shared'
 import { supabase } from '../config/supabase.js';
 
 export class ConversationService implements IConversationService {
-  private conversationRepository: ConversationRepository
-  private messageRepository: MessageRepository
+  private conversationRepository: ConversationRepository | null
+  private messageRepository: MessageRepository | null
   private aiService: IAIService
-  constructor(useMockAI: boolean = true) {
-    this.conversationRepository = new ConversationRepository(supabase)
-    this.messageRepository = new MessageRepository(supabase)
-    this.aiService = useMockAI ? new MockAIService() : new AIService()
+  private mockData: Map<string, ConversationWithMessages> = new Map();
+  private useMockDatabase: boolean;
+
+  constructor() {
+    this.useMockDatabase = DatabaseServiceFactory.isUsingMock();
+    
+    if (this.useMockDatabase) {
+      console.log('ConversationService: Using mock database');
+      this.conversationRepository = null;
+      this.messageRepository = null;
+      this.initializeMockData();
+    } else {
+      console.log('ConversationService: Using Supabase database');
+      this.conversationRepository = new ConversationRepository(supabase);
+      this.messageRepository = new MessageRepository(supabase);
+    }
+    
+    this.aiService = AIServiceFactory.getInstance();
+  }
+
+  private initializeMockData(): void {
+    // モックデータの初期化
+    const mockConversation: ConversationWithMessages = {
+      id: 'conv-1',
+      user_id: 'user-1',
+      title: 'サンプル会話',
+      status: 'active',
+      metadata: { summary: 'AIとの最初の会話です', tags: ['test', 'sample'] },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      messages: [
+        {
+          id: 'msg-1',
+          conversation_id: 'conv-1',
+          user_id: 'user-1',
+          content: 'こんにちは！',
+          role: 'user',
+          timestamp: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          metadata: { tokens: 5 }
+        },
+        {
+          id: 'msg-2',
+          conversation_id: 'conv-1',
+          user_id: 'user-1',
+          content: 'こんにちは！どのようにお手伝いできますか？',
+          role: 'assistant',
+          timestamp: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          metadata: { tokens: 15, processingTime: 0.5, confidence: 0.9 }
+        }
+      ]
+    };
+    
+    this.mockData.set('conv-1', mockConversation);
   }
 
   // DatabaseMessageをshared Messageに変換するヘルパー関数
