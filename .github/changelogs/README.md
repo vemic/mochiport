@@ -23,6 +23,7 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 ### 2025年6月28日
 
 - `CHANGELOG_20250628_001_Shared_Package_ESM_Export_Configuration.md` - SharedパッケージESMエクスポート設定とモジュール互換性改善
+- `CHANGELOG_20250628_002_Mock_to_Production_Service_Migration_Setup.md` - モック解除と本番サービス接続設定
 
 ### 2025年6月7日
 
