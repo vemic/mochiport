@@ -1,6 +1,6 @@
 # AI チャット管理アプリケーション
 
-拡張性重視のモダンな AI チャット管理システムです。Turborepo monorepo 構成で、フロントエンドに Next.js 15 + React 19、バックエンドに Azure Functions を採用しています。
+拡張性重視のモダンな AI チャット管理システムです。Turborepo monorepo 構成で、フロントエンドに Next.js 15 + React 19、バックエンドに Node.js Express サーバーを採用しています。
 
 ## 🚀 機能
 
@@ -47,7 +47,7 @@
 
 ```
 ├── frontend/          # Next.js 15 + React 19 アプリケーション
-├── backend/           # Azure Functions バックエンド
+├── backend/           # Node.js Express サーバー
 ├── shared/           # 共有型定義・ユーティリティ
 └── packages/         # 共有パッケージ
     ├── tsconfig/     # TypeScript 設定
@@ -61,25 +61,29 @@
 
 - Next.js 15 (App Router)
 - React 19
-- TypeScript
-- Tailwind CSS
+- TypeScript 5.7.2
+- Tailwind CSS 4.1.8
 - Zustand (状態管理)
-- React Query (データフェッチング)
+- React Query (TanStack Query) (データフェッチング)
 - Radix UI (UI コンポーネント)
+- React Hook Form (フォーム管理)
 
 **バックエンド:**
 
-- Azure Functions v4
+- Node.js Express サーバー
 - TypeScript
-- Cosmos DB (予定)
+- Supabase (データベース)
+- Azure OpenAI (AI統合)
 - Zod (バリデーション)
 
 **開発ツール:**
 
 - Turborepo (monorepo 管理)
-- ESLint + Prettier
-- Husky (Git hooks)
+- ESLint 9 + Prettier
 - Jest (テスト)
+- TypeScript 5.7.2
+- Concurrently (並行プロセス実行)
+- Nodemon (開発時のホットリロード)
 
 ## 🛠️ セットアップ
 
@@ -87,7 +91,6 @@
 
 - Node.js 22.16.0+ (LTS推奨)
 - Yarn 1.22+
-- Azure Functions Core Tools v4 (バックエンド開発用)
 
 ### インストール
 
@@ -131,15 +134,18 @@ src/
 
 ```
 src/
-├── functions/            # Azure Functions エンドポイント
-│   ├── chat/            # チャット関連 API
-│   ├── reminder/        # リマインダー関連 API
-│   └── draft/           # ドラフト関連 API
-├── services/            # ビジネスロジック
-├── repositories/        # データアクセス層
-├── middleware/          # ミドルウェア
-├── utils/              # ユーティリティ
-└── data/               # モックデータ
+├── routes/              # Express ルーター
+│   ├── chat.ts         # チャット関連 API
+│   ├── conversation.ts # 会話関連 API
+│   ├── reminder.ts     # リマインダー関連 API
+│   └── draft.ts        # ドラフト関連 API
+├── services/           # ビジネスロジック
+├── repositories/       # データアクセス層
+├── middleware/         # Express ミドルウェア
+├── config/            # 設定ファイル
+├── utils/             # ユーティリティ
+├── data/              # モックデータ
+└── server.ts          # Express サーバーエントリポイント
 ```
 
 ## 🔧 開発ガイド
@@ -167,22 +173,34 @@ yarn workspace backend build   # バックエンドビルド
 **フロントエンド (.env.local):**
 
 ```env
-NEXT_PUBLIC_API_BASE_URL=http://localhost:7071/api
-NEXT_PUBLIC_APP_ENV=development
-NEXT_PUBLIC_ENABLE_MOCK_DATA=true
+NEXT_PUBLIC_API_URL=http://localhost:7071
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url-here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key-here
+NEXT_PUBLIC_USE_MOCK_DATA=false
+NEXT_PUBLIC_ENABLE_REALTIME=true
 ```
 
 **バックエンド (.env.development):**
 
 ```env
-AZURE_FUNCTIONS_ENVIRONMENT=Development
 PORT=7071
-CORS_ORIGINS=http://localhost:3000
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 
-# Supabase Configuration (Required for v1.1.0+)
-SUPABASE_URL=your-supabase-project-url
-SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+# Supabase Configuration
+SUPABASE_URL=your-supabase-url-here
+SUPABASE_ANON_KEY=your-supabase-anon-key-here
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key-here
+
+# Azure OpenAI Configuration
+AZURE_OPENAI_ENDPOINT=your-azure-openai-endpoint-here
+AZURE_OPENAI_API_KEY=your-azure-openai-api-key-here
+AZURE_OPENAI_API_VERSION=2024-02-15-preview
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4
+AZURE_OPENAI_MODEL_NAME=gpt-4
+
+# モック切替フラグ
+USE_MOCK_AI_SERVICE=false
+USE_MOCK_DATABASE=false
 
 # Optional Settings
 JWT_SECRET=development-secret-key
@@ -190,7 +208,7 @@ REDIS_CONNECTION_STRING=mock://development
 LOG_LEVEL=debug
 ```
 
-### Supabase セットアップ (v1.1.0+)
+### Supabase セットアップ
 
 1. **Supabaseプロジェクトの作成**
 
@@ -203,17 +221,34 @@ LOG_LEVEL=debug
    -- conversations テーブル
    CREATE TABLE conversations (
      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     user_id TEXT NOT NULL,
      title TEXT NOT NULL,
-     user_id TEXT,
+     status TEXT DEFAULT 'active',
+     metadata JSONB,
      created_at TIMESTAMPTZ DEFAULT NOW(),
      updated_at TIMESTAMPTZ DEFAULT NOW()
+   );
+
+   -- messages テーブル
+   CREATE TABLE messages (
+     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     conversation_id UUID REFERENCES conversations(id),
+     user_id TEXT NOT NULL,
+     content TEXT NOT NULL,
+     role TEXT NOT NULL,
+     timestamp TIMESTAMPTZ DEFAULT NOW(),
+     metadata JSONB,
+     created_at TIMESTAMPTZ DEFAULT NOW()
    );
 
    -- drafts テーブル
    CREATE TABLE drafts (
      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     user_id TEXT NOT NULL,
      title TEXT NOT NULL,
      content TEXT,
+     type TEXT DEFAULT 'general',
+     status TEXT DEFAULT 'draft',
      conversation_id UUID REFERENCES conversations(id),
      created_at TIMESTAMPTZ DEFAULT NOW(),
      updated_at TIMESTAMPTZ DEFAULT NOW()
@@ -222,6 +257,7 @@ LOG_LEVEL=debug
    -- reminders テーブル
    CREATE TABLE reminders (
      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     user_id TEXT NOT NULL,
      title TEXT NOT NULL,
      description TEXT,
      due_date TIMESTAMPTZ NOT NULL,
@@ -268,12 +304,12 @@ yarn workspace frontend build
 vercel --prod
 ```
 
-### バックエンド (Azure)
+### バックエンド (Node.js Express)
 
 ```bash
-# Azure Functions にデプロイ
+# Express サーバーをローカルで起動
 yarn workspace backend build
-func azure functionapp publish your-function-app-name
+yarn workspace backend start
 ```
 
 ## 🎯 設計原則
