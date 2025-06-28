@@ -363,3 +363,154 @@ MIT License
 ## 📞 サポート
 
 問題や質問がある場合は、Issues を作成してください。
+
+## Windows スタンドアロン運用
+
+MochiPortをWindows環境でスタンドアロンサーバとして運用するための完全なソリューションを提供しています。
+
+### クイックスタート
+
+```cmd
+# 管理者権限でコマンドプロンプトを起動
+cd C:\path\to\mochiport
+
+# 統合インストール（依存関係、ビルド、サービス設定を自動実行）
+windows-deployment\install-mochiport.bat
+
+# 管理ダッシュボードの起動
+windows-deployment\management-dashboard.bat
+```
+
+### 主要機能
+
+#### 🚀 **自動インストール・セットアップ**
+- 依存関係の自動チェック・インストール
+- アプリケーションの自動ビルド
+- PM2によるプロセス管理設定
+- Windowsファイアウォール自動設定
+
+#### 🔒 **セキュリティ強化**
+- HTTPS/SSL証明書の自動生成
+- Windowsファイアウォール設定
+- セキュリティヘッダーの実装
+- 認証システムの構成
+- IP制限・レート制限
+
+#### 📊 **高度な監視・ヘルスチェック**
+- リアルタイムシステム監視
+- 自動ヘルスチェック
+- パフォーマンス監視
+- アラート機能
+- Windowsイベントログ統合
+
+#### 🔄 **自動復旧システム**
+- サービス異常時の自動再起動
+- メモリ・CPU使用率監視
+- 自動ガベージコレクション
+- 設定可能な復旧ポリシー
+
+#### 💾 **バックアップ・復元**
+- 自動バックアップシステム
+- 設定・ログ・データの完全バックアップ
+- 圧縮・暗号化対応
+- ワンクリック復元機能
+
+#### 🛠️ **統合管理ダッシュボード**
+- サービス管理（開始・停止・再起動）
+- 監視・ログ閲覧
+- バックアップ・復元管理
+- システムメンテナンス
+- トラブルシューティング支援
+
+### Windows サービス化
+
+```cmd
+# PM2サービスとして登録
+npm install -g pm2-windows-service
+pm2-service-install -n MochiPort
+
+# サービスの管理
+net start MochiPort
+net stop MochiPort
+```
+
+### セキュリティ設定
+
+```powershell
+# 完全なセキュリティ設定
+.\windows-deployment\security-config.ps1 -Configure
+
+# セキュリティ監査
+.\windows-deployment\security-config.ps1 -AuditSecurity
+```
+
+### 監視・自動復旧
+
+```powershell
+# 高度な監視システム開始
+.\windows-deployment\advanced-monitoring.ps1 -StartMonitoring
+
+# 自動復旧システム開始
+.\windows-deployment\recovery-system.ps1 -StartRecoveryService
+```
+
+### デプロイメントテスト
+
+```cmd
+# 統合テストの実行
+windows-deployment\integration-test.bat
+```
+
+このテストにより、以下が検証されます：
+- 前提条件（Node.js、Yarn、PM2等）
+- アプリケーションビルド
+- サービス管理
+- ヘルスチェック
+- セキュリティ設定
+- バックアップシステム
+- 監視システム
+- パフォーマンス
+
+### ファイル構成
+
+```
+windows-deployment/
+├── install-mochiport.bat           # 統合インストールスクリプト
+├── management-dashboard.bat        # 管理ダッシュボード
+├── advanced-monitoring.ps1        # 高度な監視システム
+├── recovery-system.ps1            # 自動復旧システム
+├── backup-system.bat              # バックアップシステム
+├── security-config.ps1            # セキュリティ設定
+└── integration-test.bat           # 統合テスト
+
+WINDOWS_DEPLOYMENT_GUIDE.md        # 詳細な運用ガイド
+```
+
+### 運用コマンド
+
+```cmd
+# サービス状態確認
+pm2 status
+pm2 logs
+pm2 monit
+
+# ヘルスチェック
+curl http://localhost:7071/api/health
+
+# バックアップ作成
+windows-deployment\backup-system.bat
+
+# パフォーマンス監視
+windows-deployment\management-dashboard.bat
+```
+
+### トラブルシューティング
+
+管理ダッシュボードのトラブルシューティングメニューから以下が利用可能：
+- ポート競合チェック
+- 依存関係チェック
+- メモリ・ネットワーク診断
+- 一般的な解決策
+- サポート情報生成
+
+詳細な運用手順については [WINDOWS_DEPLOYMENT_GUIDE.md](WINDOWS_DEPLOYMENT_GUIDE.md) を参照してください。
