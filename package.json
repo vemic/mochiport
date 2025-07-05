@@ -5,6 +5,7 @@
   "description": "拡張性重視のAIチャット管理アプリケーション",
   "scripts": {
     "build": "turbo run build",
+    "build:github": "scripts/build-github-pages.bat",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
@@ -18,6 +19,9 @@
     "memory:monitor": "node memory-monitor.js",
     "memory:report": "powershell -Command \"Get-Process | Where-Object {$_.ProcessName -like '*node*'} | Sort-Object WorkingSet64 -Descending | Select-Object -First 10 ProcessName, Id, @{Name='Memory(MB)';Expression={[math]::Round($_.WorkingSet64/1MB,2)}} | Format-Table -AutoSize\""
   },
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
   "devDependencies": {
     "@babel/core": "^7.27.0",
     "@babel/preset-env": "^7.27.0",

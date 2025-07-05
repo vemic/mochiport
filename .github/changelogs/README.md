@@ -51,6 +51,10 @@ CHANGELOG_YYYYMMDD_NNN_English_Change_Title.md
 - `CHANGELOG_20250605_012_ESLint_9_TailwindCSS_4_Major_Upgrade.md` - ESLint 9系とTailwind CSS 4系メジャーアップグレード
 - `CHANGELOG_20250607_001_PowerShell_Clean_Script_Fix.md` - PowerShellクリーンスクリプト修正と安定化対応
 
+### 2024年12月28日
+
+- `CHANGELOG_20241228_005_GitHub_Pages_Custom_Domain_Support.md` - GitHub Pages独自ドメイン（static.vemi.jp）対応完了
+
 ## 関連ドキュメント
 
 - `../.github/instructions/` - GitHub Copilot専用指示書ディレクトリ（general, coding-standards, react, testing）

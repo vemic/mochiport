@@ -1,0 +1,89 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+          cache: 'yarn'
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          static_site_generator: next
+          
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        
+      - name: Build shared package
+        run: yarn workspace @mochiport/shared build
+        
+      - name: Build frontend for GitHub Pages
+        env:
+          GITHUB_PAGES: true
+          NEXT_PUBLIC_BASE_PATH: /mochiport
+          NEXT_PUBLIC_USE_MOCK_DATA: true
+          NEXT_PUBLIC_ENABLE_REALTIME: false
+          NEXT_PUBLIC_API_URL: https://${{ github.repository_owner }}.github.io/mochiport/api
+        run: yarn workspace @mochiport/frontend build
+        
+      - name: Create mock API responses
+        run: |
+          mkdir -p frontend/out/api
+          echo '{"status":"ok","message":"GitHub Pages Mock API","timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}' > frontend/out/api/health.json
+          
+          # Mock conversations API
+          mkdir -p frontend/out/api/conversations
+          echo '[{"id":"1","title":"Sample Conversation","messages":[{"id":"1","content":"Hello from GitHub Pages!","role":"user","timestamp":"2025-06-28T00:00:00Z"}],"createdAt":"2025-06-28T00:00:00Z","updatedAt":"2025-06-28T00:00:00Z"}]' > frontend/out/api/conversations/index.json
+          
+          # Mock drafts API
+          mkdir -p frontend/out/api/drafts
+          echo '[{"id":"1","title":"Sample Draft","content":"This is a sample draft for GitHub Pages demo","tags":["demo","github-pages"],"createdAt":"2025-06-28T00:00:00Z","updatedAt":"2025-06-28T00:00:00Z"}]' > frontend/out/api/drafts/index.json
+          
+          # Mock reminders API
+          mkdir -p frontend/out/api/reminders
+          echo '[{"id":"1","title":"Sample Reminder","content":"Remember to check the GitHub Pages deployment","dueDate":"2025-12-31T23:59:59Z","completed":false,"createdAt":"2025-06-28T00:00:00Z"}]' > frontend/out/api/reminders/index.json
+          
+      - name: Add .nojekyll file
+        run: touch frontend/out/.nojekyll
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: frontend/out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3

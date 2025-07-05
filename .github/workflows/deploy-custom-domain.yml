@@ -1,0 +1,131 @@
+name: Deploy to GitHub Pages (Custom Domain)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-custom-domain"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build shared package
+        run: yarn workspace @mochiport/shared build
+
+      - name: Copy custom domain environment
+        run: cp frontend/.env.custom-domain frontend/.env.local
+
+      - name: Build frontend for custom domain
+        run: yarn workspace @mochiport/frontend build:custom-domain
+
+      - name: Generate mock API data
+        run: |
+          mkdir -p frontend/out/api
+          
+          # Generate conversations
+          cat > frontend/out/api/conversations.json << 'EOF'
+          {
+            "conversations": [
+              {
+                "id": "1",
+                "title": "新しい機能について",
+                "createdAt": "2024-01-15T09:00:00Z",
+                "updatedAt": "2024-01-15T09:30:00Z",
+                "userId": "user-1",
+                "messages": [
+                  {
+                    "id": "msg-1",
+                    "content": "新しい機能の提案があります",
+                    "role": "user",
+                    "timestamp": "2024-01-15T09:00:00Z"
+                  },
+                  {
+                    "id": "msg-2", 
+                    "content": "詳しく教えてください",
+                    "role": "assistant",
+                    "timestamp": "2024-01-15T09:05:00Z"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          
+          # Generate drafts
+          cat > frontend/out/api/drafts.json << 'EOF'
+          {
+            "drafts": [
+              {
+                "id": "draft-1",
+                "title": "プロジェクト提案書",
+                "content": "新しいプロジェクトの提案内容...",
+                "createdAt": "2024-01-15T10:00:00Z",
+                "updatedAt": "2024-01-15T10:30:00Z",
+                "userId": "user-1",
+                "tags": ["提案", "プロジェクト"],
+                "isPublished": false
+              }
+            ]
+          }
+          EOF
+          
+          # Generate reminders
+          cat > frontend/out/api/reminders.json << 'EOF'
+          {
+            "reminders": [
+              {
+                "id": "reminder-1",
+                "title": "会議の準備",
+                "description": "明日の会議の資料を準備する",
+                "dueDate": "2024-01-16T14:00:00Z",
+                "isCompleted": false,
+                "priority": "high",
+                "userId": "user-1",
+                "createdAt": "2024-01-15T11:00:00Z",
+                "updatedAt": "2024-01-15T11:00:00Z"
+              }
+            ]
+          }
+          EOF
+
+      - name: Create CNAME file for custom domain
+        run: echo "static.vemi.jp" > frontend/out/CNAME
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

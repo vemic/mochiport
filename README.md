@@ -296,20 +296,39 @@ yarn test:coverage
 
 ## 📦 デプロイ
 
-### フロントエンド (Vercel)
+### 🌐 GitHub Pages（静的サイト）
+
+モックデータを使用した静的サイトとしてGitHub Pagesにデプロイできます。
+
+#### 通常のGitHub Pages
+```bash
+# Windows環境
+.\scripts\build-github-pages.bat
+
+# Linux/macOS環境
+yarn workspace @mochiport/frontend build:github
+```
+
+#### 独自ドメイン対応（static.vemi.jp）
+```bash
+# Windows環境
+.\scripts\build-custom-domain.bat
+
+# Linux/macOS環境
+export NEXT_PUBLIC_GITHUB_PAGES_CUSTOM_DOMAIN=true
+yarn workspace @mochiport/frontend build:custom-domain
+```
+
+詳細は以下のガイドを参照：
+- [GitHub Pagesデプロイガイド](./GITHUB_PAGES_DEPLOYMENT.md)
+- [独自ドメイン公開ガイド](./CUSTOM_DOMAIN_DEPLOYMENT.md)
+
+### ☁️ Vercel デプロイ
 
 ```bash
 # Vercel にデプロイ
 yarn workspace frontend build
 vercel --prod
-```
-
-### バックエンド (Node.js Express)
-
-```bash
-# Express サーバーをローカルで起動
-yarn workspace backend build
-yarn workspace backend start
 ```
 
 ## 🎯 設計原則
